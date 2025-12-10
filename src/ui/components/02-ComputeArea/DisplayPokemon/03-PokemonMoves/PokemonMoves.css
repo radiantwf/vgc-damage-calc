@@ -1,0 +1,221 @@
+/* PokemonMoves 组件样式 */
+.pokemon-moves {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  height: 120px;
+}
+
+.pokemon-moves__container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pokemon-moves__damage-column {
+  display: flex;
+  flex-direction: column;
+  width: 120px;
+  height: 120px;
+}
+
+.pokemon-moves__z-column {
+  display: flex;
+  flex-direction: column;
+  width: 24px;
+  height: 120px;
+}
+
+.pokemon-moves__moves-column {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+  height: 120px;
+}
+
+.pokemon-moves__damage-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 120px;
+  font-size: 11px;
+  color: var(--text-color);
+  text-align: center;
+  line-height: 1.2;
+  padding: 2px 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.pokemon-moves__z-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 30px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.pokemon-moves__z-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pokemon-moves__z-image--inactive {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
+
+.pokemon-moves__z-image--active {
+  filter: none;
+  opacity: 1;
+}
+
+.pokemon-moves__z-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px var(--shadow-medium);
+}
+
+/* 保证一击必杀时使用主题危险色（红色） */
+.pokemon-moves__damage-text--ko {
+  color: var(--damage-ko-color);
+}
+
+.pokemon-moves__damage-text--impossible {
+  color: var(--damage-impossible-color);
+}
+
+.pokemon-moves__move {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  width: 140px;
+  padding: 0 10px;
+  background-color: var(--widget-background-color);
+  border: 1px solid var(--border-color);
+  border-bottom: 0.5px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  gap: 7px;
+}
+
+.pokemon-moves__move:hover {
+  background-color: var(--widget-hover-background-color);
+}
+
+.pokemon-moves__move--selected {
+  background-color: var(--widget-selected-background-color);
+}
+
+.pokemon-moves__move--first {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.pokemon-moves__move--last {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pokemon-moves__type-indicator {
+  width: 5px;
+  height: 20px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.pokemon-moves__row + .pokemon-moves__row .toggle-button {
+  border-top-width: 0;
+}
+.pokemon-moves__row + .pokemon-moves__row .toggle-button:hover,
+.pokemon-moves__row + .pokemon-moves__row .toggle-button.active,
+.pokemon-moves__row + .pokemon-moves__row .toggle-button:focus-visible {
+  border-top-width: 1px;
+}
+.pokemon-moves .toggle-button.rounded-top {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.pokemon-moves .toggle-button.rounded-bottom {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.pokemon-moves .toggle-button {
+  --toggle-button-height: 30px;
+  --toggle-button-min-height: 30px;
+  --toggle-button-max-height: 30px;
+  width: 140px;
+  max-width: 140px;
+  padding: 0 10px;
+  border-radius: 0;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+
+.pokemon-moves__move-container {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-width: 0; /* 允许内部文本收缩以实现省略号 */
+  white-space: nowrap; /* 整体保持单行 */
+  overflow: hidden; /* 超出内容隐藏 */
+}
+
+.pokemon-moves__move-name {
+  font-size: 12px;
+  color: var(--button-text-color);
+  line-height: 1.2;
+  flex: 1;
+  min-width: 0; /* 配合 flex:1 与省略显示 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: text;
+}
+
+.pokemon-moves--defender .pokemon-moves__move-container {
+  justify-content: flex-end;
+}
+.pokemon-moves--attacker .pokemon-moves__move-container {
+  justify-content: flex-start;
+}
+.pokemon-moves__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 30px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.pokemon-moves .toggle-button:disabled,
+.pokemon-moves .toggle-button[disabled] {
+  background: var(--widget-background-color);
+  color: var(--button-text-color);
+  border-color: var(--border-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  opacity: 1;
+  transform: none;
+  cursor: default;
+}
+
+.pokemon-moves .toggle-button:disabled:hover,
+.pokemon-moves .toggle-button[disabled]:hover {
+  background: var(--widget-background-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}

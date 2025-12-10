@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "es2024",
+    "lib": [
+      "es2024",
+      "dom",
+      "dom.iterable"
+    ],
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "allowJs": true,
+    /* Bundler mode */
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    /* Linting */
+    "strict": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noUncheckedSideEffectImports": true
+    "esModuleInterop": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/vendors/**/tsconfig.json",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
+}

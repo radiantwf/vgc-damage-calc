@@ -1,0 +1,242 @@
+.pi_col4-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  gap: 2px;
+}
+
+.pi_col4-pokemon-label-area {
+  height: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  gap: 5px;
+}
+
+.pi_col4-pokemon-move-label {
+  width: 120px;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.pi_col4-pokemon-power-label {
+  width: 25px;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.pi_col4-pokemon-hits-label {
+  width: 30px;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.pi_col4-pokemon-move-list-area {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  width: 100%;
+  gap: 2px;
+}
+
+.pi_col4-pokemon-move-row-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+  height: 20px;
+  gap: 5px;
+}
+
+.pi_col4-pokemon-move-input-area {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: center;
+  width: 120px;
+}
+
+.pi_col4-pokemon-power {
+  width: 25px;
+  height: 20px;
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.pi_col4-pokemon-hits {
+  width: 30px;
+  height: 16px;
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.pi_col4-pokemon-move-display-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 5px;
+}
+
+.pi_col4-pokemon-move-display {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 20px; /* 强制整体高度为20px */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  gap: 8px;
+}
+.pi_col4-pokemon-move-display:hover {
+  border-color: #999;
+}
+
+.pi_col4-pokemon-move-display:focus {
+  outline: none;
+  border-color: #007cba;
+  box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.3);
+}
+.pi_col4-pokemon-move-type-color-container {
+  padding-left: 10px;
+}
+.pi_col4-pokemon-move-type-color {
+  width: 5px;
+  height: 17px;
+  background-color: #007cba;
+  display: block; /* 避免基线造成的额外高度 */
+}
+.pi_col4-pokemon-move-text {
+  width: 100%;
+  color: #000;
+}
+.pi_col4-pokemon-move {
+  width: 100%;
+  height: 20px;
+}
+
+/* Column4 Move下拉框显示样式 */
+.pi_col4-move-display-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pi_col4-move-display-content-name {
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pi_col4-move-display-content-type-color {
+  width: 5px;
+  border-radius: 2px;
+}
+
+/* Column4 Move下拉项样式 */
+.pi_col4-move-dropdown {
+  width: 180px !important;
+  min-width: 180px !important;
+  --sdd-item-height: 32px;
+}
+
+.pi_col4-move-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 4px;
+  width: 100%;
+}
+
+.pi_col4-move-dropdown-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pi_col4-move-dropdown-type {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.pi_col4-move-dropdown-name {
+  font-size: 11px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pi_col4-move-dropdown-usage {
+  font-size: 9px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  text-align: right;
+  white-space: nowrap;
+  width:42px;
+}
+
+.pi_col4-move-dropdown-type-bar {
+  display: flex;
+  height: 3px;
+  width: 100%;
+}
+
+.pi_col4-move-dropdown-type-color {
+  height: 3px;
+  width: 100%;
+  border-radius: 0.5px;
+}
+
+/* 不可用技能样式 */
+.pi_col4-move-unavailable {
+  color: var(--text-disabled) !important;
+  opacity: 0.6;
+}
+
+/* hover和选中状态 */
+.sdd-dropdown-item:hover .pi_col4-move-dropdown-usage {
+  color: var(--accent-primary);
+  opacity: 0.6;
+}
+
+.sdd-dropdown-item.sdd-selected .pi_col4-move-dropdown-usage {
+  color: var(--accent-primary);
+  opacity: 0.7;
+}
+
+/* 不可用技能在hover和选中状态下保持灰色 */
+.sdd-dropdown-item:hover .pi_col4-move-unavailable,
+.sdd-dropdown-item.sdd-selected .pi_col4-move-unavailable {
+  color: var(--text-disabled) !important;
+  opacity: 0.6 !important;
+}

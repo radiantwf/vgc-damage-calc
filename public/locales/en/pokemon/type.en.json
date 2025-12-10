@@ -1,0 +1,22 @@
+{
+    "@@locale": "en",
+    "normal": "Normal",
+    "flying": "Flying",
+    "fire": "Fire",
+    "psychic": "Psychic",
+    "water": "Water",
+    "bug": "Bug",
+    "electric": "Electric",
+    "rock": "Rock",
+    "grass": "Grass",
+    "ghost": "Ghost",
+    "ice": "Ice",
+    "dragon": "Dragon",
+    "fighting": "Fighting",
+    "dark": "Dark",
+    "poison": "Poison",
+    "steel": "Steel",
+    "ground": "Ground",
+    "fairy": "Fairy",
+    "stellar": "Stellar"
+}

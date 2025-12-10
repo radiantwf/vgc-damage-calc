@@ -1,0 +1,275 @@
+.ps_ta-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 550px;
+}
+
+.ps_ta-table-title {
+  display: grid;
+  width: 100%;
+  grid-template-areas: "tag space1 base space2 iv space3 ev space4 nature";
+  grid-template-columns: 30px 5px 40px 5px 40px 15px 160px 15px 240px;
+  height: 26px;
+  padding-bottom: 6px;
+  overflow: visible;
+}
+
+.ps_ta-row {
+  display: grid;
+  width: 100%;
+  height: 20px;
+  padding: 2px 0px;
+  grid-template-areas: "tag space1 base space2 iv space3 evSlider space4 ev space5 evLess space6 evPercent space7 evMore space8 stat space9 boost";
+  grid-template-columns: 30px 5px 40px 5px 40px 15px 140px 3px 48px 15px 30px 7px 50px 7px 30px 10px 25px 10px 40px;
+  overflow: hidden;
+}
+
+.ps_ta-row-stat-less {
+  grid-area: evLess;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--text-secondary);
+}
+
+.ps_ta-row-stat-more {
+  grid-area: evMore;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--text-secondary);
+}
+
+.ps_ta-table_last_row {
+  display: grid;
+  width: 100%;
+  height: 18px;
+  grid-template-areas: "space1 totalBaseStats space2 evLeft space3";
+  grid-template-columns: 30px 30px 135px 120px 235px;
+  gap: 2px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ps_ta-title-tag {
+  grid-area: tag;
+  font-size: 12px;
+}
+
+.ps_ta-title-base {
+  grid-area: base;
+  font-size: 12px;
+  display: flex;
+  align-items: end;
+}
+
+.ps_ta-title-iv {
+  grid-area: iv;
+  font-size: 12px;
+  display: flex;
+  align-items: end;
+}
+
+.ps_ta-title-ev {
+  grid-area: ev;
+  font-size: 12px;
+  display: flex;
+  align-items: end;
+}
+
+.ps_ta-title-nature {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: end;
+  grid-area: nature;
+  height: 24px;
+  font-size: 12px;
+  display: flex;
+  align-items: end;
+}
+
+.ps_ta-title-nature-label {
+  width: 40px;
+}
+
+.ps_ta-nature {
+  height: 20px;
+}
+
+.ps_ta-nature-dropdown {
+  gap: 8px;
+  justify-content: space-between;
+  padding: 4px;
+  width: 100%;
+}
+
+.ps_ta-nature-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 4px;
+  width: 100%;
+}
+
+.ps_ta-nature-dropdown-name {
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ps_ta-nature-dropdown-usage {
+  font-size: 9px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ps_ta-row-tag {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  grid-area: tag;
+  font-size: 12px;
+}
+
+.ps_ta-row-base {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  grid-area: base;
+  font-size: 12px;
+}
+
+.ps_ta-row-iv {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  grid-area: iv;
+  width: 100%;
+  font-size: 12px;
+}
+
+.ps_ta-row-ev {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  grid-area: ev;
+  width: 100%;
+  font-size: 12px;
+}
+
+.ps_ta-row-ev-slider {
+  grid-area: evSlider;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  height: 100%;
+  gap: 2px;
+  font-size: 12px;
+}
+
+.ps_ta-row-ev-slider-input-wrapper {
+  width: 42px;
+}
+
+.ps_ta-row-stat-less {
+  grid-area: evLess;
+  font-size: 8px;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.ps_ta-row-stat-more {
+  grid-area: evMore;
+  font-size: 8px;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.ps_ta-row-stat-percent {
+  grid-area: evPercent;
+  font-size: 12px;
+  justify-content: center;
+}
+
+.ps_ta-row-stat {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  grid-area: stat;
+  font-size: 12px;
+}
+
+.ps_ta-row-boost {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  grid-area: boost;
+  font-size: 12px;
+}
+
+.ps_ta-table_last_row-total-base-stats {
+  display: flex;
+  grid-area: totalBaseStats;
+  align-items: end;
+  justify-content: start;
+  font-size: 13px;
+  height: 100%;
+}
+
+.ps_ta-table_last_row-ev-left {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: end;
+  grid-area: evLeft;
+  height: 100%;
+  gap: 10px;
+}
+
+.ps_ta-table_last_row-ev-left-label {
+  display: flex;
+  align-items: end;
+  justify-content: start;
+  font-size: 10px;
+  height: 100%;
+}
+
+.ps_ta-table_last_row-ev-left-value {
+  display: flex;
+  align-items: end;
+  justify-content: start;
+  font-size: 12px;
+  height: 100%;
+}
+
+.ps_ta-table_last_row-ev-left-value-negative {
+  color: var(--accent-success);
+}
+
+.ps_ta-color-plus {
+  color: var(--accent-danger);
+}
+
+.ps_ta-color-minus {
+  color: var(--accent-success);
+}
+
+/* Boost 增减颜色：仅影响输入文字 */
+.ps_ta-row-boost.ps_ta-boost-positive .number-input {
+  color: var(--accent-danger);
+}
+
+.ps_ta-row-boost.ps_ta-boost-negative .number-input {
+  color: var(--accent-success);
+}

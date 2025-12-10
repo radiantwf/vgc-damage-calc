@@ -1,0 +1,132 @@
+.pi_col1-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  gap: 10px;
+}
+
+.pi_col1-avatar-area {
+  width: 72px;
+  height: 72px;
+}
+
+.pi_col1-avatar {
+  width: 72px;
+  height: 72px;
+}
+
+.pi_col1-pokemon-name-area {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  width: 100%;
+  gap: 2px;
+}
+.pi_col1-pokemon-name-label {
+  width: 100%;
+  font-size: 9px;
+  font-weight: 500;
+  height: 10px;
+}
+
+.pi_col1-pokemon-name {
+  width: 100%;
+  height: 20px;
+}
+
+.pi_col1-pokemon-name .sdd-dropdown-button {
+  right: 4px !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* 自定义宝可梦下拉项样式 */
+.pi_col1-pokemon-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 4px;
+  width: 100%;
+}
+
+.pi_col1-pokemon-dropdown-avatar {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.pi_col1-pokemon-dropdown-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pi_col1-pokemon-dropdown-name {
+  font-size: 11px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pi_col1-pokemon-dropdown-types {
+  display: flex;
+  gap: 1px;
+  height: 3px;
+}
+
+.pi_col1-pokemon-dropdown-type {
+  height: 3px;
+  flex: 1;
+  border-radius: 0.5px;
+}
+
+.pi_col1-pokemon-dropdown-usage {
+  font-size: 9px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  text-align: right;
+  white-space: nowrap;
+  width: 42px;
+}
+
+/* hover状态下的使用率颜色 */
+.sdd-dropdown-item:hover .pi_col1-pokemon-dropdown-usage {
+  color: var(--accent-primary);
+  opacity: 0.6;
+}
+
+/* 选中状态下的使用率颜色 */
+.sdd-dropdown-item.sdd-selected .pi_col1-pokemon-dropdown-usage {
+  color: var(--accent-primary);
+  opacity: 0.7;
+}
+
+/* 宝可梦下拉菜单容器样式 */
+.pi_col1-pokemon-dropdown {
+  width: 200px !important;
+  min-width: 200px !important;
+  min-height: 280px;
+  --sdd-item-height: 40px;
+}
+
+.pi_col1-space-pokemon-forme-area {
+  height: 20px;
+}
+
+.pi_col1-pokemon-forme {
+  width: 100%;
+  height: 20px;
+}
+
+.pi_col1-pokemon-forme .sdd-dropdown-button {
+  right: 4px !important;
+  width: 14px !important;
+  height: 14px !important;
+}

@@ -1,0 +1,205 @@
+{
+  "languageChineseName": "简体中文",
+  "languageEnglishName": "English",
+  "languageJapaneseName": "日本語",
+  "reg": "Format",
+  "month": "Month",
+  "rule": "Rule",
+  "cutline": "Cutline",
+  "language": "Language",
+  "chinese": "简体中文",
+  "english": "English",
+  "appTitle": "VGC Damage Calculator",
+  "loading": "Loading",
+  "search": "Search",
+  "error": "Error",
+  "darkMode": "Dark Mode",
+  "lightMode": "Light Mode",
+  "settings": "Settings",
+  "switchLanguage": "Language",
+  "theme": "Theme",
+  "reportBug": "Report Bug",
+  "githubRepo": "GitHub Repository",
+  "pokemon": {
+    "name": "Pokémon",
+    "selectPokemon": "Select Pokémon",
+    "selectPokemonForme": "Select Pokémon Forme",
+    "types": "Types",
+    "ability": "Ability",
+    "selectAbility": "Select Ability",
+    "item": "Item",
+    "selectItem": "Select Item",
+    "type1": "Type 1",
+    "type2": "Type 2",
+    "selectType": "Select Type",
+    "level": "Level",
+    "gender": "Gender",
+    "male": "♂",
+    "female": "♀",
+    "genderless": "Genderless",
+    "status": "Status",
+    "normal": "Normal",
+    "burn": "Burn",
+    "poison": "Poison",
+    "paralysis": "Paralysis",
+    "nature": "Nature",
+    "selectNature": "Select Nature",
+    "shiny": "Shiny",
+    "dynamax": "Dynamax",
+    "import": "Import",
+    "export": "Export",
+    "copyToClipboard": "Copy to clipboard",
+    "importFromClipboard": "Import from clipboard",
+    "copySuccess": "Copied to clipboard",
+    "importSuccess": "Imported from clipboard",
+    "olderVersionEntry": "Older Version Entry",
+    "reset": "Reset",
+    "randomize": "Random",
+    "move": "Move",
+    "movePower": "Power",
+    "moveHits": "Hits",
+    "selectMove": "Select Move",
+    "noMove": "No Move",
+    "teraType": "Tera Type",
+    "selectTeraType": "Select Tera Type",
+    "rule": {
+      "teraBadge": "Tera",
+      "dynamaxBadge": "Dynamax",
+      "zBadge": "Z-Move"
+    },
+    "boostedStat": {
+      "title": "Boosted Stat",
+      "placeholder": "Select Boosted Stat",
+      "inactive": "Inactive",
+      "auto": "Auto",
+      "atk": "ATK * 1.3",
+      "def": "DEF * 1.3",
+      "spa": "SPA * 1.3",
+      "spd": "SPD * 1.3",
+      "spe": "SPE * 1.5"
+    }
+  },
+  "stats": {
+    "stat": "Stat",
+    "base": "Base",
+    "ivs": "IVs",
+    "evs": "EVs",
+    "total": "Total",
+    "hp": "HP",
+    "atk": "ATK",
+    "def": "DEF",
+    "spa": "SPA",
+    "spd": "SPD",
+    "spe": "SPE",
+    "evsTotal": "EVs Total",
+    "evsRemaining": "EVs Remaining"
+  },
+  "metas": {
+    "title": "Meta Builds",
+    "placeholder": "Select Meta Build",
+    "evs": " EVs: ",
+    "lv50": "Lv50: ",
+    "real": "Real:"
+  },
+  "field": {
+    "side": {
+      "titleAttacker": "Attacker",
+      "titleDefender": "Defender",
+      "status": {
+        "burned": "Burned",
+        "posioned": "Poisoned",
+        "badlyPosioned": "Badly Poisoned",
+        "frozen": "Frozen",
+        "asleep": "Asleep",
+        "paralyzed": "Paralyzed"
+      },
+      "gmax": {
+        "steelsurge": "Steelsurge (G-Max)",
+        "vineLash": "Vine Lash (G-Max)",
+        "wildfire": "Wildfire (G-Max)",
+        "cannonade": "Cannonade (G-Max)",
+        "volcalith": "Volcalith (G-Max)"
+      },
+      "effect": {
+        "reflect": "Reflect",
+        "lightScreen": "Light Screen",
+        "auroraVeil": "Aurora Veil",
+        "helpingHand": "Helping Hand",
+        "steelySpirit": "Steely Spirit",
+        "battery": "Battery",
+        "powerSpot": "Power Spot",
+        "criticalHit": "Critical Hit",
+        "friendGuard": "Friend Guard",
+        "stealthRock": "Stealth Rock",
+        "spikes": "Spikes",
+        "protect": "Protect",
+        "leechSeed": "Leech Seed",
+        "saltCure": "Salt Cure",
+        "foresight": "Foresight (Identified)",
+        "tailwind": "Tailwind",
+        "flowerGift": "Flower Gift",
+        "powerTrick": "Power Trick",
+        "switchingOut": "Switching Out"
+      }
+    },
+    "center": {
+      "gameType": {
+        "singles": "Singles",
+        "doubles": "Doubles"
+      },
+      "weather": {
+        "sun": "Sunny",
+        "rain": "Rainy",
+        "sand": "Sandstorm",
+        "snow": "Snowy",
+        "harshSunshine": "Harsh Sunshine",
+        "heavyRain": "Heavy Rain",
+        "strongWinds": "Strong Winds"
+      },
+      "terrain": {
+        "electric": "Electric Terrain",
+        "grassy": "Grassy Terrain",
+        "psychic": "Psychic Terrain",
+        "misty": "Misty Terrain"
+      },
+      "aura": {
+        "auraBreak": "Aura Break",
+        "fairyAura": "Fairy Aura",
+        "darkAura": "Dark Aura"
+      },
+      "ruin": {
+        "sword": "Sword Of Ruin (-DEF)",
+        "beads": "Beads Of Ruin (-SPD)",
+        "tablets": "Tablets Of Ruin (-ATK)",
+        "vessel": "Vessel Of Ruin (-SPA)"
+      },
+      "gravity": "Gravity",
+      "magicRoom": "Magic Room",
+      "wonderRoom": "Wonder Room"
+    }
+  },
+  "errors": {
+    "pokemonUsageFetchFailed": "Failed to fetch Pokémon usage data",
+    "movesetsFetchFailed": "Failed to fetch movesets data"
+  },
+  "noResults": "No results found"
+  ,
+  "team": {
+    "addPokemon": "Add Pokémon",
+    "removePokemon": "Remove Pokémon",
+    "confirmDelete": "Delete this Pokémon slot?",
+    "confirmDelete.ok": "Delete",
+    "confirmDelete.cancel": "Cancel",
+    "confirmSavePaste": "The current Pokémon build has changed. Save changes?",
+    "confirmSavePaste.message": "The current Pokémon build has changed. Save changes?",
+    "confirmSavePaste.save": "Save",
+    "confirmSavePaste.discard": "Discard",
+    "confirmSavePaste.editAgain": "Keep Editing",
+    "copyTeam": "Copy Team to clipboard",
+    "importTeam": "Import Team from clipboard",
+    "copyTeamSuccess": "Team copied to clipboard",
+    "importTeamSuccess": "Team imported from clipboard",
+    "all": "All",
+    "new": "New"
+  }
+}

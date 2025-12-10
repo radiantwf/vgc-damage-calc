@@ -1,0 +1,280 @@
+/* SearchableDropdown 组件样式 */
+.sdd-searchable-dropdown {
+  position: relative;
+  display: inline-block;
+  /* 适配外部容器宽高：高度最大32px，宽度跟随外部 */
+  width: 100%;
+  height: min(100%, 32px);
+  /* 定义单个下拉菜单项的高度变量 */
+  /* 外部可通过 .custom-dropdown { --sdd-item-height: 自定义值; } 来修改单行高度 */
+  --sdd-item-height: 30px;
+}
+
+/* 输入容器 */
+.sdd-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%; /* 继承父容器高度 */
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: clamp(4px, 0.5vw, 8px);
+  transition: all 0.2s ease;
+}
+
+.sdd-input-container:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-color-alpha);
+}
+
+/* 输入框 */
+.sdd-input {
+  flex: 1;
+  padding: clamp(6px, 1vw, 10px) clamp(8px, 1.2vw, 12px);
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-color);
+  font-size: clamp(12px, 1.4vw, 14px);
+  font-family: inherit;
+  line-height: 1.4;
+  width: 100%;
+  height: 100%; /* 继承父容器高度 */
+  box-sizing: border-box; /* 确保 padding 不会影响高度计算 */
+}
+
+.sdd-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* 下拉按钮 */
+.sdd-dropdown-button {
+  position: absolute;
+  right: clamp(2px, 0.3vw, 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2px, 0.3vw, 4px);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: clamp(2px, 0.3vw, 4px);
+  transition: all 0.2s ease;
+  width: clamp(16px, 1.5vw, 20px);
+  height: clamp(16px, 1.5vw, 20px);
+}
+
+.sdd-dropdown-button:hover {
+  background-color: var(--hover-background);
+  color: var(--text-color);
+}
+
+.sdd-dropdown-button.sdd-open {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.sdd-dropdown-button svg {
+  width: clamp(10px, 1.2vw, 12px);
+  height: clamp(6px, 0.8vw, 8px);
+  transition: transform 0.2s ease;
+}
+
+/* 下拉菜单 */
+.sdd-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 clamp(6px, 0.8vw, 10px) clamp(6px, 0.8vw, 10px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  /* 默认高度为10个item的高度，支持 CSS 变量默认值回退 */
+  /* 外部可通过 .custom-dropdown .sdd-dropdown-menu { max-height: 自定义值; } 来覆盖 */
+  max-height: calc(var(--sdd-item-height, 30px) * 10);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) var(--bg-primary);
+  animation: slideDown 0.2s ease-out;
+  
+  /* Mobile scrolling improvements */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 下拉菜单项 */
+.sdd-dropdown-item {
+  padding: 0 clamp(5px, 1vw, 10px);
+  align-content: center;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: clamp(11px, 1.2vw, 12px);
+  min-height: 20px;
+  height: var(--sdd-item-height, 30px);
+  line-height: 1.4;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid var(--dropdown-divider);
+  text-align: left;
+  background-color: var(--bg-secondary);
+  font-weight: 500;
+}
+
+.sdd-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.sdd-dropdown-item:hover,
+.sdd-dropdown-item.sdd-highlighted {
+  background-color: var(--hover-background);
+  color: var(--accent-primary);
+  opacity: 0.8;
+  transform: translateX(2px);
+  /* 玻璃质感效果 */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.sdd-dropdown-item:hover::before,
+.sdd-dropdown-item.sdd-highlighted::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  pointer-events: none;
+}
+
+.sdd-dropdown-item.sdd-selected {
+  background-color: var(--selected-item-color);
+  color: var(--accent-primary);
+  font-weight: 600;
+  border-left: 3px solid var(--accent-primary);
+}
+
+/* 禁用状态的下拉菜单项 - 只取消hover效果 */
+.sdd-dropdown-item.sdd-disabled:hover {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--dropdown-divider) !important;
+  position: static !important;
+  overflow: visible !important;
+  cursor: default;
+}
+
+.sdd-dropdown-item.sdd-disabled:hover::before {
+  display: none !important;
+}
+
+.sdd-dropdown-item.sdd-no-results {
+  color: var(--text-secondary);
+  cursor: default;
+  font-style: italic;
+}
+
+.sdd-dropdown-item.sdd-no-results:hover {
+  background-color: transparent;
+}
+
+/* 暗色主题下的玻璃质感优化 */
+[data-theme="dark"] .sdd-dropdown-item:hover,
+[data-theme="dark"] .sdd-dropdown-item.sdd-highlighted {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .sdd-dropdown-item:hover::before,
+[data-theme="dark"] .sdd-dropdown-item.sdd-highlighted::before {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.01) 100%
+  );
+}
+
+/* 特殊样式类 */
+.sdd-compact .sdd-input {
+  padding: clamp(4px, 0.6vw, 6px) clamp(6px, 0.8vw, 8px);
+  font-size: clamp(11px, 1.2vw, 12px);
+}
+
+.sdd-compact .sdd-dropdown-item {
+  padding: clamp(6px, 0.8vw, 8px) clamp(8px, 1vw, 10px);
+  font-size: clamp(11px, 1.2vw, 12px);
+}
+
+.sdd-compact .sdd-dropdown-button {
+  min-width: clamp(16px, 2vw, 20px);
+  min-height: clamp(16px, 2vw, 20px);
+}
+
+.sdd-compact .sdd-dropdown-button svg {
+  width: clamp(8px, 1vw, 10px);
+  height: clamp(5px, 0.6vw, 6px);
+}
+/* 外层容器：负责布局和padding */
+.sdd-display-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+  cursor: text;
+  background: transparent;
+  color: var(--text-color);
+  padding: clamp(4px, 0.6vw, 6px) clamp(6px, 0.8vw, 8px);
+  font-size: clamp(11px, 1.2vw, 12px);
+  box-sizing: border-box;
+}
+
+/* 内层容器：负责文本溢出处理 */
+.sdd-display-overlay-inner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* 当有下拉按钮时，覆盖层右侧留出按钮空间 */
+.sdd-input-container:has(.sdd-dropdown-button) .sdd-display-overlay {
+  right: clamp(18px, 1.8vw, 24px);
+}
+
+/* 当没有下拉按钮时，覆盖层充满整个容器 */
+.sdd-input-container:not(:has(.sdd-dropdown-button)) .sdd-display-overlay {
+  right: 0;
+}

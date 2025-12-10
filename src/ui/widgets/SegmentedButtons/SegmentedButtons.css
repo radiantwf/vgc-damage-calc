@@ -1,0 +1,98 @@
+.segmented-buttons {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  /* 默认填满外部容器高度，但不设置上限，让子项（ToggleButton）自身控制最大高度，便于 className 覆盖 */
+  height: auto; /* 由内容决定高度，允许随最大子项扩展 */
+  min-height: inherit; /* 继承父容器的最小高度（如 25px），确保最小高度被填充 */
+  max-height: inherit;
+  align-items: stretch;
+  overflow: visible; /* 焦点高亮/外框不被容器裁剪 */
+}
+
+
+/* 通用的纵向 SegmentedButtons 样式（控件内实现） */
+.segmented-buttons--vertical {
+  flex-direction: column;
+  /* 默认充满父容器高度，以便子项等高分配 */
+  height: 100%;
+  align-items: stretch;
+}
+
+/* 纵向布局避免双重上边框导致分隔线变粗：除首项外去掉上边框 */
+.segmented-buttons--vertical .toggle-button:not(.rounded-top) {
+  border-top-width: 0;
+}
+
+/* Hover/Active 时显示被隐藏的上边框，镜像水平布局的分隔线处理 */
+.segmented-buttons--vertical .toggle-button:not(.rounded-top):hover {
+  border-top-width: 1px;
+}
+
+.segmented-buttons--vertical .toggle-button:not(.rounded-top).active {
+  border-top-width: 1px;
+}
+
+/* 在分段容器中，让子按钮均分宽度 */
+.segmented-buttons .toggle-button {
+  flex: 1 1 0;
+  min-width: 0; /* 允许内部内容被截断，避免撑宽 */
+  height: auto; /* 由内容决定高度，结合 align-items: stretch 保持同组等高 */
+  min-height: inherit; /* 继承分段容器的最小高度 */
+  max-height: inherit; /* 默认继承分段容器最大高度，允许向外扩展但受外部上限约束 */
+  align-self: stretch; /* 跟随容器的高度拉伸，确保所有按钮等高 */
+  border-radius: 0; /* 中间按钮弧度为0，统一直角 */
+}
+
+/* 分段容器中的左右圆角控制 */
+.segmented-buttons .toggle-button.rounded-left {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.segmented-buttons .toggle-button.rounded-right {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 中间分隔线：避免双倍边框占距 */
+/* 仅在水平布局下处理左侧分隔线，避免垂直布局受到影响 */
+.segmented-buttons:not(.segmented-buttons--vertical) .toggle-button:not(.rounded-left) {
+  border-left-width: 0;
+}
+
+/* 浮出高亮时，显示被隐藏的重叠边框 */
+.segmented-buttons:not(.segmented-buttons--vertical) .toggle-button:not(.rounded-left):hover {
+  border-left-width: 1px;
+}
+
+/* 选中状态下同样显示左侧重叠边框，增强分隔感 */
+.segmented-buttons:not(.segmented-buttons--vertical) .toggle-button:not(.rounded-left).active {
+  border-left-width: 1px;
+}
+
+/* 垂直布局下的上下圆角控制（可选） */
+.segmented-buttons .toggle-button.rounded-top {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.segmented-buttons .toggle-button.rounded-bottom {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 焦点态：确保分隔边框为 1px 并浮在最上层 */
+.segmented-buttons .toggle-button:focus-visible {
+  z-index: 10;
+}
+
+/* 水平布局：焦点时显示左侧分隔线（避免双倍边框导致遮挡） */
+.segmented-buttons:not(.segmented-buttons--vertical) .toggle-button:not(.rounded-left):focus-visible {
+  border-left-width: 1px;
+}
+
+/* 垂直布局：焦点时显示上侧分隔线 */
+.segmented-buttons--vertical .toggle-button:not(.rounded-top):focus-visible {
+  border-top-width: 1px;
+}

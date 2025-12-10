@@ -1,0 +1,346 @@
+/* components/Slider.css */
+
+/* 组件级CSS变量定义 */
+.slider-container {
+  --slider-primary-color: var(--accent-primary);
+  --slider-primary-hover: var(--accent-hover, var(--accent-primary));
+  --slider-secondary-color: var(--text-secondary);
+  --slider-secondary-hover: var(--text-primary);
+  --slider-success-color: var(--accent-success);
+  --slider-success-hover: var(--accent-success);
+  --slider-warning-color: var(--accent-warning);
+  --slider-warning-hover: var(--accent-warning);
+  --slider-danger-color: var(--accent-danger);
+  --slider-danger-hover: var(--accent-danger);
+  
+  --slider-border-color: var(--input-border);
+  --slider-border-radius: clamp(4px, 0.5vw, 8px);
+  --slider-transition: all 0.15s ease-in-out;
+  --slider-shadow: 0 1px 3px var(--shadow-light);
+  --slider-shadow-focus: 0 0 0 2px var(--input-focus-shadow);
+  --slider-bg-primary: var(--input-bg);
+  --slider-bg-secondary: var(--bg-secondary);
+  --slider-text-primary: var(--text-primary);
+  --slider-text-secondary: var(--text-secondary);
+  --slider-text-muted: var(--text-muted);
+  
+  /* 动态变量，由JS设置 */
+  --slider-container-height: 40px;
+  --slider-container-width: 200px;
+  --slider-track-height: 8px;
+  --slider-thumb-size: 24px;
+  --slider-font-size: 14px;
+}
+
+/* 主容器 - 完全自适应外部尺寸 */
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  min-width: 30px;
+  min-height: 15px;
+  padding: 2px;
+  border: 1px solid var(--slider-border-color);
+  border-radius: var(--slider-border-radius);
+  background: var(--slider-bg-primary);
+  box-shadow: var(--slider-shadow);
+  transition: var(--slider-transition);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: var(--slider-font-size);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.slider-container:hover:not(.slider-disabled) {
+  border-color: var(--border-hover);
+}
+
+/* 焦点高亮（移除 focus-within 视觉效果，避免拖动时出现外框） */
+
+/* 紧凑模式 */
+.slider-container.slider-compact-height {
+  padding: 1px;
+  border-width: 1px;
+}
+
+.slider-container.slider-compact-width {
+  padding: 1px;
+}
+
+/* 颜色变体 */
+.slider-container.slider-variant-primary {
+  --slider-theme-color: var(--slider-primary-color);
+  --slider-theme-hover: var(--slider-primary-hover);
+}
+
+.slider-container.slider-variant-secondary {
+  --slider-theme-color: var(--slider-secondary-color);
+  --slider-theme-hover: var(--slider-secondary-hover);
+}
+
+.slider-container.slider-variant-success {
+  --slider-theme-color: var(--slider-success-color);
+  --slider-theme-hover: var(--slider-success-hover);
+}
+
+.slider-container.slider-variant-warning {
+  --slider-theme-color: var(--slider-warning-color);
+  --slider-theme-hover: var(--slider-warning-hover);
+}
+
+.slider-container.slider-variant-danger {
+  --slider-theme-color: var(--slider-danger-color);
+  --slider-theme-hover: var(--slider-danger-hover);
+}
+
+/* 禁用状态 */
+.slider-container.slider-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--slider-bg-secondary);
+}
+
+.slider-container.slider-disabled * {
+  cursor: not-allowed !important;
+}
+
+/* 标签包装器 */
+.slider-label-wrapper {
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+/* 标签 */
+.slider-label {
+  font-weight: 600;
+  color: var(--slider-text-primary);
+  margin: 0;
+  font-size: var(--slider-font-size);
+  line-height: 1.2;
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* 滑块包装器 */
+.slider-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: var(--slider-track-height);
+}
+
+/* 滑块轨道背景 */
+.slider-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: var(--slider-track-height);
+  background: var(--bg-tertiary);
+  border-radius: calc(var(--slider-track-height) / 2);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.slider-progress {
+  height: 100%;
+  background: linear-gradient(90deg, 
+    var(--slider-theme-color, var(--slider-primary-color)), 
+    var(--slider-theme-hover, var(--slider-primary-hover))
+  );
+  border-radius: calc(var(--slider-track-height) / 2);
+  transition: width 0.1s ease;
+}
+
+/* 滑块输入 */
+.slider-input {
+  -webkit-appearance: none;
+  width: 100%;
+  height: var(--slider-track-height);
+  background: transparent;
+  outline: none;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.slider-input:disabled {
+  cursor: not-allowed;
+}
+
+/* 滑块按钮 - Webkit */
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  border-radius: 50%;
+  background: var(--slider-theme-color, var(--slider-primary-color));
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: var(--slider-transition);
+  border: 2px solid var(--slider-bg-primary);
+  position: relative;
+}
+
+.slider-input::-webkit-slider-thumb:hover {
+  background: var(--slider-theme-hover, var(--slider-primary-hover));
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.slider-container.slider-dragging .slider-input::-webkit-slider-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 滑块按钮 - Firefox */
+.slider-input::-moz-range-thumb {
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  border-radius: 50%;
+  background: var(--slider-theme-color, var(--slider-primary-color));
+  cursor: pointer;
+  border: 2px solid var(--slider-bg-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: var(--slider-transition);
+}
+
+.slider-input::-moz-range-thumb:hover {
+  background: var(--slider-theme-hover, var(--slider-primary-hover));
+  transform: scale(1.1);
+}
+
+/* Firefox 轨道隐藏 */
+.slider-input::-moz-range-track {
+  background: transparent;
+  border: none;
+}
+
+/* 刻度标记 */
+.slider-tick-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 20px;
+  margin-top: 4px;
+}
+
+.slider-tick-mark {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slider-tick-mark::before {
+  content: '';
+  width: 1px;
+  height: 4px;
+  background: var(--slider-text-secondary);
+  margin-bottom: 2px;
+}
+
+.slider-tick-label {
+  font-size: calc(var(--slider-font-size) * 0.75);
+  color: var(--slider-text-secondary);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* 值显示 */
+.slider-value-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 4px;
+  background: var(--slider-bg-secondary);
+  border-radius: var(--slider-border-radius);
+  border: 1px solid var(--border-color);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.slider-current-value {
+  font-weight: 700;
+  font-size: var(--slider-font-size);
+  color: var(--slider-theme-color, var(--slider-primary-color));
+}
+
+.slider-value-range {
+  font-size: calc(var(--slider-font-size) * 0.85);
+  color: var(--slider-text-secondary);
+}
+
+/* 拖拽状态 */
+.slider-container.slider-dragging {
+  user-select: none;
+}
+
+.slider-container.slider-dragging .slider-progress {
+  transition: none;
+}
+
+/* 拖动时移除输入的焦点外框（仅限拖动状态） */
+.slider-container.slider-dragging .slider-input:focus,
+.slider-container.slider-dragging .slider-input:focus-visible {
+  outline: none;
+  outline-offset: 0;
+}
+
+/* 无障碍支持 */
+.slider-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 焦点状态：仅键盘可见，鼠标拖动/点击不显示 */
+.slider-input:focus-visible {
+  outline: 2px solid var(--slider-theme-color, var(--slider-primary-color));
+  outline-offset: 2px;
+}
+
+/* 深色模式支持：移除硬编码颜色，统一使用应用内 theme 变量（由 src/ui/theme.css 提供） */
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .slider-container {
+    border-width: 2px;
+  }
+  
+  .slider-input::-webkit-slider-thumb {
+    border-width: 3px;
+  }
+  
+  .slider-input::-moz-range-thumb {
+    border-width: 3px;
+  }
+}
+
+/* 减少动画模式支持 */
+@media (prefers-reduced-motion: reduce) {
+  .slider-container,
+  .slider-container *,
+  .slider-container *::before,
+  .slider-container *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,78 @@
+/* FieldCenter 样式：布局与分段控件容器 */
+.field-center {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 500px;
+  align-items: center;
+}
+
+.field-center .toggle-button {
+  font-size: 13.5px;
+}
+
+.field-center-title {
+  height: 25px;
+  font-size: 22px;
+  color: var(--tag-text-color);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.field-center-gameType,
+.field-center-weather,
+.field-center-weather2,
+.field-center-terrain,
+.field-center-aura,
+.field-center-ruin,
+.field-center-effects {
+  display: flex;
+  width: 100%;
+  height: auto; /* 允许随内容扩展高度 */
+  min-height: 25px; /* 默认最小高度 */
+  max-height: 50px;
+}
+
+.field-center-gameType {
+  align-items: center;
+  /* 让分段控件在该行中拉伸到最小高度 */
+  /* 注意：不改变全局对齐策略，仅对 SegmentedButtons 进行拉伸 */
+}
+
+/* 让 gameType 行中的 SegmentedButtons 采用父行的最小高度并拉伸填满高度 */
+.field-center-gameType .segmented-buttons {
+  align-self: stretch;
+  min-height: inherit;
+}
+
+.field-center-weather2 {
+  width: 90%;
+}
+
+.field-center-weather-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.field-center-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.field-center-effect-btn {
+  height: var(--toggle-button-height, 32px);
+  max-height: var(--toggle-button-max-height, 32px);
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+.field-center-effect-btn.active {
+  background: #e6f2ff;
+  border-color: #99c2ff;
+}

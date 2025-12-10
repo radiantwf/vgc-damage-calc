@@ -1,0 +1,12 @@
+.field-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 24px;
+  width: 1240px;
+  margin: 0;
+  background-color: var(--panel-background-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 14px 20px;
+}

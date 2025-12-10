@@ -1,0 +1,30 @@
+.p-pokemon-area {
+  width: 610px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.p-pokemon-attacker  {
+  align-items: start;
+  justify-content: center;
+  padding: 20px 5px 15px 20px;
+}
+
+.p-pokemon-defender {
+  align-items: end;
+  justify-content: center;
+  padding: 20px 20px 15px 5px;
+}
+
+.p-pokemon-attacker .pi-pokemon-info-area {
+  flex-direction: row;
+}
+.p-pokemon-defender .pi-pokemon-info-area {
+  flex-direction: row-reverse;
+}
+.p-pokemon-defender .pi_col4-pokemon-label-area {
+  flex-direction: row-reverse;
+}
+.p-pokemon-defender .pi_col4-pokemon-move-row-area {
+  flex-direction: row-reverse;
+}

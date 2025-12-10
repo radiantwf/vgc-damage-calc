@@ -1,0 +1,22 @@
+{
+  "@@locale": "ja",
+  "normal": "ノーマル",
+  "flying": "ひこう",
+  "fire": "ほのお",
+  "psychic": "エスパー",
+  "water": "みず",
+  "bug": "むし",
+  "electric": "でんき",
+  "rock": "いわ",
+  "grass": "くさ",
+  "ghost": "ゴースト",
+  "ice": "こおり",
+  "dragon": "ドラゴン",
+  "fighting": "かくとう",
+  "dark": "あく",
+  "poison": "どく",
+  "steel": "はがね",
+  "ground": "じめん",
+  "fairy": "フェアリー",
+  "stellar": "ステラ"
+}

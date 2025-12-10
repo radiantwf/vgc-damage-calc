@@ -1,0 +1,26 @@
+.edit-area-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+  width: 1240px;
+}
+
+.edit-area-container {
+  width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  background-color: var(--panel-background-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-area-container:hover {
+  box-shadow: 0 4px 12px var(--shadow-medium);
+  border-color: var(--border-hover);
+  box-shadow: 0 6px 12px var(--shadow-heavy);
+  transform: scale(1.003);
+  z-index: 1; /* 在分段按钮中略微浮出 */
+}

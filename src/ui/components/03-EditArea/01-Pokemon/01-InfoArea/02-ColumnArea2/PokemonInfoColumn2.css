@@ -1,0 +1,265 @@
+.pi_col2-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 120px;
+}
+
+.pi_col2-pokemon-type-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2px;
+  width: 120px;
+}
+
+.pi_col2-pokemon-type {
+  text-align: center;
+  width: 120px;
+}
+
+.pi_col2-pokemon-type-half-l {
+  text-align: center;
+  width: 59.9px;
+  padding: 2px 4px;
+  border-radius: 4px 0px 0px 4px;
+  font-size: 10px;
+  font-weight: 500;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.pi_col2-pokemon-type-half-r {
+  text-align: center;
+  width: 59.9px;
+  padding: 2px 4px;
+  border-radius: 0px 4px 4px 0px;
+  font-size: 10px;
+  font-weight: 500;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.pi_col2-pokemon-type-full {
+  text-align: center;
+  width: 120px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.pi_col2-pokemon-type-placeholder {
+  text-align: center;
+  width: 120px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-muted);
+  background-color: var(--bg-secondary);
+  border: 1px dashed var(--border-color);
+}
+
+.pi_col2-pokemon-ability-area {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  width: 100%;
+  gap: 2px;
+}
+
+.pi_col2-pokemon-ability-label {
+  height: 10px;
+  width: 100%;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.pi_col2-pokemon-ability {
+  height: 20px;
+  width: 100%;
+}
+
+.pi_col2-space-row {
+  height: 20px;
+  width: 100%;
+}
+
+/* Column2 Ability下拉项样式 */
+.pi_col2-ability-dropdown {
+  min-width: 180px !important;
+  width: 180px !important;
+}
+
+.pi_col2-ability-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 4px;
+  width: 100%;
+}
+
+.pi_col2-ability-dropdown-name {
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pi_col2-ability-dropdown-usage {
+  font-size: 9px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.pi_col2-pokemon-boosted-stat {
+  height: 20px;
+  width: 120px;
+}
+
+.pi_col2-pokemon-boosted-stat-dropdown {
+  width: 120px;
+}
+.pi_col2-pokemon-boosted-stat-item {
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* 不可用特性样式 */
+.pi_col2-ability-unavailable {
+  color: var(--text-disabled) !important;
+  opacity: 0.6;
+}
+
+.pi_col2-ability-unavailable .pi_col2-ability-dropdown-name {
+  color: var(--text-disabled) !important;
+}
+
+.pi_col2-ability-unavailable .pi_col2-ability-dropdown-usage {
+  color: var(--text-disabled) !important;
+}
+
+/* hover和选中状态下保持灰色 */
+.sdd-dropdown-item:hover .pi_col2-ability-unavailable {
+  color: var(--text-disabled) !important;
+}
+
+.sdd-dropdown-item.sdd-selected .pi_col2-ability-unavailable {
+  color: var(--text-disabled) !important;
+}
+
+.sdd-dropdown-item:hover
+  .pi_col2-ability-unavailable
+  .pi_col2-ability-dropdown-name {
+  color: var(--text-disabled) !important;
+}
+
+.sdd-dropdown-item.sdd-selected
+  .pi_col2-ability-unavailable
+  .pi_col2-ability-dropdown-name {
+  color: var(--text-disabled) !important;
+}
+
+.sdd-dropdown-item:hover
+  .pi_col2-ability-unavailable
+  .pi_col2-ability-dropdown-usage {
+  color: var(--text-disabled) !important;
+}
+
+.sdd-dropdown-item.sdd-selected
+  .pi_col2-ability-unavailable
+  .pi_col2-ability-dropdown-usage {
+  color: var(--text-disabled) !important;
+}
+
+/* hover和选中状态 */
+.sdd-dropdown-item:hover .pi_col2-ability-dropdown-usage {
+  color: var(--accent-primary);
+  opacity: 0.6;
+}
+
+.sdd-dropdown-item.sdd-selected .pi_col2-ability-dropdown-usage {
+  color: var(--accent-primary);
+  opacity: 0.7;
+}
+
+.pi_col2-pokemon-intimidate-switch {
+  height: 20px;
+  width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* 开关样式（与全站主题一致，使用主题变量与响应式尺寸） */
+.pi_col2-switch-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.pi_col2-switch-label {
+  /* 响应式轨道尺寸：最小/最大使用 px，随视口略缩放 */
+  --pi-track-w: 40px;
+  --pi-track-h: 16px;
+  --pi-thumb-d: calc(var(--pi-track-h) - 4px);
+
+  display: inline-block;
+  width: var(--pi-track-w);
+  height: var(--pi-track-h);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--pi-track-h);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+.pi_col2-switch-label::after {
+  content: '';
+  position: absolute;
+  left: 2px; /* 初始在左侧，配合 checked 时的 left 切换 */
+  top: 50%;
+  width: var(--pi-thumb-d);
+  height: var(--pi-thumb-d);
+  transform: translateY(-50%);
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px var(--shadow-medium);
+  transition: left 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+/* Hover 与焦点态（符合全站交互） */
+.pi_col2-switch-label:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
+}
+.pi_col2-switch-input:focus-visible + .pi_col2-switch-label {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* 选中态：使用主题强调色 */
+.pi_col2-switch-input:checked + .pi_col2-switch-label {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 3px 8px var(--shadow-medium);
+}
+.pi_col2-switch-input:checked + .pi_col2-switch-label::after {
+  left: calc(100% - 2px - var(--pi-thumb-d));
+}

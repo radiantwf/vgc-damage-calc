@@ -1,0 +1,164 @@
+/* PokemonStats 组件样式 */
+.pokemon-stats {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.pokemon-stats__container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+}
+
+.pokemon-stats__rules_container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pokemon-stats__tera_container {
+  width: 48px;
+  height: 48px;
+}
+
+.pokemon-stats__tera {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease,
+    opacity 0.15s ease;
+  cursor: pointer;
+}
+
+.pokemon-stats__tera:hover {
+  transform: scale(1.05);
+}
+
+.pokemon-stats__tera--active {
+  opacity: 1;
+}
+
+.pokemon-stats__tera--inactive {
+  opacity: 0.6;
+  filter: grayscale(100%);
+}
+
+.pokemon-stats__tera-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+.pokemon-stats__dynamax_container {
+  width: 48px;
+  height: 48px;
+}
+
+.pokemon-stats__dynamax {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease,
+    opacity 0.15s ease;
+  cursor: pointer;
+}
+
+.pokemon-stats__dynamax:hover {
+  transform: scale(1.05);
+}
+
+.pokemon-stats__dynamax--active {
+  opacity: 1;
+}
+
+.pokemon-stats__dynamax--inactive {
+  opacity: 0.6;
+  filter: grayscale(100%);
+}
+
+.pokemon-stats__dynamax-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+.pokemon-stats__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.pokemon-stats--defender .pokemon-stats__info {
+  align-items: flex-end;
+}
+
+.pokemon-stats__ability {
+  font-size: 11px;
+  color: var(--text-color);
+  height: 12px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.pokemon-stats__evs {
+  font-size: 9.5px;
+  color: var(--text-color-secondary);
+  height: 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.pokemon-stats__evs-label {
+  white-space: pre;
+  font-size: 8px;
+  line-height: 8px;
+  color: var(--text-color-muted);
+  padding-top: 2px;
+}
+
+.pokemon-stats__evs-values {
+  color: var(--text-color-secondary);
+  line-height: 9.5px;
+}
+
+.pokemon-stats__values {
+  font-size: 11px;
+  height: 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.pokemon-stats__level {
+  font-size: 8px;
+  line-height: 8px;
+  color: var(--text-color-muted);
+}
+
+.pokemon-stats__stats {
+  font-weight: 500;
+  line-height: 11px;
+}
+
+/* 采用与 MetaBuilds 一致的颜色变化 */
+.ps_meta-color-plus {
+  color: var(--accent-danger);
+}
+
+.ps_meta-color-minus {
+  color: var(--accent-success);
+}

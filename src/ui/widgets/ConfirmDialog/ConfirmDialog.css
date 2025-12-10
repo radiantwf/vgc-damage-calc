@@ -1,0 +1,82 @@
+.cf-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.cf-hide {
+  display: none;
+}
+
+.cf-dialog {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 24px var(--shadow-heavy);
+  border-radius: clamp(8px, 1vw, 12px);
+  width: clamp(280px, 40vw, 520px);
+  max-width: 90vw;
+  padding: clamp(12px, 2.2vw, 20px);
+}
+
+.cf-dialog-message {
+  font-size: clamp(14px, 1.6vw, 16px);
+  line-height: clamp(18px, 2vw, 22px);
+  margin-bottom: clamp(12px, 2vw, 16px);
+}
+
+.cf-dialog-actions {
+  display: flex;
+  gap: clamp(8px, 1.2vw, 12px);
+  justify-content: flex-end;
+}
+
+.cf-btn {
+  padding: clamp(8px, 1.2vw, 10px) clamp(12px, 2vw, 16px);
+  border-radius: clamp(6px, 0.8vw, 8px);
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.cf-btn:hover {
+  background: var(--bg-hover);
+}
+
+.cf-btn-primary {
+  background: var(--button-primary-bg);
+  color: #fff;
+  border-color: var(--button-primary-bg);
+}
+
+.cf-btn-primary:hover {
+  background: var(--button-primary-hover);
+  border-color: var(--button-primary-hover);
+}
+
+.cf-btn-danger {
+  background: var(--accent-danger);
+  color: #fff;
+  border-color: var(--accent-danger);
+}
+
+.cf-btn-danger:hover {
+  background: var(--accent-danger);
+  filter: brightness(0.95);
+}
+
+.cf-btn-default {
+  background: var(--button-secondary-bg);
+  color: #fff;
+  border-color: var(--button-secondary-bg);
+}
+
+.cf-btn-default:hover {
+  background: var(--button-secondary-hover);
+  border-color: var(--button-secondary-hover);
+}

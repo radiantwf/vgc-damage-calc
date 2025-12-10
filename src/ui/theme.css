@@ -1,0 +1,202 @@
+:root {
+  /* 亮色主题 */
+  --bg-primary: #f5f6f7;
+  --bg-secondary: #eaecef;
+  --bg-tertiary: #d1d5db;
+
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --text-disabled: #6b6b6b;
+
+  --border-color: #d1d5db;
+  --border-hover: #9ca3af;
+  /* 交互态边框颜色（供 ToggleButton 等使用） */
+  --border-active: #b5b1b1;
+
+  --shadow-light: rgba(0, 0, 0, 0.08);
+  --shadow-medium: rgba(0, 0, 0, 0.12);
+  --shadow-heavy: rgba(0, 0, 0, 0.2);
+
+  --accent-primary: #3b82f6;
+  --accent-secondary: #8b5cf6;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-danger: #ef4444;
+
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #3b82f6;
+  --input-focus-shadow: rgba(59, 130, 246, 0.25);
+
+  --dropdown-bg: #ffffff;
+  --dropdown-hover: #f3f4f6;
+  --dropdown-selected: #dbeafe;
+  --selected-item-color: #b9ccda;
+  --dropdown-divider: #e0e0e0;
+
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+
+  --button-primary-bg: #0d6efd;
+  --button-primary-hover: #0b5ed7;
+  --button-secondary-bg: #6c757d;
+  --button-secondary-hover: #5c636a;
+
+  /* 组件通用变量（供 ToggleButton/SegmentedButtons 使用） */
+  --widget-background-color: var(--input-bg);
+  --button-text-color: var(--text-primary);
+  --widget-hover-background-color: var(--dropdown-hover);
+  --widget-selected-background-color: var(--dropdown-selected);
+  --selected-text-color: var(--text-primary);
+  --widget-disabled-bg: var(--bg-tertiary);
+  --widget-disabled-text: var(--text-disabled);
+
+  /* 交互强调色（用于 Hover 高亮等） */
+  --accent-hover: #2563eb;
+
+  /* SearchableDropdown/Settings 等组件使用的通用变量补齐（避免硬编码） */
+  --input-background: var(--input-bg);
+  --text-color: var(--text-primary);
+  --accent-color: var(--accent-primary);
+  --accent-color-alpha: rgba(59, 130, 246, 0.25);
+  --hover-background: rgba(0, 0, 0, 0.04);
+  --dropdown-background: var(--dropdown-bg);
+  /* Settings 组件映射变量（与 src/styles/theme.css 保持一致） */
+  --bg-hover: var(--dropdown-hover);
+  --bg-second-hover: var(--hover-background);
+  --bg-selected: var(--dropdown-selected);
+  --border-light: var(--dropdown-divider);
+  --text-accent: var(--accent-primary);
+
+  /* 伤害显示颜色配置（可按需自定义） */
+  --damage-ko-color: #ff0000;
+  --damage-ko-color-begin: #ff6565;
+  --damage-impossible-color: var(--text-primary);
+}
+
+[data-theme="dark"] {
+  /* 暗色主题 */
+  --bg-primary: #121212;
+  --panel-background-color: #212121;
+  /* Flutter 版本配色映射：下拉背景与控件背景分层 */
+  --bg-secondary: #242424; /* _dartDropdownBackgroundColor */
+  --bg-tertiary: #353535; /* _dartWidgetBackgroundColor */
+
+  --text-primary: #ffffff; /* _dartContentTextColor */
+  --text-secondary: #cacaca; /* _dartTagTextColor */
+  --text-muted: #808080;
+  --text-disabled: #b2b2b2;
+
+  --border-color: #424242; /* _dartDividerColor */
+  --border-hover: #87888c; /* _dartBorderColor */
+  --border-active: #666666; /* 交互态边框颜色 */
+
+  --shadow-light: rgba(0, 0, 0, 0.4);
+  --shadow-medium: rgba(0, 0, 0, 0.5);
+  --shadow-heavy: rgba(0, 0, 0, 0.7);
+
+  /* 交互强调色保持应用既有蓝色系 */
+  --accent-primary: #4dabf7;
+  --accent-secondary: #a78bfa;
+  --accent-success: #34d399;
+  --accent-warning: #fbbf24;
+  --accent-danger: #f87171;
+
+  /* 输入/下拉的基础背景采用 Flutter 控件背景色 */
+  --input-bg: #282828; /* _dartWidgetBackgroundColor */
+  --input-border: #424242; /* 与 divider 统一 */
+  --input-focus-border: #4dabf7;
+  --input-focus-shadow: rgba(77, 171, 247, 0.25);
+
+  --dropdown-bg: #242424; /* _dartDropdownBackgroundColor */
+  --dropdown-hover: #2f2f2f; /* 在原始背景上叠加轻微亮度 */
+  --dropdown-selected: #3e456b; /* _dartWidgetSelectedBackgroundColor */
+  --selected-item-color: #3e456b;
+  --dropdown-divider: #343434;
+
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+
+  --button-primary-bg: #4dabf7;
+  --button-primary-hover: #339af0;
+  --button-secondary-bg: #6c757d;
+  --button-secondary-hover: #5c636a;
+
+  /* 组件通用变量（供 ToggleButton/SegmentedButtons 使用） */
+  --widget-background-color: var(--input-bg);
+  --button-text-color: var(--text-primary);
+  --widget-hover-background-color: var(--dropdown-hover);
+  --widget-selected-background-color: var(--dropdown-selected);
+  --selected-text-color: var(--text-primary);
+  --widget-disabled-bg: #929090; /* _dartButtonDisabledBackgroundColor */
+  --widget-disabled-text: #584545; /* _dartButtonDisabledTextColor */
+
+  /* 交互强调色（用于 Hover 高亮等） */
+  --accent-hover: #93c5fd;
+
+  /* SearchableDropdown/Settings 等组件使用的通用变量补齐（避免硬编码） */
+  --input-background: var(--input-bg);
+  --text-color: var(--text-primary);
+  --accent-color: var(--accent-primary);
+  --accent-color-alpha: rgba(77, 171, 247, 0.25);
+  --hover-background: rgba(255, 255, 255, 0.06);
+  --dropdown-background: var(--dropdown-bg);
+  /* Settings 组件映射变量（与 src/styles/theme.css 保持一致） */
+  --bg-hover: var(--dropdown-hover);
+  --bg-second-hover: var(--hover-background);
+  --bg-selected: var(--dropdown-selected);
+  --border-light: var(--dropdown-divider);
+  --text-accent: var(--accent-primary);
+
+  /* 伤害显示颜色配置（暗色主题默认值，可按需覆盖） */
+  --damage-ko-color: var(--accent-danger);
+  --damage-ko-color-begin: var(--text-primary);
+  --damage-impossible-color: var(--text-primary);
+}
+
+/* 全局样式 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* 选择文本样式 */
+::selection {
+  background-color: var(--accent-primary);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--accent-primary);
+  color: white;
+}

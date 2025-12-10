@@ -1,0 +1,26 @@
+/* ComputeArea 主容器样式 */
+.compute-area {
+  width: 1240px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--panel-background-color);
+  border-radius: 12px;
+  padding: 20px 10px;
+  gap: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.compute-area__pokemon-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.compute-area__damage-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

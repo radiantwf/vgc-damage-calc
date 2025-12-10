@@ -1,0 +1,55 @@
+/* DisplayDamage 组件样式 */
+.display-damage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.display-damage__description {
+  font-size: 12px;
+  color: var(--text-color);
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.display-damage__description--left {
+  text-align: left;
+}
+
+.display-damage__description--right {
+  text-align: right;
+}
+
+.display-damage__amounts {
+  font-size: 9px;
+  color: var(--text-color-secondary);
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+}
+
+.display-damage__amounts--left {
+  text-align: left;
+}
+
+.display-damage__amounts--right {
+  text-align: right;
+}
+
+.display-damage__amounts-arrow,
+.display-damage__amounts-arrow-col {
+  display: inline-block;
+  width: clamp(8px, 2vw, 16px);
+}
+
+.display-damage__amounts-label {
+  margin: 0 4px 0 0;
+}
+
+.display-damage__segments-block {
+  display: inline-block;
+}

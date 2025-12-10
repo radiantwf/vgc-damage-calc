@@ -1,0 +1,66 @@
+.field-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 350px;
+}
+
+.field-side-title {
+  height: 25px;
+  font-size: 22px;
+  color: var(--tag-text-color);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.field-side-row {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  height: auto; /* 允许随内容扩展高度 */
+  min-height: 25px; /* 默认最小高度 */
+  max-height: 50px;
+  width: 100%;
+}
+
+.field-side-secondary-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 350px;
+}
+.field-side-row-secondary {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  height: auto; /* 允许随内容扩展高度 */
+  min-height: 20px; /* 默认最小高度 */
+  max-height: 30px;
+  width: 100%;
+}
+
+.field-side-row .toggle-button {
+  font-size: 13.5px;
+  --toggle-button-max-width: 350px;
+}
+.field-side-row-secondary .toggle-button {
+  font-size: 12px;
+}
+
+.toggle-button.field-side-friendGuard-toggleButton {
+  width: 110px;
+}
+
+.segmented-buttons.field-side-spikes-toggleButton {
+  width: 80px;
+}
+
+.field-side-spikes-label {
+  width: 80px;
+  padding-right: 5px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: end; /* 水平居中（可选） */
+}

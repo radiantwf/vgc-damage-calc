@@ -1,0 +1,98 @@
+.formats-widget {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+/* 横向Row布局 - 参照Flutter版本 */
+.fw-formats-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+/* 下拉框行容器 */
+.fw-dropdown-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 25px;
+  justify-content: center;
+  height: 30px;
+}
+
+/* 下拉框标签 */
+.fw-dropdown-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* 下拉框包装器基础样式 */
+.fw-dropdown-wrapper {
+  height: 25px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* SearchableDropdown 在FormatsWidget中的样式 */
+.fw-dropdown-wrapper .searchable-dropdown {
+  width: 100%;
+  height: 100%;
+}
+
+.fw-dropdown-wrapper .searchable-dropdown input {
+  height: 25px;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.fw-dropdown-wrapper .dropdown-button {
+  height: 25px;
+  width: 25px;
+}
+
+.fw-reg-dropdown {
+  width: 300px;
+}
+
+.fw-month-dropdown {
+  width: 200px;
+}
+
+.fw-rule-dropdown {
+  width: 160px;
+}
+
+.fw-cutline-dropdown {
+  width: 160px;
+}
+
+/* 加载和错误状态 */
+.formats-widget .loading-message {
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+}
+
+.formats-widget .error-message {
+  color: var(--error-color);
+  font-size: 12px;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--error-color);
+  border-radius: 6px;
+}

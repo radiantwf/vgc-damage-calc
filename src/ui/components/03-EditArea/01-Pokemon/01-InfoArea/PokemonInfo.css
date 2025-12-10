@@ -1,0 +1,8 @@
+.pi-pokemon-info-area {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: center;
+  width: 580px;
+  gap: 12px;
+}

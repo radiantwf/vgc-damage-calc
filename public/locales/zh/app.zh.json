@@ -1,0 +1,204 @@
+{
+  "languageChineseName": "简体中文",
+  "languageEnglishName": "English",
+  "languageJapaneseName": "日本語",
+  "reg": "赛制",
+  "month": "月份",
+  "rule": "规则",
+  "cutline": "分数线",
+  "language": "语言",
+  "chinese": "简体中文",
+  "english": "English",
+  "appTitle": "VGC 伤害计算器",
+  "loading": "加载中",
+  "search": "搜索",
+  "error": "错误",
+  "darkMode": "深色模式",
+  "lightMode": "浅色模式",
+  "settings": "设置",
+  "switchLanguage": "语言",
+  "theme": "主题",
+  "reportBug": "报告问题",
+  "githubRepo": "GitHub仓库",
+  "pokemon": {
+    "name": "宝可梦",
+    "selectPokemon": "选择宝可梦",
+    "selectPokemonForme": "选择宝可梦形态",
+    "types": "属性",
+    "ability": "特性",
+    "selectAbility": "选择特性",
+    "item": "道具",
+    "selectItem": "选择道具",
+    "type1": "属性1",
+    "type2": "属性2",
+    "selectType": "选择属性",
+    "level": "等级",
+    "gender": "性别",
+    "male": "♂",
+    "female": "♀",
+    "genderless": "无性别",
+    "status": "状态",
+    "normal": "正常",
+    "burn": "灼伤",
+    "poison": "中毒",
+    "paralysis": "麻痹",
+    "nature": "性格",
+    "selectNature": "选择性格",
+    "shiny": "异色",
+    "dynamax": "极巨化",
+    "import": "导入",
+    "export": "导出",
+    "copyToClipboard": "复制到剪切板",
+    "importFromClipboard": "从剪切板导入",
+    "copySuccess": "已复制到剪切板",
+    "importSuccess": "已从剪切板导入",
+    "olderVersionEntry": "旧版入口",
+    "reset": "重置",
+    "randomize": "随机",
+    "move": "招式",
+    "movePower": "威力",
+    "moveHits": "击中",
+    "selectMove": "选择招式",
+    "noMove": "无招式",
+    "teraType": "太晶属性",
+    "selectTeraType": "选择太晶属性",
+    "rule": {
+      "teraBadge": "太晶化",
+      "dynamaxBadge": "极巨化",
+      "zBadge": "Z招式"
+    },
+    "boostedStat": {
+      "title": "增强属性",
+      "placeholder": "选择增强属性",
+      "inactive": "未激活",
+      "auto": "自动",
+      "atk": "攻击 * 1.3",
+      "def": "防御 * 1.3",
+      "spa": "特攻 * 1.3",
+      "spd": "特防 * 1.3",
+      "spe": "速度 * 1.5"
+    }
+  },
+  "stats": {
+    "stat": "数值",
+    "base": "种族",
+    "ivs": "个体",
+    "evs": "努力",
+    "hp": "生命",
+    "atk": "攻击",
+    "def": "防御",
+    "spa": "特攻",
+    "spd": "特防",
+    "spe": "速度",
+    "evsTotal": "努力值总计",
+    "evsRemaining": "剩余"
+  },
+  "metas": {
+    "title": "热门构筑",
+    "placeholder": "选择热门构筑",
+    "evs": " EVs: ",
+    "lv50": "Lv50: ",
+    "real": "实际:"
+  },
+  "field": {
+    "side": {
+      "titleAttacker": "攻击方",
+      "titleDefender": "防御方",
+      "status": {
+        "burned": "烧伤",
+        "posioned": "中毒",
+        "badlyPosioned": "剧毒",
+        "frozen": "冰冻",
+        "asleep": "睡眠",
+        "paralyzed": "麻痹"
+      },
+      "gmax": {
+        "steelsurge": "钢铁阵法 (G-Max)",
+        "vineLash": "灰飞鞭灭 (G-Max)",
+        "wildfire": "深渊灭焰 (G-Max)",
+        "cannonade": "水炮轰灭 (G-Max)",
+        "volcalith": "炎石喷发 (G-Max)"
+      },
+      "effect": {
+        "reflect": "反射壁",
+        "lightScreen": "光墙",
+        "auroraVeil": "极光幕",
+        "helpingHand": "帮助",
+        "steelySpirit": "钢之意志",
+        "battery": "蓄电池",
+        "powerSpot": "能量点",
+        "criticalHit": "击中要害",
+        "friendGuard": "友情防守",
+        "stealthRock": "隐形岩",
+        "spikes": "撒菱",
+        "protect": "保护",
+        "leechSeed": "寄生种子",
+        "saltCure": "盐淹",
+        "foresight": " 被识破",
+        "tailwind": "顺风",
+        "flowerGift": "花之礼",
+        "powerTrick": "力量戏法",
+        "switchingOut": "切换"
+      }
+    },
+    "center": {
+      "gameType": {
+        "singles": "单打",
+        "doubles": "双打"
+      },
+      "weather": {
+        "sun": "晴天",
+        "rain": "雨天",
+        "sand": "沙暴",
+        "snow": "雪天",
+        "harshSunshine": "大日照",
+        "heavyRain": "大雨",
+        "strongWinds": "乱流"
+      },
+      "terrain": {
+        "electric": "电气场地",
+        "grassy": "青草场地",
+        "psychic": "精神场地",
+        "misty": "薄雾场地"
+      },
+      "aura": {
+        "auraBreak": "气场破坏",
+        "fairyAura": "妖精气场",
+        "darkAura": "暗黑气场"
+      },
+      "ruin": {
+        "sword": "灾祸之剑 (-防御)",
+        "beads": "灾祸之玉 (-特防)",
+        "tablets": "灾祸之简 (-攻击)",
+        "vessel": "灾祸之鼎 (-特攻)"
+      },
+      "gravity": "重力",
+      "magicRoom": "魔法空间",
+      "wonderRoom": "奇妙空间"
+    }
+  },
+  "errors": {
+    "pokemonUsageFetchFailed": "获取宝可梦使用率数据失败",
+    "movesetsFetchFailed": "获取宝可梦配招数据失败"
+  },
+  "noResults": "无匹配结果"
+  ,
+  "team": {
+    "addPokemon": "添加宝可梦",
+    "removePokemon": "删除宝可梦",
+    "confirmDelete": "确认删除该宝可梦？",
+    "confirmDelete.ok": "删除",
+    "confirmDelete.cancel": "取消",
+    "confirmSavePaste": "当前宝可梦构筑已修改，是否保存？",
+    "confirmSavePaste.message": "当前宝可梦构筑已修改，是否保存？",
+    "confirmSavePaste.save": "保存",
+    "confirmSavePaste.discard": "放弃",
+    "confirmSavePaste.editAgain": "继续编辑",
+    "copyTeam": "复制队伍到剪切板",
+    "importTeam": "从剪切板导入队伍",
+    "copyTeamSuccess": "队伍已复制到剪贴板",
+    "importTeamSuccess": "已从剪贴板导入队伍",
+    "all": "全部",
+    "new": "新"
+  }
+}
