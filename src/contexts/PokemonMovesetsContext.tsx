@@ -107,21 +107,23 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
   const { currentReg, currentRule, currentMonthTag, currentCutline } =
     useFormats();
   const [rootFormeSpecies, setRootFormeSpecies] = useState<
-    SpeciesData | undefined
+    { value: SpeciesData } | undefined
   >(undefined);
-  const [species, setSpecies] = useState<SpeciesData | undefined>(undefined);
+  const [species, setSpecies] = useState<{ value: SpeciesData } | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const handler = (ev: Event) => {
       const e = ev as CustomEvent<{
         side: string;
-        species?: SpeciesData;
-        root?: SpeciesData;
+        species?: { value: SpeciesData };
+        root?: { value: SpeciesData };
       }>;
       const detail = e.detail as unknown as {
         side: string;
-        species?: SpeciesData;
-        root?: SpeciesData;
+        species?: { value: SpeciesData };
+        root?: { value: SpeciesData };
       };
       if (!detail) return;
       const isAtk =
@@ -166,7 +168,7 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
     }
     // 生成参数标识符，用于检测是否为重复调用
     const paramsKey = `${currentReg}-${currentRule}-${currentMonthTag}-${currentCutline}-${
-      rootFormeSpecies!.name
+      rootFormeSpecies!.value.name
     }`;
 
     // 如果参数相同，跳过调用
@@ -197,14 +199,14 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
 
       if (
         !pokemonUsageList.find(
-          (usage) => usage.pokemon === rootFormeSpecies.name
+          (usage) => usage.pokemon === rootFormeSpecies.value.name
         )
       ) {
         setEmptyMovesets();
         return;
       }
 
-      const pokemon = rootFormeSpecies.name;
+      const pokemon = rootFormeSpecies.value.name;
 
       try {
         const statsService = new ShowdownStatsService();
@@ -326,7 +328,7 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
   const chaosSpread2 = useMemo(() => {
     const spreads: Map<StatID, Map<number, number>> = new Map();
     if (!chaosSpread2Data || !species) return spreads;
-    const baseStats = species.baseStats;
+    const baseStats = species.value.baseStats;
     chaosSpread2Data.forEach((row) => {
       if (row.stat === null || row.stat === undefined) {
         return;

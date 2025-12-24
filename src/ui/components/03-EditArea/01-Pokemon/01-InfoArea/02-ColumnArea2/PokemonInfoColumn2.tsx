@@ -54,11 +54,11 @@ const PokemonInfoColumn2: React.FC<EditAreaProps> = ({ isAttacker }) => {
         let isAvailable = false;
         if (pokemonSpecies) {
           isAvailable =
-            abilityTag === normalizeString(pokemonSpecies!.abilities[0]) ||
+            abilityTag === normalizeString(pokemonSpecies.value.abilities[0]) ||
             abilityTag ===
-              normalizeString(pokemonSpecies!.abilities[1] || "") ||
+              normalizeString(pokemonSpecies.value.abilities[1] || "") ||
             abilityTag ===
-              normalizeString(pokemonSpecies!.abilities["H"] || "");
+              normalizeString(pokemonSpecies.value.abilities["H"] || "");
         }
 
         return (
@@ -84,27 +84,27 @@ const PokemonInfoColumn2: React.FC<EditAreaProps> = ({ isAttacker }) => {
   // 获取当前宝可梦的属性信息
   const pokemonTypes = useMemo(() => {
     if (!pokemonSpecies) return [];
-    return pokemonSpecies.types || [];
+    return pokemonSpecies.value.types || [];
   }, [pokemonSpecies, translateType]);
 
   // 获取特性列表并根据使用率排序
   const abilityDropdownItems: DropdownItem[] = useMemo(() => {
-    const abilities = ShowdownDataService.AbilitiesList(pokemonSpecies);
+    const abilities = ShowdownDataService.AbilitiesList(pokemonSpecies?.value);
     if (!abilities) {
       return [];
     }
 
     const abilitiesMap: Record<string, number> = {};
     if (pokemonSpecies) {
-      abilitiesMap[normalizeString(pokemonSpecies!.abilities[0])] = 9;
-      if (pokemonSpecies!.abilities[1]) {
-        abilitiesMap[normalizeString(pokemonSpecies!.abilities[1])] = 8;
+      abilitiesMap[normalizeString(pokemonSpecies.value.abilities[0])] = 9;
+      if (pokemonSpecies.value.abilities[1]) {
+        abilitiesMap[normalizeString(pokemonSpecies.value.abilities[1])] = 8;
       }
-      if (pokemonSpecies!.abilities["H"]) {
-        abilitiesMap[normalizeString(pokemonSpecies!.abilities["H"])] = 2;
+      if (pokemonSpecies.value.abilities["H"]) {
+        abilitiesMap[normalizeString(pokemonSpecies.value.abilities["H"])] = 2;
       }
-      if (pokemonSpecies!.abilities["S"]) {
-        abilitiesMap[normalizeString(pokemonSpecies!.abilities["S"])] = 1;
+      if (pokemonSpecies.value.abilities["S"]) {
+        abilitiesMap[normalizeString(pokemonSpecies.value.abilities["S"])] = 1;
       }
     }
 
@@ -147,8 +147,8 @@ const PokemonInfoColumn2: React.FC<EditAreaProps> = ({ isAttacker }) => {
             : ""
         }`;
         // 检查特性是否在宝可梦的可用特性列表中
-        const isAvailable = pokemonSpecies?.abilities
-          ? Object.values(pokemonSpecies.abilities).some(
+        const isAvailable = pokemonSpecies?.value.abilities
+          ? Object.values(pokemonSpecies.value.abilities).some(
               (speciesAbility) =>
                 typeof speciesAbility === "string" &&
                 typeof abilityName === "string" &&
@@ -174,8 +174,8 @@ const PokemonInfoColumn2: React.FC<EditAreaProps> = ({ isAttacker }) => {
           : ""
       }`;
       // 检查特性是否在宝可梦的可用特性列表中
-      const isAvailable = pokemonSpecies?.abilities
-        ? Object.values(pokemonSpecies.abilities).some(
+      const isAvailable = pokemonSpecies?.value.abilities
+        ? Object.values(pokemonSpecies.value.abilities).some(
             (speciesAbility) =>
               typeof speciesAbility === "string" &&
               typeof abilityName === "string" &&
@@ -247,15 +247,15 @@ const PokemonInfoColumn2: React.FC<EditAreaProps> = ({ isAttacker }) => {
   useEffect(() => {
     const abilitiesMap: Record<string, number> = {};
     if (pokemonSpecies) {
-      abilitiesMap[normalizeString(pokemonSpecies!.abilities[0])] = 9;
-      if (pokemonSpecies!.abilities[1]) {
-        abilitiesMap[normalizeString(pokemonSpecies!.abilities[1])] = 8;
+      abilitiesMap[normalizeString(pokemonSpecies.value.abilities[0])] = 9;
+      if (pokemonSpecies.value.abilities[1]) {
+        abilitiesMap[normalizeString(pokemonSpecies.value.abilities[1])] = 8;
       }
-      if (pokemonSpecies!.abilities["H"]) {
-        abilitiesMap[normalizeString(pokemonSpecies!.abilities["H"])] = 2;
+      if (pokemonSpecies.value.abilities["H"]) {
+        abilitiesMap[normalizeString(pokemonSpecies.value.abilities["H"])] = 2;
       }
-      if (pokemonSpecies!.abilities["S"]) {
-        abilitiesMap[normalizeString(pokemonSpecies!.abilities["S"])] = 1;
+      if (pokemonSpecies.value.abilities["S"]) {
+        abilitiesMap[normalizeString(pokemonSpecies.value.abilities["S"])] = 1;
       }
     }
     if (!abilitiesMap[normalizeString(ability?.name || "")]) {

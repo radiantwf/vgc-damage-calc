@@ -177,15 +177,15 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
     const speciesData = Object.fromEntries(
       Object.entries(ShowdownDataService.DisplaySpeciesList).filter(
         ([_, value]) =>
-          (rootFormeSpecies!.formeOrder || []).includes(value.name) &&
+          (rootFormeSpecies.value.formeOrder || []).includes(value.name) &&
           ShowdownDataService.getRootSpecies(
             ShowdownDataService.getPokemonBaseInfo(value.name)
-          ) === rootFormeSpecies
+          ) === rootFormeSpecies.value
       )
     );
 
     if (Object.entries(speciesData).length === 0) {
-      speciesData[rootFormeSpecies.name] = rootFormeSpecies;
+      speciesData[rootFormeSpecies.value.name] = rootFormeSpecies.value;
     }
 
     const temp = Object.entries(speciesData).map(([key, _]) => key);
@@ -207,8 +207,8 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
     });
 
     const sortedPokemonList = [...Object.keys(speciesData)].sort((a, b) => {
-      const indexA = (rootFormeSpecies!.formeOrder || []).indexOf(a);
-      const indexB = (rootFormeSpecies!.formeOrder || []).indexOf(b);
+      const indexA = (rootFormeSpecies.value.formeOrder || []).indexOf(a);
+      const indexB = (rootFormeSpecies.value.formeOrder || []).indexOf(b);
       return indexA - indexB; // 按索引升序排列（索引越小越靠前）
     });
 
@@ -263,9 +263,9 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
       <div className="pi_col1-avatar-area">
         <img
           className="pi_col1-avatar"
-          alt={translatePokemon(pokemonSpecies?.name || "")}
+          alt={translatePokemon(pokemonSpecies?.value.name || "")}
           src={ShowdownDataService.getPokemonImgUrl(
-            pokemonSpecies?.name,
+            pokemonSpecies?.value.name,
             false
           )}
           onError={(e) => {
@@ -278,7 +278,7 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
         <div className="pi_col1-pokemon-name-label">{t("pokemon.name")}</div>
         <SearchableDropdown
           items={pokemonDropdownItems}
-          value={ShowdownDataService.getRootSpecies(pokemonSpecies)}
+          value={ShowdownDataService.getRootSpecies(pokemonSpecies?.value)}
           onChange={(value) => {
             setPokemonName(value);
           }}
@@ -296,7 +296,7 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
         {pokemonFormeDropdownItems && pokemonFormeDropdownItems.length > 0 && (
           <SearchableDropdown
             items={pokemonFormeDropdownItems}
-            value={pokemonSpecies}
+            value={pokemonSpecies?.value}
             onChange={(value) => {
               setPokemonName(value);
             }}

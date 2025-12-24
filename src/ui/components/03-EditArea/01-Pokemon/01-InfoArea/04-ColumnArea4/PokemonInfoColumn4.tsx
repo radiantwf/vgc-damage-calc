@@ -218,7 +218,7 @@ const PokemonInfoColumn4: React.FC<EditAreaProps> = ({ isAttacker }) => {
     if (!moves) {
       return [];
     }
-    const learnsets = ShowdownDataService.getPokemonLearnsets(pokemonSpecies);
+    const learnsets = ShowdownDataService.getPokemonLearnsets(pokemonSpecies?.value);
     const sortedMoves =
       (learnsets
         ? Object.fromEntries(

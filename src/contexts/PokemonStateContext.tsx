@@ -47,10 +47,10 @@ interface PokemonStateContextType {
   calcPokemon: Pokemon | undefined;
 
   // 宝可梦基本信息
-  pokemonSpecies: SpeciesData | undefined;
+  pokemonSpecies: { value: SpeciesData } | undefined;
   setPokemonName: (species: unknown) => void;
 
-  rootFormeSpecies: SpeciesData | undefined;
+  rootFormeSpecies: { value: SpeciesData } | undefined;
 
   // 等级
   level: number;
@@ -199,14 +199,14 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   );
 
   // 宝可梦基本信息
-  const [pokemonSpecies, setPokemonSpecies] = useState<SpeciesData | undefined>(
-    undefined
-  );
+  const [pokemonSpecies, setPokemonSpecies] = useState<
+    { value: SpeciesData } | undefined
+  >(undefined);
 
   // setPokemonName函数：将unknown转换为SpeciesData
   const setPokemonName = useCallback((value: unknown) => {
     const species = value as SpeciesData | undefined;
-    setPokemonSpecies(species);
+    setPokemonSpecies(species ? { value: species } : undefined);
     if (!species) {
       return;
     }
@@ -214,8 +214,8 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
 
   const rootFormeSpecies = useMemo(() => {
     if (!pokemonSpecies) return undefined;
-    const root = ShowdownDataService.getRootSpecies(pokemonSpecies);
-    return root;
+    const root = ShowdownDataService.getRootSpecies(pokemonSpecies.value);
+    return root ? { value: root } : undefined;
   }, [pokemonSpecies]);
 
   useEffect(() => {
@@ -461,7 +461,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
       setMaxHP(0);
       return;
     }
-    if (pokemonSpecies.name === "Shedinja") {
+    if (pokemonSpecies.value.name === "Shedinja") {
       setMaxHP(1);
       return;
     }
@@ -470,7 +470,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         base:
           modifiedBaseStats.hp >= 0
             ? modifiedBaseStats.hp
-            : pokemonSpecies.baseStats.hp || 0,
+            : pokemonSpecies.value.baseStats.hp || 0,
         iv: ivs.hp,
         ev: evs.hp,
         level: level,
@@ -511,7 +511,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         if (modifiedBaseStats[stat] >= 0) {
           baseStats[stat] = modifiedBaseStats[stat];
         } else {
-          baseStats[stat] = pokemonSpecies.baseStats[stat] || 0;
+          baseStats[stat] = pokemonSpecies.value.baseStats[stat] || 0;
         }
       }
       const newBoosts = {
@@ -536,7 +536,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
           newBoosts[stat] = 6;
         }
       }
-      const newCalcPokemon = new Pokemon(gen, pokemonSpecies.name, {
+      const newCalcPokemon = new Pokemon(gen, pokemonSpecies.value.name, {
         level: level,
         ability: ability?.name,
         item: item && item.name !== "(No Item)" ? item?.name : undefined,
@@ -619,20 +619,20 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
             ? "pokemon-attacker"
             : "pokemon-defender";
         const shouldWaitClear =
-          (expectedRoot?.name || "") !== (rootFormeSpecies?.name || "");
+          (expectedRoot?.name || "") !== (rootFormeSpecies?.value?.name || "");
         let waitClearPromise: Promise<void> | undefined;
         if (shouldWaitClear) {
           waitClearPromise = new Promise<void>((resolve) => {
             const handler = (ev: Event) => {
-              const e = ev as CustomEvent<{ side: string; root?: SpeciesData }>;
+              const e = ev as CustomEvent<{ side: string; root?: { value: SpeciesData } }>;
               const detail = e.detail as unknown as {
                 side: string;
-                root?: SpeciesData;
+                root?: { value: SpeciesData };
               };
               if (
                 detail &&
                 detail.side === sideTag &&
-                detail.root?.name === expectedRoot?.name
+                detail.root?.value?.name === expectedRoot?.name
               ) {
                 window.removeEventListener(
                   "pokemonRootCleared",

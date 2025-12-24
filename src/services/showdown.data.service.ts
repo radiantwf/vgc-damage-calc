@@ -129,6 +129,10 @@ export class ShowdownDataService {
         species = ShowdownDataService.getPokemonBaseInfo(
           rootSpecies.name.slice(0, -5)
         );
+      } else if (rootSpecies.name.endsWith("-Mega-X") || rootSpecies.name.endsWith("-Mega-Y") || rootSpecies.name.endsWith("-Mega-Z")) {
+        species = ShowdownDataService.getPokemonBaseInfo(
+          rootSpecies.name.slice(0, -7)
+        );
       } else {
         species = ShowdownDataService.getPokemonBaseInfo(
           rootSpecies.baseSpecies
