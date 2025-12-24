@@ -124,9 +124,16 @@ export class ShowdownDataService {
       if (!rootSpecies.baseSpecies) {
         break;
       }
-      const species = ShowdownDataService.getPokemonBaseInfo(
-        rootSpecies.baseSpecies
-      );
+      let species;
+      if (rootSpecies.name.endsWith("-Gmax") || rootSpecies.name.endsWith("-Mega")) {
+        species = ShowdownDataService.getPokemonBaseInfo(
+          rootSpecies.name.slice(0, -5)
+        );
+      } else {
+        species = ShowdownDataService.getPokemonBaseInfo(
+          rootSpecies.baseSpecies
+        );
+      }
       if (!species) {
         break;
       }
@@ -285,6 +292,7 @@ export class ShowdownDataService {
    * @returns 技能名称数组
    */
   static getPokemonLearnsets(species?: SpeciesData): MoveDataTable | undefined {
+    species = ShowdownDataService.getRootSpecies(species);
     if (species) {
       const gen = species!.gen || AppConstants.Gen;
       const key = species!.name.toLowerCase().replace(/[^a-z0-9]/g, "");

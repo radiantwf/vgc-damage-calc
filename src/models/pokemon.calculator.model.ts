@@ -379,6 +379,9 @@ export class Result extends CalculatorResult {
 
   public getFullDescText(): string {
     const lang = i18n.language as unknown as Language;
+    if(lang === 'en') {
+      return this.fullDesc();
+    }
     const rawDesc = this.rawDesc;
     const damageStrings1: string[] = [];
     if (rawDesc.attackBoost != null && rawDesc.attackBoost !== 0) {
