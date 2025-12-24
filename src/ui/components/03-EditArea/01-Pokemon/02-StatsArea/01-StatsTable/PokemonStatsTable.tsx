@@ -81,10 +81,10 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
 
   // 获取基础属性值
   const baseStats = useMemo(() => {
-    if (!pokemonSpecies?.baseStats) {
+    if (!pokemonSpecies?.value?.baseStats) {
       return { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
     }
-    return pokemonSpecies.baseStats;
+    return pokemonSpecies.value.baseStats;
   }, [pokemonSpecies]);
 
   // 计算努力值剩余点数

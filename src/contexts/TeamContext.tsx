@@ -103,7 +103,9 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
           const next = [...prev];
           next[selectedIndex] = {
             pasteText: currentText,
-            imgURL: ShowdownDataService.getPokemonImgUrl(pokemonSpecies?.name),
+            imgURL: ShowdownDataService.getPokemonImgUrl(
+              pokemonSpecies?.value?.name
+            ),
           };
           return next;
         });
@@ -234,7 +236,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
     const snapshot = (() => {
       if (decision === "save" && currentText) {
         const img = ShowdownDataService.getPokemonImgUrl(
-          pokemonSpecies?.name
+          pokemonSpecies?.value?.name
         );
         const next = [...slots];
         next[prevIndex] = { pasteText: currentText, imgURL: img };

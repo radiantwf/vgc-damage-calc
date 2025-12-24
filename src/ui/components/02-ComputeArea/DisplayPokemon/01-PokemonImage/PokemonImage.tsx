@@ -20,11 +20,10 @@ export const PokemonImage: React.FC<PokemonImageProps> = ({
   tabIndexStart,
 }) => {
   const { pokemonSpecies, item } = usePokemonState(isAttacker);
-  const { translatePokemon } = usePokemonTranslation();
 
   const pokemonImageUrl = useMemo(() => {
     return ShowdownDataService.getPokemonImgUrl(
-      pokemonSpecies?.name || undefined
+      pokemonSpecies?.value?.name || undefined
     );
   }, [pokemonSpecies]);
 
@@ -33,7 +32,7 @@ export const PokemonImage: React.FC<PokemonImageProps> = ({
   }, [item]);
 
   const types = useMemo(() => {
-    return pokemonSpecies?.types?.map((t) => t.toLowerCase()) || [];
+    return pokemonSpecies?.value?.types?.map((t) => t.toLowerCase()) || [];
   }, [pokemonSpecies]);
 
   return (

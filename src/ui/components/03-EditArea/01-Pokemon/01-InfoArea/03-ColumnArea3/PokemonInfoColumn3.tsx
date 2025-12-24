@@ -169,15 +169,15 @@ const PokemonInfoColumn3: React.FC<EditAreaProps> = ({ isAttacker }) => {
       return [];
     }
 
-    const teraTypes = ShowdownDataService.TeraTypes(pokemonSpecies);
+    const teraTypes = ShowdownDataService.TeraTypes(pokemonSpecies.value);
     if (!teraTypes) {
       return [];
     }
 
-    if (pokemonSpecies.requiredTeraType) {
+    if (pokemonSpecies.value.requiredTeraType) {
       const requiredTeraType = Object.entries(teraTypes).find(
         ([typeKey, _]) =>
-          typeKey === normalizeString(pokemonSpecies.requiredTeraType!)
+          typeKey === normalizeString(pokemonSpecies.value.requiredTeraType!)
       );
       if (requiredTeraType) {
         const key = requiredTeraType[0];
@@ -289,10 +289,10 @@ const PokemonInfoColumn3: React.FC<EditAreaProps> = ({ isAttacker }) => {
       return [];
     }
 
-    if (pokemonSpecies.requiredItem) {
+    if (pokemonSpecies.value.requiredItem) {
       const requiredItem = Object.entries(items).find(
         ([itemKey, _]) =>
-          itemKey === normalizeString(pokemonSpecies.requiredItem!)
+          itemKey === normalizeString(pokemonSpecies.value.requiredItem!)
       );
       if (requiredItem) {
         const key = (requiredItem[1] as ItemData).name || requiredItem[0];

@@ -122,7 +122,7 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
           );
         }
         const statOrder = ["hp", "atk", "def", "spa", "spd", "spe"] as const;
-        const baseStats = pokemonSpecies?.baseStats ?? {
+        const baseStats = pokemonSpecies?.value?.baseStats ?? {
           hp: 0,
           atk: 0,
           def: 0,
