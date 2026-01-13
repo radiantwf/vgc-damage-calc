@@ -598,7 +598,7 @@
     "glaceon": "冰伊布",
     "gliscor": "天蝎王",
     "mamoswine": "象牙猪",
-    "porygon-z": "多边兽Ｚ",
+    "porygon-z": "多边兽Z",
     "gallade": "艾路雷朵",
     "gallade-mega": "超级艾路雷朵",
     "probopass": "大朝北鼻",
@@ -982,7 +982,7 @@
     "komala": "树枕尾熊",
     "turtonator": "爆焰龟兽",
     "togedemaru": "托戈德玛尔",
-    "mimikyu": "谜拟Ｑ",
+    "mimikyu": "谜拟Q",
     "bruxish": "磨牙彩皮鱼",
     "drampa": "老翁龙",
     "drampa-mega": "超级老翁龙",
@@ -1299,6 +1299,9 @@
     "magearna-mega": "超级玛机雅娜",
     "magearna-original-mega": "超级玛机雅娜-500年前的颜色",
     "glimmora-mega": "超级晶光花",
+    "zeraora-mega": "超级捷拉奥拉",
     "tatsugiri-mega": "超级米立龙",
-    "zeraora-mega": "超级捷拉奥拉"
+    "tatsugiri-curly-mega": "超级米立龙-上弓姿势",
+    "tatsugiri-droopy-mega": "超级米立龙-下垂姿势",
+    "tatsugiri-stretchy-mega": "超级米立龙-平挺姿势"
 }

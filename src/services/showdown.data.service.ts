@@ -143,7 +143,7 @@ export class ShowdownDataService {
         speciesData[meosticFMega.name] = meosticFMega;
       }
     }
-    
+
     const temp = Object.entries(speciesData).map(([key, _]) => key);
     temp.forEach((key) => {
       const gmaxSpecies = ShowdownDataService.getPokemonBaseInfo(key + "-Gmax");
@@ -179,6 +179,12 @@ export class ShowdownDataService {
       ) {
         species = ShowdownDataService.getPokemonBaseInfo(
           rootSpecies.name.slice(0, -7)
+        );
+      } else if (
+        rootSpecies.name.endsWith("-Curly-Mega")
+      ) {
+        species = ShowdownDataService.getPokemonBaseInfo(
+          rootSpecies.name.slice(0, -11)
         );
       } else if (
         rootSpecies.name.endsWith("-Gmax") ||
