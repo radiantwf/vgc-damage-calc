@@ -31,7 +31,7 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
   const { language } = useLanguage();
 
   // 使用新的Pokemon状态管理
-  const { rootFormeSpecies, pokemonSpecies, setPokemonName } =
+  const { rootFormeSpecies, pokemonSpecies, setPokemonName, setPokemonForme } =
     usePokemonState(isAttacker);
 
   // 自定义宝可梦下拉项组件
@@ -174,29 +174,8 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
       return [];
     }
 
-    const speciesData = Object.fromEntries(
-      Object.entries(ShowdownDataService.DisplaySpeciesList).filter(
-        ([_, value]) =>
-          (rootFormeSpecies.value.formeOrder || []).includes(value.name) &&
-          ShowdownDataService.getRootSpecies(
-            ShowdownDataService.getPokemonBaseInfo(value.name)
-          ) === rootFormeSpecies.value
-      )
-    );
-
-    if (Object.entries(speciesData).length === 0) {
-      speciesData[rootFormeSpecies.value.name] = rootFormeSpecies.value;
-    }
-
-    const temp = Object.entries(speciesData).map(([key, _]) => key);
-    temp.forEach((key) => {
-      const gmaxSpecies = ShowdownDataService.getPokemonBaseInfo(key + "-Gmax");
-      if (gmaxSpecies) {
-        speciesData[gmaxSpecies.name] = gmaxSpecies;
-      }
-    });
-
-    if (Object.entries(speciesData).length === 1) {
+    const speciesData = ShowdownDataService.getSubSpeciesDataTable(rootFormeSpecies.value);
+    if (!speciesData) {
       return [];
     }
 
@@ -298,7 +277,7 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
             items={pokemonFormeDropdownItems}
             value={pokemonSpecies?.value}
             onChange={(value) => {
-              setPokemonName(value);
+              setPokemonForme(value);
             }}
             placeholder={t("pokemon.selectPokemonForme")}
             className="pi_col1-pokemon-forme"

@@ -49,6 +49,7 @@ interface PokemonStateContextType {
   // 宝可梦基本信息
   pokemonSpecies: { value: SpeciesData } | undefined;
   setPokemonName: (species: unknown) => void;
+  setPokemonForme: (forme: unknown) => void;
 
   rootFormeSpecies: { value: SpeciesData } | undefined;
 
@@ -203,20 +204,40 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     { value: SpeciesData } | undefined
   >(undefined);
 
+  // 根表宝可梦基本信息
+  const [rootFormeSpecies, setRootFormeSpecies] = useState<
+    { value: SpeciesData } | undefined
+  >(undefined);
+
   // setPokemonName函数：将unknown转换为SpeciesData
   const setPokemonName = useCallback((value: unknown) => {
     const species = value as SpeciesData | undefined;
     setPokemonSpecies(species ? { value: species } : undefined);
     if (!species) {
+      setRootFormeSpecies(undefined);
       return;
     }
+    const root = ShowdownDataService.getRootSpecies(species);
+    setRootFormeSpecies(root ? { value: root } : undefined);
   }, []);
 
-  const rootFormeSpecies = useMemo(() => {
-    if (!pokemonSpecies) return undefined;
-    const root = ShowdownDataService.getRootSpecies(pokemonSpecies.value);
-    return root ? { value: root } : undefined;
-  }, [pokemonSpecies]);
+  // setPokemonForme函数：将unknown转换为SpeciesData
+  const setPokemonForme = useCallback((value: unknown) => {
+    const forme = value as SpeciesData | undefined;
+    setPokemonSpecies(forme ? { value: forme } : undefined);
+    if (!forme) {
+      setRootFormeSpecies(undefined);
+      return;
+    }
+    const root = ShowdownDataService.getRootSpecies(forme);
+    if (!root) {
+      setRootFormeSpecies(undefined);
+      return;
+    }
+    if (root.name !== rootFormeSpecies?.value.name) {
+      setRootFormeSpecies({ value: root });
+    }
+  }, [rootFormeSpecies]);
 
   useEffect(() => {
     clearPokemonState();
@@ -826,6 +847,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     pokemonSpecies,
     rootFormeSpecies,
     setPokemonName,
+    setPokemonForme,
     ability,
     setAbility,
     item,

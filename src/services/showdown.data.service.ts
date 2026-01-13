@@ -112,6 +112,52 @@ export class ShowdownDataService {
     return pokemonInfo;
   }
 
+  static getSubSpeciesDataTable(
+    species?: SpeciesData
+  ): SpeciesDataTable | undefined {
+    if (!species) {
+      return undefined;
+    }
+    const root = ShowdownDataService.getRootSpecies(species);
+    if (!root) {
+      return undefined;
+    }
+
+    const speciesData = Object.fromEntries(
+      Object.entries(ShowdownDataService.DisplaySpeciesList).filter(
+        ([_, value]) => {
+          const rootSpecies = ShowdownDataService.getRootSpecies(value);
+          return (
+            (root.formeOrder || []).includes(value.name) && rootSpecies === root
+          );
+        }
+      )
+    );
+
+    if (Object.entries(speciesData).length === 0) {
+      speciesData[root.name] = root;
+    }
+    if (root.name === "Meowstic-F") {
+      const meosticFMega = ShowdownDataService.getPokemonBaseInfo("Meowstic-F-Mega");
+      if (meosticFMega) {
+        speciesData[meosticFMega.name] = meosticFMega;
+      }
+    }
+    
+    const temp = Object.entries(speciesData).map(([key, _]) => key);
+    temp.forEach((key) => {
+      const gmaxSpecies = ShowdownDataService.getPokemonBaseInfo(key + "-Gmax");
+      if (gmaxSpecies) {
+        speciesData[gmaxSpecies.name] = gmaxSpecies;
+      }
+    });
+
+    if (Object.entries(speciesData).length === 1) {
+      return undefined;
+    }
+    return speciesData;
+  }
+
   static getRootSpecies(species?: SpeciesData): SpeciesData | undefined {
     if (!species) {
       return species;
@@ -125,13 +171,21 @@ export class ShowdownDataService {
         break;
       }
       let species;
-      if (rootSpecies.name.endsWith("-Gmax") || rootSpecies.name.endsWith("-Mega")) {
-        species = ShowdownDataService.getPokemonBaseInfo(
-          rootSpecies.name.slice(0, -5)
-        );
-      } else if (rootSpecies.name.endsWith("-Mega-X") || rootSpecies.name.endsWith("-Mega-Y") || rootSpecies.name.endsWith("-Mega-Z")) {
+      if (
+        rootSpecies.name.endsWith("-M-Mega") ||
+        rootSpecies.name.endsWith("-Mega-X") ||
+        rootSpecies.name.endsWith("-Mega-Y") ||
+        rootSpecies.name.endsWith("-Mega-Z")
+      ) {
         species = ShowdownDataService.getPokemonBaseInfo(
           rootSpecies.name.slice(0, -7)
+        );
+      } else if (
+        rootSpecies.name.endsWith("-Gmax") ||
+        rootSpecies.name.endsWith("-Mega")
+      ) {
+        species = ShowdownDataService.getPokemonBaseInfo(
+          rootSpecies.name.slice(0, -5)
         );
       } else {
         species = ShowdownDataService.getPokemonBaseInfo(
@@ -139,6 +193,9 @@ export class ShowdownDataService {
         );
       }
       if (!species) {
+        break;
+      }
+      if (rootSpecies.name === species.name + "-F") {
         break;
       }
       if (
