@@ -22,6 +22,7 @@ import {
 import { Move } from "../vendors/smogon/damage-calc-dist";
 import {
   ItemName,
+  AbilityName,
   TypeName,
   StatusName,
   SpeciesName,
@@ -676,7 +677,13 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         setNatureState(
           ShowdownDataService.getNatureByString(p.nature || "serious")
         );
+        if (!p.ability) {
+          p.ability = ShowdownDataService.NoAbility.name as AbilityName;
+        }
         setAbilityState(ShowdownDataService.getPokemonAbilityInfo(p.ability));
+        if (!p.item) {
+          p.item = ShowdownDataService.NoItem.name as ItemName;
+        }
         setItemState(ShowdownDataService.getPokemonItemInfo(p.item));
         setIsTera(false);
         setTeraType(p.teraType);

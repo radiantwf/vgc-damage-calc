@@ -39,6 +39,9 @@ import { Pokemon, Result } from "../models/pokemon.calculator.model";
 
 // 工具函数
 export class ShowdownDataService {
+  static readonly NoItem: ItemData = { num: 0, name: "(No Item)" };
+  static readonly NoAbility: AbilityData = { num: 0, name: "(No Ability)" };
+
   static getNationalityImgUrl(nationality?: string): string | undefined {
     if (!nationality || nationality === "") {
       return undefined;
@@ -123,7 +126,7 @@ export class ShowdownDataService {
       return undefined;
     }
 
-    const speciesData = Object.fromEntries(
+    let speciesData = Object.fromEntries(
       Object.entries(ShowdownDataService.DisplaySpeciesList).filter(
         ([_, value]) => {
           const rootSpecies = ShowdownDataService.getRootSpecies(value);
@@ -138,11 +141,30 @@ export class ShowdownDataService {
       speciesData[root.name] = root;
     }
     if (root.name === "Meowstic-F") {
-      const meosticFMega = ShowdownDataService.getPokemonBaseInfo("Meowstic-F-Mega");
+      const meosticFMega =
+        ShowdownDataService.getPokemonBaseInfo("Meowstic-F-Mega");
       if (meosticFMega) {
         speciesData[meosticFMega.name] = meosticFMega;
       }
+    } else if (root.name.startsWith("Ogerpon")) {
+      speciesData = {};
+      let base = root.name;
+      if (root.name.endsWith("-Tera")) {
+        base = root.name.slice(0, -5);
+      }
+      if (base === "Ogerpon" || base === "Ogerpon-Teal") {
+        let poke = ShowdownDataService.getPokemonBaseInfo("Ogerpon");
+        if (poke) speciesData[poke.name] = poke;
+        poke = ShowdownDataService.getPokemonBaseInfo("Ogerpon-Teal-Tera");
+        if (poke) speciesData[poke.name] = poke;
+      } else {
+        let poke = ShowdownDataService.getPokemonBaseInfo(base);
+        if (poke) speciesData[poke.name] = poke;
+        poke = ShowdownDataService.getPokemonBaseInfo(`${base}-Tera`);
+        if (poke) speciesData[poke.name] = poke;
+      }
     }
+    console.log(speciesData);
 
     const temp = Object.entries(speciesData).map(([key, _]) => key);
     temp.forEach((key) => {
@@ -180,9 +202,7 @@ export class ShowdownDataService {
         species = ShowdownDataService.getPokemonBaseInfo(
           rootSpecies.name.slice(0, -7)
         );
-      } else if (
-        rootSpecies.name.endsWith("-Curly-Mega")
-      ) {
+      } else if (rootSpecies.name.endsWith("-Curly-Mega")) {
         species = ShowdownDataService.getPokemonBaseInfo(
           rootSpecies.name.slice(0, -11)
         );
@@ -193,6 +213,16 @@ export class ShowdownDataService {
         species = ShowdownDataService.getPokemonBaseInfo(
           rootSpecies.name.slice(0, -5)
         );
+      } else if (rootSpecies.name.startsWith("Ogerpon")) {
+        if (rootSpecies.name.endsWith("-Teal-Tera")) {
+          species = ShowdownDataService.getPokemonBaseInfo(
+            rootSpecies.name.slice(0, -10)
+          );
+        } else if (rootSpecies.name.endsWith("-Tera")) {
+          species = ShowdownDataService.getPokemonBaseInfo(
+            rootSpecies.name.slice(0, -5)
+          );
+        }
       } else {
         species = ShowdownDataService.getPokemonBaseInfo(
           rootSpecies.baseSpecies
@@ -223,6 +253,10 @@ export class ShowdownDataService {
 
     const key = ability.toLowerCase().replace(/[^a-z0-9]/g, "");
 
+    if (key === "noability") {
+      return ShowdownDataService.NoAbility;
+    }
+
     const abilityInfo = Abilities[key as keyof typeof Abilities];
     return abilityInfo;
   }
@@ -233,6 +267,10 @@ export class ShowdownDataService {
     }
 
     const key = item.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    if (key === "noitem") {
+      return ShowdownDataService.NoItem;
+    }
 
     const itemInfo = Items[key as keyof typeof Items];
     return itemInfo;
@@ -291,9 +329,11 @@ export class ShowdownDataService {
   }
 
   static get Abilities(): AbilityDataTable {
-    return Object.fromEntries(
+    const filtered = Object.fromEntries(
       Object.entries(Abilities).filter(([_, value]) => value.num > 0)
     );
+    const noAbility: AbilityData = ShowdownDataService.NoAbility;
+    return { noability: noAbility, ...filtered };
   }
 
   static get Natures(): NatureDataTable {
@@ -304,7 +344,7 @@ export class ShowdownDataService {
     const filtered = Object.fromEntries(
       Object.entries(Items).filter(([_, value]) => value.num > 0)
     );
-    const noItem: ItemData = { num: 0, name: "(No Item)" };
+    const noItem: ItemData = ShowdownDataService.NoItem;
     return { noitem: noItem, ...filtered };
   }
 
@@ -362,7 +402,15 @@ export class ShowdownDataService {
     species = ShowdownDataService.getRootSpecies(species);
     if (species) {
       const gen = species!.gen || AppConstants.Gen;
-      const key = species!.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      let key = species!.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (
+        new Set([
+          "ogerponhearthflame",
+          "ogerponwellspring",
+          "ogerponcornerstone",
+        ]).has(key)
+      )
+        key = "ogerpon";
 
       const learnsets = Learnsets[key as keyof typeof Learnsets]?.learnset;
       const genLearnSets = learnsets
