@@ -23,6 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 .trae
+.yarn
 
 **/.DS_Store
 src/vendors

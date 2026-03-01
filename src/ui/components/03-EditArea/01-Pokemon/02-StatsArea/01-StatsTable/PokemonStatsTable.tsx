@@ -18,9 +18,12 @@ import { ShowdownDataService } from "../../../../../../services/showdown.data.se
 import { NatureData } from "../../../../../../vendors/smogon/pokemon-showdown/sim/dex-data";
 import { computeStat } from "../../../../../../utils/stats.utils";
 import { useTranslation } from "react-i18next";
+import { AppPinyin } from "../../../../../../utils/app.pinyin";
+import { useLanguage } from "../../../../../../contexts/LanguageContext";
 
 const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
   const { t, i18n } = useTranslation();
+  const { language } = useLanguage();
   // 获取Pokemon状态
   const {
     pokemonSpecies,
@@ -231,7 +234,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
       const text = translateNature(natureKey) || natureKey;
       const usagePercentage =
         (chaosSpread1 || []).find(
-          (usage) => usage.nature.name.toLowerCase() === item.key.toLowerCase()
+          (usage) => usage.nature.name.toLowerCase() === item.key.toLowerCase(),
         )?.percentage || 0;
       return (
         <div className="ps_ta-nature-dropdown-item">
@@ -242,7 +245,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
         </div>
       );
     },
-    [chaosSpread1, translateNature]
+    [chaosSpread1, translateNature],
   );
 
   const NatureDropdownItem: React.FC<{ item: DropdownItem }> = useMemo(
@@ -252,7 +255,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
         const usagePercentage =
           (chaosSpread1 || []).find(
             (usage) =>
-              usage.nature.name.toLowerCase() === item.key.toLowerCase()
+              usage.nature.name.toLowerCase() === item.key.toLowerCase(),
           )?.percentage || 0;
         return (
           <div className="ps_ta-nature-dropdown-item">
@@ -263,7 +266,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
           </div>
         );
       },
-    [chaosSpread1, translateNature]
+    [chaosSpread1, translateNature],
   );
 
   // 创建性格下拉选项数据
@@ -287,9 +290,16 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
         return usageB - usageA; // 按使用率降序排列（使用率越高越靠前）
       });
       return sortedNaturesList.map(([natureKey, nature]) => {
+        const translatedName = translateNature(natureKey) || natureKey;
+        const searchKey = `${natureKey}|${translatedName}${
+          language === "zh"
+            ? `|${AppPinyin.getSearchKeywords(translatedName)}`
+            : ""
+        }`;
         return {
           key: natureKey,
           value: nature,
+          searchKey: searchKey,
           displayContentFC: NatureDisplayContentFC,
           dropdownItemFC: NatureDropdownItem,
         };
@@ -297,15 +307,22 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
     }
 
     Object.entries(natures).forEach(([natureKey, nature]) => {
+      const translatedName = translateNature(natureKey) || natureKey;
+      const searchKey = `${natureKey}|${translatedName}${
+        language === "zh"
+          ? `|${AppPinyin.getSearchKeywords(translatedName)}`
+          : ""
+      }`;
       items.push({
         key: natureKey,
         value: nature,
+        searchKey: searchKey,
         displayContentFC: NatureDisplayContentFC,
         dropdownItemFC: NatureDropdownItem,
       });
     });
     return items;
-  }, [NatureDisplayContentFC, NatureDropdownItem]);
+  }, [NatureDisplayContentFC, NatureDropdownItem, translateNature]);
 
   // useEffect(() => {
   //   setNature(natureDropdownItems[0].value);
@@ -346,21 +363,21 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
         setManualSigns({});
       }
     },
-    [setNature, setSuppressNatureSigns, setManualSigns]
+    [setNature, setSuppressNatureSigns, setManualSigns],
   );
 
   // 辅助：根据plus/minus选择性格（尽量保留另一端原值，若冲突则选择稳定默认）
   const resolveNatureByPlusMinus = useCallback(
     (
       nextPlus: StatIDExceptHP | undefined,
-      nextMinus: StatIDExceptHP | undefined
+      nextMinus: StatIDExceptHP | undefined,
     ): NatureData => {
       const natures = ShowdownDataService.Natures;
       // 首选：同时匹配plus/minus的性格
       const exact = Object.values(natures).find(
         (n) =>
           (n.plus as StatIDExceptHP | undefined) === nextPlus &&
-          (n.minus as StatIDExceptHP | undefined) === nextMinus
+          (n.minus as StatIDExceptHP | undefined) === nextMinus,
       );
       if (exact) return exact;
       // 若冲突（相等），进行稳定默认处理
@@ -371,28 +388,28 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
         const fallbackExact = Object.values(natures).find(
           (n) =>
             (n.plus as StatIDExceptHP | undefined) === nextPlus &&
-            (n.minus as StatIDExceptHP | undefined) === fallbackMinus
+            (n.minus as StatIDExceptHP | undefined) === fallbackMinus,
         );
         if (fallbackExact) return fallbackExact;
       }
       // 次选：仅匹配plus
       if (nextPlus) {
         const plusOnly = Object.values(natures).find(
-          (n) => (n.plus as StatIDExceptHP | undefined) === nextPlus
+          (n) => (n.plus as StatIDExceptHP | undefined) === nextPlus,
         );
         if (plusOnly) return plusOnly;
       }
       // 次选：仅匹配minus
       if (nextMinus) {
         const minusOnly = Object.values(natures).find(
-          (n) => (n.minus as StatIDExceptHP | undefined) === nextMinus
+          (n) => (n.minus as StatIDExceptHP | undefined) === nextMinus,
         );
         if (minusOnly) return minusOnly;
       }
       // 兜底：serious
       return natures["serious"];
     },
-    []
+    [],
   );
 
   // 监听性格变化：当通过下拉或 meta 菜单改变性格时，结束性格编辑抑制并清空手动覆盖，按照选择性格补齐符号
@@ -441,7 +458,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
         const signFromNature =
           statId !== "hp" ? (isPlus ? "+" : isMinus ? "-" : "") : "";
         const manualSign =
-          statId !== "hp" ? manualSigns[statId as StatIDExceptHP] ?? "" : "";
+          statId !== "hp" ? (manualSigns[statId as StatIDExceptHP] ?? "") : "";
         const signForDisplay =
           statId !== "hp"
             ? manualSign || (suppressNatureSigns ? "" : signFromNature)
@@ -453,8 +470,8 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
         const colorClass = isPlus
           ? "ps_ta-color-plus"
           : isMinus
-          ? "ps_ta-color-minus"
-          : "";
+            ? "ps_ta-color-minus"
+            : "";
         const baseClass = statId !== "hp" ? colorClass : "";
         const evPercentClass = colorClass;
         const finalStatClass = colorClass;
@@ -465,8 +482,8 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
             ? boostValue > 0
               ? "ps_ta-boost-positive"
               : boostValue < 0
-              ? "ps_ta-boost-negative"
-              : ""
+                ? "ps_ta-boost-negative"
+                : ""
             : "";
 
         const evUsagePercent = evUsagePercentMap[statId] ?? 0;
@@ -485,9 +502,9 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                   editingBase.hp
                     ? { width: 40 }
                     : modifiedBaseStats.hp >= 0 &&
-                      modifiedBaseStats.hp !== baseStats.hp
-                    ? { color: "var(--accent-warning)" }
-                    : undefined
+                        modifiedBaseStats.hp !== baseStats.hp
+                      ? { color: "var(--accent-warning)" }
+                      : undefined
                 }
                 onDoubleClick={() => {
                   if (pokemonSpecies)
@@ -530,9 +547,9 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                   editingBase[statId]
                     ? { width: 40 }
                     : modifiedBaseStats[statId] >= 0 &&
-                      modifiedBaseStats[statId] !== baseStats[statId]
-                    ? { color: "var(--accent-warning)" }
-                    : undefined
+                        modifiedBaseStats[statId] !== baseStats[statId]
+                      ? { color: "var(--accent-warning)" }
+                      : undefined
                 }
                 onDoubleClick={() => {
                   if (pokemonSpecies)
@@ -721,16 +738,16 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                           nextManual[statId as StatIDExceptHP] = "-";
                         }
                         const manualPlusKey = Object.entries(nextManual).find(
-                          ([_, v]) => v === "+"
+                          ([_, v]) => v === "+",
                         )?.[0] as StatIDExceptHP | undefined;
                         const manualMinusKey = Object.entries(nextManual).find(
-                          ([_, v]) => v === "-"
+                          ([_, v]) => v === "-",
                         )?.[0] as StatIDExceptHP | undefined;
                         if (manualPlusKey && manualMinusKey) {
                           // 两端符号都具备：重匹配性格并退出抑制
                           const nextNature = resolveNatureByPlusMinus(
                             manualPlusKey,
-                            manualMinusKey
+                            manualMinusKey,
                           );
                           setNature(nextNature);
                           setSuppressNatureSigns(false);
@@ -773,10 +790,10 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                         }
 
                         const manualPlusEntry = Object.entries(
-                          manualSigns
+                          manualSigns,
                         ).find(([_, v]) => v === "+");
                         const manualMinusEntry = Object.entries(
-                          manualSigns
+                          manualSigns,
                         ).find(([_, v]) => v === "-");
                         const manualPlus = manualPlusEntry
                           ? (manualPlusEntry[0] as StatIDExceptHP)
@@ -798,7 +815,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
 
                         const nextNature = resolveNatureByPlusMinus(
                           nextPlus,
-                          nextMinus
+                          nextMinus,
                         );
                         setNature(nextNature);
                         setSuppressNatureSigns(false);

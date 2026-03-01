@@ -86,20 +86,28 @@ const NumberInput: React.FC<NumberInputProps> = ({
   }, []);
 
   // 限制数值在范围内
-  const clampValue = (val: number | null): number | null => {
-    if (val === null) return null;
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
-  };
+  const clampValue = React.useCallback(
+    (val: number | null): number | null => {
+      if (val === null) return null;
+      if (val < min) return min;
+      if (val > max) return max;
+      return val;
+    },
+    [min, max]
+  );
 
   // 更新值的通用函数
-  const updateValue = (newValue: number | null) => {
-    if (!isControlled) {
-      setInternalValue(newValue);
-    }
-    onChange?.(newValue);
-  };
+  const updateValue = React.useCallback(
+    (newValue: number | null) => {
+      if (!isControlled) {
+        setInternalValue(newValue);
+      }
+      if (onChange) {
+        onChange(newValue);
+      }
+    },
+    [isControlled, onChange]
+  );
 
   // 输入框值变化事件
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
