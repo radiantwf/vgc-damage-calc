@@ -11339,13 +11339,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-confirm@npm:0.5.0-1":
-  version: 0.5.0-1
-  resolution: "react-confirm@npm:0.5.0-1"
+"react-confirm@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "react-confirm@npm:0.5.0"
   peerDependencies:
     react: ">=18.x"
     react-dom: ">=18.x"
-  checksum: 10c0/298067d833294b228a03181f3c8faa32464478dbc77ec0e00983f221b4b0e0467d780167bfaa4179cc5c67aa9dde1bd8757188de458a16fd80fd56a404096a93
+  checksum: 10c0/3d3fbf3e94ef40805363b21bfbdc9ba1ae8726cc80705309ae35340f3fa61ac0032125313880ad98ae7b9b6e16e2c6b36d4ee89e00f3684ff99b9720450899cd
   languageName: node
   linkType: hard
 
@@ -11421,12 +11421,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-icons@npm:^5.5.0":
-  version: 5.5.0
-  resolution: "react-icons@npm:5.5.0"
+"react-icons@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "react-icons@npm:5.6.0"
   peerDependencies:
     react: "*"
-  checksum: 10c0/a24309bfc993c19cbcbfc928157e53a137851822779977b9588f6dd41ffc4d11ebc98b447f4039b0d309a858f0a42980f6bfb4477fb19f9f2d1bc2e190fcf79c
+  checksum: 10c0/addba1ebfd45cdf7f69291d0c93df64fca1271cfdb66df657abd223e3451c73356b035f50e75858627dd182b02129596c79eaaaa45d32eb52658e443a992645c
   languageName: node
   linkType: hard
 
@@ -13636,10 +13636,10 @@ __metadata:
     i18next-http-backend: "npm:^3.0.2"
     pinyin-pro: "npm:^3.28.0"
     react: "npm:^19.2.4"
-    react-confirm: "npm:0.5.0-1"
+    react-confirm: "npm:^0.5.0"
     react-dom: "npm:^19.2.4"
     react-i18next: "npm:^16.5.4"
-    react-icons: "npm:^5.5.0"
+    react-icons: "npm:^5.6.0"
     react-router-dom: "npm:^7.13.1"
     react-scripts: "npm:^5.0.1"
     typescript: "npm:^5.9.3"

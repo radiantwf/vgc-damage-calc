@@ -640,39 +640,43 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
           pokemonId === "pokemon-attacker"
             ? "pokemon-attacker"
             : "pokemon-defender";
-        const shouldWaitClear =
-          (expectedRoot?.name || "") !== (rootFormeSpecies?.value?.name || "");
-        let waitClearPromise: Promise<void> | undefined;
-        if (shouldWaitClear) {
-          waitClearPromise = new Promise<void>((resolve) => {
-            const handler = (ev: Event) => {
-              const e = ev as CustomEvent<{ side: string; root?: { value: SpeciesData } }>;
-              const detail = e.detail as unknown as {
-                side: string;
-                root?: { value: SpeciesData };
-              };
-              if (
-                detail &&
-                detail.side === sideTag &&
-                detail.root?.value?.name === expectedRoot?.name
-              ) {
-                window.removeEventListener(
-                  "pokemonRootCleared",
-                  handler as EventListener
-                );
-                resolve();
-              }
-            };
-            window.addEventListener(
+        const waitClearPromise = new Promise<void>((resolve) => {
+          let settled = false;
+          const finish = () => {
+            if (settled) {
+              return;
+            }
+            settled = true;
+            window.removeEventListener(
               "pokemonRootCleared",
               handler as EventListener
             );
-          });
-        }
+            resolve();
+          };
+          const handler = (ev: Event) => {
+            const e = ev as CustomEvent<{
+              side: string;
+              root?: { value: SpeciesData };
+            }>;
+            const detail = e.detail as {
+              side: string;
+              root?: { value: SpeciesData };
+            };
+            if (
+              detail.side === sideTag &&
+              detail.root?.value?.name === expectedRoot?.name
+            ) {
+              finish();
+            }
+          };
+          window.addEventListener(
+            "pokemonRootCleared",
+            handler as EventListener
+          );
+          window.setTimeout(finish, 1000);
+        });
         setPokemonName(species);
-        if (waitClearPromise) {
-          await waitClearPromise;
-        }
+        await waitClearPromise;
         setLevel(50);
         setNatureState(
           ShowdownDataService.getNatureByString(p.nature || "serious")
@@ -698,7 +702,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         return false;
       }
     },
-    [currentGen, calcPokemon]
+    [currentGen, calcPokemon, pokemonId, setDisableAutoSelect, setPokemonName]
   );
 
   const importPokemonFromClipboard = useCallback(async (): Promise<boolean> => {
@@ -712,7 +716,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     } catch {
       return false;
     }
-  }, [currentGen, calcPokemon, importPokemonFromPasteText]);
+  }, [importPokemonFromPasteText]);
 
   // 根据当前侧的设置构造 Move（考虑多段命中与暴击）
   const getMove = useCallback(
