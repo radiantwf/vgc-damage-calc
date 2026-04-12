@@ -2,6 +2,7 @@
     "languageChineseName": "简体中文",
     "languageEnglishName": "English",
     "languageJapaneseName": "日本語",
+    "game": "ゲーム",
     "reg": "フォーマット",
     "month": "月",
     "rule": "ルール",
@@ -20,6 +21,10 @@
     "theme": "テーマ",
     "reportBug": "不具合報告",
     "githubRepo": "GitHubリポジトリ",
+    "formatGame": {
+        "SV": "スカーレット・バイオレット",
+        "Champions": "チャンピオンズ"
+    },
     "pokemon": {
         "name": "ポケモン",
         "selectPokemon": "ポケモンを選択",

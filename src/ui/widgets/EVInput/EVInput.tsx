@@ -23,6 +23,7 @@ export interface EVInputProps {
     currentEV: number,
     ctx: { min: number; max: number; step: number }
   ) => number;
+  normalizeNumericValue?: (value: number) => number;
   // 新增：是否允许输入 + / - 号（默认允许；HP 场景需要禁用）
   allowPlusMinus?: boolean;
   tabIndex?: number;
@@ -44,6 +45,7 @@ const EVInput: React.FC<EVInputProps> = ({
   onDecrement,
   step = 4,
   getNextEVForStatChange,
+  normalizeNumericValue,
   allowPlusMinus = true,
   tabIndex,
 }) => {
@@ -121,6 +123,12 @@ const EVInput: React.FC<EVInputProps> = ({
     onChange?.(newValue);
   };
 
+  const applyNumericConstraints = (value: number): number => {
+    const clamped = Math.min(Math.max(value, min), max);
+    const normalized = normalizeNumericValue?.(clamped) ?? clamped;
+    return Math.min(Math.max(normalized, min), max);
+  };
+
   // 输入框值变化事件（受控显示）：非法输入直接忽略
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -140,6 +148,14 @@ const EVInput: React.FC<EVInputProps> = ({
         if (sign && (numericPart === '' || /^0+$/.test(numericPart))) {
           nextVal = sign;
         }
+      }
+      const normalizedNumericPart = nextVal.replace(/[+-]/g, '');
+      if (normalizedNumericPart !== '') {
+        const hasPlus = nextVal.includes('+');
+        const hasMinus = nextVal.includes('-');
+        const sign = hasPlus ? '+' : hasMinus ? '-' : '';
+        const normalizedValue = applyNumericConstraints(Number(normalizedNumericPart));
+        nextVal = sign ? `${normalizedValue}${sign}` : String(normalizedValue);
       }
       setDisplayValue(nextVal);
       updateValue(nextVal);
@@ -207,7 +223,7 @@ const EVInput: React.FC<EVInputProps> = ({
     const cleaned = raw.replace(/[+-]/g, '');
     const num = Number(cleaned);
     if (Number.isNaN(num)) return min;
-    return num;
+    return applyNumericConstraints(num);
   };
 
   // 键盘上下箭头事件
@@ -230,14 +246,15 @@ const EVInput: React.FC<EVInputProps> = ({
     if (getNextEVForStatChange) {
       nextEV = getNextEVForStatChange('up', currentEV, { min, max, step });
       if (typeof nextEV !== 'number' || Number.isNaN(nextEV)) {
-        nextEV = Math.min(Math.max(currentEV + step, min), max);
+        nextEV = currentEV + step;
       } else {
-        nextEV = Math.min(Math.max(nextEV, min), max);
+        nextEV = applyNumericConstraints(nextEV);
       }
     } else {
       // 默认行为：按步长递增并限制在[min, max]范围内
-      nextEV = Math.min(Math.max(currentEV + step, min), max);
+      nextEV = currentEV + step;
     }
+    nextEV = applyNumericConstraints(nextEV);
     // 保留现有 +/- 号（若允许且当前显示存在符号）
     let sign = '';
     if (allowPlusMinus) {
@@ -259,14 +276,15 @@ const EVInput: React.FC<EVInputProps> = ({
     if (getNextEVForStatChange) {
       nextEV = getNextEVForStatChange('down', currentEV, { min, max, step });
       if (typeof nextEV !== 'number' || Number.isNaN(nextEV)) {
-        nextEV = Math.min(Math.max(currentEV - step, min), max);
+        nextEV = currentEV - step;
       } else {
-        nextEV = Math.min(Math.max(nextEV, min), max);
+        nextEV = applyNumericConstraints(nextEV);
       }
     } else {
       // 默认行为：按步长递减并限制在[min, max]范围内
-      nextEV = Math.min(Math.max(currentEV - step, min), max);
+      nextEV = currentEV - step;
     }
+    nextEV = applyNumericConstraints(nextEV);
     // 保留现有 +/- 号（若允许且当前显示存在符号）
     let sign = '';
     if (allowPlusMinus) {

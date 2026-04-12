@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useFormats } from "../../../contexts/FormatsContext";
 import "./FormatsWidget.css";
@@ -16,14 +16,17 @@ const FormatsWidget: React.FC<FormatsWidgetProps> = ({ className = "" }) => {
 
   // 使用自定义hook获取数据和状态管理
   const {
+    gameList,
     regList,
     monthTagList,
     ruleList,
     cutlineList,
+    currentGame,
     currentReg,
     currentMonthTag,
     currentRule,
     currentCutline,
+    setCurrentGame,
     setCurrentReg,
     setCurrentMonthTag,
     setCurrentRule,
@@ -32,7 +35,12 @@ const FormatsWidget: React.FC<FormatsWidgetProps> = ({ className = "" }) => {
     error,
   } = useFormats();
 
-  // 转换为DropdownItem格式
+  const gameDropdownItems: DropdownItem[] = gameList.map((game) => ({
+    key: t(`formatGame.${game}`, { defaultValue: game }),
+    value: game,
+    searchKey: `${game}|${t(`formatGame.${game}`, { defaultValue: game })}`,
+  }));
+
   const regDropdownItems: DropdownItem[] = regList.map((reg) => ({
     key: reg,
     value: reg,
@@ -65,7 +73,7 @@ const FormatsWidget: React.FC<FormatsWidgetProps> = ({ className = "" }) => {
     key: string;
     className: string;
     dropdownClassName?: string;
-    value: string;
+    value?: string;
     items: DropdownItem[];
     onChange: (value: string) => void;
     tabIndex?: number;
@@ -79,8 +87,8 @@ const FormatsWidget: React.FC<FormatsWidgetProps> = ({ className = "" }) => {
           onChange={(value) => onChange(value as string)}
           placeholder={`${t("search")}...`}
           className={dropdownClassName || `${className}-searchable`}
-          inputClassName={`${className}-input`}
-          dropdownClassName={`${className}-menu`}
+          inputClassName={`fw-dropdown-input ${className}-input`}
+          dropdownClassName={`fw-dropdown-menu ${className}-menu`}
           isTextEditable={false}
           showDropdownButton={true}
           tabIndex={tabIndex}
@@ -113,39 +121,48 @@ const FormatsWidget: React.FC<FormatsWidgetProps> = ({ className = "" }) => {
     <div className={`formats-widget ${className ? className : ""}`}>
       <div className="fw-formats-row">
         {buildDropdown({
+          key: t("game"),
+          className: "fw-game-dropdown",
+          value: currentGame,
+          items: gameDropdownItems,
+          onChange: (value) => setCurrentGame(value || undefined),
+          tabIndex: tabBase + 1,
+        })}
+
+        {buildDropdown({
           key: t("reg"),
           className: "fw-reg-dropdown",
-          value: currentReg || "",
+          value: currentReg,
           items: regDropdownItems,
           onChange: (value) => setCurrentReg(value || undefined),
-          tabIndex: tabBase + 1,
+          tabIndex: tabBase + 2,
         })}
 
         {buildDropdown({
           key: t("month"),
           className: "fw-month-dropdown",
-          value: currentMonthTag || "",
+          value: currentMonthTag,
           items: monthDropdownItems,
           onChange: (value) => setCurrentMonthTag(value || undefined),
-          tabIndex: tabBase + 2,
+          tabIndex: tabBase + 3,
         })}
 
         {buildDropdown({
           key: t("rule"),
           className: "fw-rule-dropdown",
-          value: currentRule || "",
+          value: currentRule,
           items: ruleDropdownItems,
           onChange: (value) => setCurrentRule(value || undefined),
-          tabIndex: tabBase + 3,
+          tabIndex: tabBase + 4,
         })}
 
         {buildDropdown({
           key: t("cutline"),
           className: "fw-cutline-dropdown",
-          value: currentCutline || "",
+          value: currentCutline,
           items: cutlineDropdownItems,
           onChange: (value) => setCurrentCutline(value || undefined),
-          tabIndex: tabBase + 4,
+          tabIndex: tabBase + 5,
         })}
       </div>
     </div>

@@ -219,12 +219,13 @@ const PokemonInfoColumn4: React.FC<EditAreaProps> = ({ isAttacker }) => {
       return [];
     }
     const learnsets = ShowdownDataService.getPokemonLearnsets(pokemonSpecies?.value);
+    const availableMoveIds = new Set(learnsets ?? []);
     const sortedMoves =
       (learnsets
         ? Object.fromEntries(
             Object.entries(moves).sort(([a], [b]) => {
-              let indexA = Object.keys(learnsets!).indexOf(a);
-              let indexB = Object.keys(learnsets!).indexOf(b);
+              let indexA = learnsets.indexOf(a);
+              let indexB = learnsets.indexOf(b);
               indexA = indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA;
               indexB = indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB;
               if (a === "struggle") {
@@ -272,7 +273,7 @@ const PokemonInfoColumn4: React.FC<EditAreaProps> = ({ isAttacker }) => {
         }`;
 
         const isAvailable =
-          (learnsets ? Object.values(learnsets).includes(moveData) : true) ||
+          (learnsets ? availableMoveIds.has(moveKey) : true) ||
           (moveData as MoveData).name === "Struggle";
         return {
           key: moveKey,
@@ -301,7 +302,7 @@ const PokemonInfoColumn4: React.FC<EditAreaProps> = ({ isAttacker }) => {
           : ""
       }`;
       const isAvailable =
-        (learnsets ? Object.values(learnsets).includes(moveData) : true) ||
+        (learnsets ? availableMoveIds.has(moveKey) : true) ||
         (moveData as MoveData).name === "Struggle";
       return {
         key: moveKey,

@@ -17,6 +17,17 @@ export class ShowdownStatsService {
   private static readonly _apiURL = `${AppConstants.BaseApiURL}/showdown`;
   private httpClient: HttpClient;
 
+  private static hasRequiredSelectionParams(
+    format: string,
+    rule: string,
+    tag: string,
+    cutline: string
+  ): boolean {
+    return [format, rule, tag, cutline].every(
+      (value) => value.trim().length > 0
+    );
+  }
+
   constructor() {
     this.httpClient = HttpClient.instance;
   }
@@ -50,6 +61,17 @@ export class ShowdownStatsService {
     cutline: string
   ): Promise<PokemonUsage[]> {
     const usageList: PokemonUsage[] = [];
+
+    if (
+      !ShowdownStatsService.hasRequiredSelectionParams(
+        format,
+        rule,
+        tag,
+        cutline
+      )
+    ) {
+      return usageList;
+    }
 
     try {
       const url = `${
@@ -96,6 +118,17 @@ export class ShowdownStatsService {
     movesetsTag: keyof typeof MovesetType
   ): Promise<MovesetsUsage[] | null> {
     const spreads: MovesetsUsage[] = [];
+
+    if (
+      !ShowdownStatsService.hasRequiredSelectionParams(
+        format,
+        rule,
+        tag,
+        cutline
+      )
+    ) {
+      return spreads;
+    }
 
     // 获取宝可梦的完整名称而不是tag
     const { ShowdownDataService } = await import("./showdown.data.service");
@@ -163,6 +196,17 @@ export class ShowdownStatsService {
     cutline: string,
     pokemon: string
   ): Promise<ChaosNatureSpread1[]> {
+    if (
+      !ShowdownStatsService.hasRequiredSelectionParams(
+        format,
+        rule,
+        tag,
+        cutline
+      )
+    ) {
+      return [];
+    }
+
     // 获取宝可梦的完整名称而不是tag
     const { ShowdownDataService } = await import("./showdown.data.service");
     const pokemonData = ShowdownDataService.getPokemonBaseInfo(pokemon);
@@ -206,6 +250,17 @@ export class ShowdownStatsService {
     cutline: string,
     pokemon: string
   ): Promise<ChaosSpread2[]> {
+    if (
+      !ShowdownStatsService.hasRequiredSelectionParams(
+        format,
+        rule,
+        tag,
+        cutline
+      )
+    ) {
+      return [];
+    }
+
     // 获取宝可梦的完整名称而不是tag
     const { ShowdownDataService } = await import("./showdown.data.service");
     const pokemonData = ShowdownDataService.getPokemonBaseInfo(pokemon);

@@ -55,10 +55,7 @@ export const PokemonUsageProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     let cancelled = false;
     const run = async () => {
-      if (!currentReg || !currentRule || !currentMonthTag || !currentCutline) {
-        return;
-      }
-      const paramsKey = `${currentReg}-${currentRule}-${currentMonthTag}-${currentCutline}`;
+      const paramsKey = `${currentReg || ""}-${currentRule || ""}-${currentMonthTag || ""}-${currentCutline || ""}`;
       if (lastParamsRef.current === paramsKey) {
         return;
       }
@@ -68,10 +65,10 @@ export const PokemonUsageProvider: React.FC<{ children: ReactNode }> = ({
       try {
         const statsService = new ShowdownStatsService();
         const usageData = await statsService.getShowdownUsage(
-          currentReg,
-          currentRule,
-          currentMonthTag,
-          currentCutline
+          currentReg || "",
+          currentRule || "",
+          currentMonthTag || "",
+          currentCutline || ""
         );
         if (!cancelled) {
           setPokemonUsageList(usageData);

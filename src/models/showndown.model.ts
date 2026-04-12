@@ -17,20 +17,23 @@ export class ShowdownFormats {
   private _regs: string[];
   private _yyyyMMs: Map<string, string[]>;
   private _rules: Map<string, string[]>;
-  private _gen: Map<string, string>;
+  private _gens: Map<string, number>;
+  private _games: Map<string, string>;
   private _cutlines: string[];
 
   constructor(data: {
     regs: string[];
     yyyyMMs: Map<string, string[]>;
     rules: Map<string, string[]>;
-    gen: Map<string, string>;
+    gens: Map<string, number>;
+    games: Map<string, string>;
     cutlines: string[];
   }) {
     this._regs = data.regs;
     this._yyyyMMs = data.yyyyMMs;
     this._rules = data.rules;
-    this._gen = data.gen;
+    this._gens = data.gens;
+    this._games = data.games;
     this._cutlines = data.cutlines;
   }
 
@@ -62,11 +65,16 @@ export class ShowdownFormats {
       rules.set(key, list);
     }
 
-    const genData = json.gen as Record<string, string>;
-    const gen = new Map<string, string>();
-    for (const [key, value] of Object.entries(genData)) {
-      gen.set(key, value);
+    const gameData = json.games as Record<string, string>;
+    const gens = new Map<string, number>();
+    const games = new Map<string, string>();
+    for (const [key, value] of Object.entries(gameData)) {
+      const splits = value.split(",");
+      games.set(key, splits[0]);
+      gens.set(key, Number(splits[1]));
     }
+
+
 
     const cutlines = [...(json.cutlines as string[])];
     cutlines.sort((a, b) => b.localeCompare(a)); // 降序排列
@@ -75,13 +83,44 @@ export class ShowdownFormats {
       regs: Array.from(regsSet),
       yyyyMMs,
       rules,
-      gen,
+      gens,
+      games,
       cutlines,
     });
   }
 
   get regs(): string[] {
     return this._regs;
+  }
+
+  get games(): string[] {
+    return Array.from(new Set(this._games.values()));
+  }
+
+  getGame(reg?: string): string | undefined {
+    if (!reg) {
+      return undefined;
+    }
+    for (const [key, value] of this._games) {
+      if (reg.startsWith(key)) {
+        return value;
+      }
+    }
+    return undefined;
+  }
+
+  get gameRegs(): Map<string, string[]> {
+    const regs = new Map<string, string[]>();
+    for (const game of this.games) {
+      regs.set(game, []);
+    }
+    for (const reg of this._regs) {
+      const game = this.getGame(reg);
+      if (game) {
+        regs.get(game)!.push(reg);
+      }
+    }
+    return regs;
   }
 
   getYyyyMMList(reg?: string): string[] | undefined {
@@ -98,16 +137,11 @@ export class ShowdownFormats {
     return this._rules.get(reg);
   }
 
-  getGen(reg?: string): number | undefined {
-    if (!reg) {
+  getGen(game?: string): number | undefined {
+    if (!game) {
       return undefined;
     }
-    const gen = Number(this._gen.get(reg));
-    if (isNaN(gen)) {
-      return undefined;
-    }
-
-    return gen;
+    return this._gens.get(game);
   }
 
   get cutlineList(): string[] {
@@ -191,7 +225,7 @@ export class ChaosNatureSpread1 {
         new ChaosEVsSpread1({
           evs: (e.evs as string).split("/").map((ev) => parseInt(ev) || 0),
           percentage: Number(e.percentage),
-        })
+        }),
     );
 
     return new ChaosNatureSpread1({
@@ -248,7 +282,7 @@ export class MetaBuildsUsage {
   }
 
   static getListFromChaos1(
-    chaosNatureSpread1: ChaosNatureSpread1[]
+    chaosNatureSpread1: ChaosNatureSpread1[],
   ): MetaBuildsUsage[] {
     if (!chaosNatureSpread1 || chaosNatureSpread1.length === 0) {
       return [];
@@ -259,7 +293,7 @@ export class MetaBuildsUsage {
         new MetaBuildsUsage({
           nature: natureItem.nature,
           percentage: natureItem.percentage,
-        })
+        }),
       );
       natureItem.evsSpreads.forEach((evsItem) => {
         metaBuilds.push(
@@ -267,7 +301,7 @@ export class MetaBuildsUsage {
             nature: natureItem.nature,
             evs: evsItem.evs,
             percentage: evsItem.percentage,
-          })
+          }),
         );
       });
     });

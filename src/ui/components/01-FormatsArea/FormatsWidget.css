@@ -59,12 +59,35 @@
   width: 25px;
 }
 
+.fw-dropdown-input .sdd-input,
+.fw-dropdown-input .sdd-display-overlay,
+.fw-dropdown-input .sdd-display-overlay-inner {
+  font-size: clamp(10px, 0.8vw, 12px);
+}
+
+.fw-dropdown-input .sdd-input,
+.fw-dropdown-input .sdd-display-overlay-inner,
+.fw-dropdown-menu .sdd-dropdown-item {
+  letter-spacing: -0.1px;
+}
+
+.fw-dropdown-menu .sdd-dropdown-item {
+  font-size: clamp(10px, 0.8vw, 12px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fw-game-dropdown {
+  width: 200px;
+}
+
 .fw-reg-dropdown {
-  width: 300px;
+  width: 260px;
 }
 
 .fw-month-dropdown {
-  width: 200px;
+  width: 180px;
 }
 
 .fw-rule-dropdown {

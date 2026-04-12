@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import "./PokemonStats.css";
 import { useDamageCompute } from "../../../../../contexts/DamageComputeContext";
 import { ShowdownDataService } from "../../../../../services/showdown.data.service";
@@ -7,6 +7,20 @@ import { NATURES } from "../../../../../vendors/smogon/damage-calc-dist/data/nat
 import { StatID } from "../../../../../vendors/smogon/damage-calc-dist/data/interface";
 import { usePokemonState } from "../../../../../contexts/PokemonStateContext";
 import { usePokemonTranslation } from "../../../../../contexts/usePokemonTranslation";
+import { useFormats } from "../../../../../contexts/FormatsContext";
+
+const CHAMPIONS_EV_MAX = 32;
+
+const championsActualEvToDisplayEv = (actualEv: number): number => {
+  const normalized = Math.max(0, Math.floor(actualEv));
+  if (normalized === 0) {
+    return 0;
+  }
+  if (normalized <= 4) {
+    return 1;
+  }
+  return Math.min(CHAMPIONS_EV_MAX, Math.floor((normalized + 4) / 8));
+};
 
 interface PokemonStatsProps {
   isAttacker: boolean;
@@ -22,6 +36,8 @@ export const PokemonStats: React.FC<PokemonStatsProps> = ({
   const { t } = useLanguage();
   const { translateAbility } = usePokemonTranslation();
   const { attackerSideResults, defenderSideResults } = useDamageCompute();
+  const { currentGame } = useFormats();
+  const isChampionsGame = currentGame === "Champions";
 
   const sourceResult = useMemo(() => {
     const results = isAttacker ? attackerSideResults : defenderSideResults;
@@ -97,7 +113,10 @@ export const PokemonStats: React.FC<PokemonStatsProps> = ({
                 const natureTuple = NATURES[natureName];
                 const plus = natureTuple ? natureTuple[0] : undefined;
                 const minus = natureTuple ? natureTuple[1] : undefined;
-                const val = evs ? evs[statId] ?? 0 : 0;
+                const rawVal = evs ? evs[statId] ?? 0 : 0;
+                const val = isChampionsGame
+                  ? championsActualEvToDisplayEv(rawVal)
+                  : rawVal;
                 const isPlus = statId !== "hp" && plus === statId;
                 const isMinus = statId !== "hp" && minus === statId;
                 const sign =

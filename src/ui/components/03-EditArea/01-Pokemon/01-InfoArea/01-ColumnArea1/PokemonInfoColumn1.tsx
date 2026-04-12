@@ -41,6 +41,8 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
         const pokemonName = item.value
           ? (item.value as SpeciesData).name
           : item.key;
+        const isAvailable =
+          (item as unknown as { isAvailable?: boolean }).isAvailable !== false;
         const translatedName = translatePokemon(pokemonName) || "";
 
         const usageData = pokemonUsageList.find(
@@ -65,7 +67,11 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
               }}
             />
             <div className="pi_col1-pokemon-dropdown-content">
-              <span className="pi_col1-pokemon-dropdown-name">
+              <span
+                className={`pi_col1-pokemon-dropdown-name ${
+                  !isAvailable ? "pi_col1-pokemon-unavailable" : ""
+                }`}
+              >
                 {translatedName}
               </span>
               {pokemonTypes.length > 0 && (
@@ -76,13 +82,18 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
                       className="pi_col1-pokemon-dropdown-type"
                       style={{
                         backgroundColor: getTypeColor(type),
+                        opacity: !isAvailable ? 0.5 : 1,
                       }}
                     />
                   ))}
                 </div>
               )}
             </div>
-            <span className="pi_col1-pokemon-dropdown-usage">
+            <span
+              className={`pi_col1-pokemon-dropdown-usage ${
+                !isAvailable ? "pi_col1-pokemon-unavailable" : ""
+              }`}
+            >
               {usagePercentage > 0 && `${usagePercentage.toFixed(3)}%`}
             </span>
           </div>
@@ -94,6 +105,9 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
   // 获取宝可梦列表并根据使用率排序
   const pokemonDropdownItems: DropdownItem[] = useMemo(() => {
     const speciesData = ShowdownDataService.DisplaySpeciesList;
+    const permittedPokemonIds = new Set(ShowdownDataService.getPermittedPokemons());
+    const normalizePokemonId = (value?: string): string =>
+      (value ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
     // 创建使用率映射
     const usageMap = new Map<string, number>();
@@ -113,6 +127,13 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
     return sortedPokemonList.map((pokemonKey) => {
       const pokemonData = speciesData[pokemonKey as keyof typeof speciesData];
       const pokemonName = pokemonData?.name || pokemonKey;
+      const isAvailable =
+        permittedPokemonIds.has(pokemonKey) ||
+        permittedPokemonIds.has(
+          normalizePokemonId(
+            (pokemonData as SpeciesData | undefined)?.baseSpecies || pokemonName
+          )
+        );
       const pokemonTypes = (pokemonData as SpeciesData).types || "";
       const pokemonTypeString = `${pokemonTypes.join(" ")}|${pokemonTypes
         .reverse()
@@ -146,6 +167,7 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
         searchKey: searchKey,
         displayContentFC: translatedName,
         dropdownItemFC: PokemonDropdownItem,
+        isAvailable: isAvailable,
       };
     });
   }, [PokemonDropdownItem]);

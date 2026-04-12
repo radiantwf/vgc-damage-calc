@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from "react";
 import { ShowdownFormats } from "../models/showndown.model";
+import { ShowdownDataService } from "../services/showdown.data.service";
 import { showdownStatsService } from "../services/showdown.stats.service";
 
 const defaultGen = 9;
@@ -14,6 +15,7 @@ const defaultGen = 9;
 export interface FormatsState {
   showdownFormats: ShowdownFormats | undefined;
   currentGen: number;
+  currentGame: string | undefined;
   currentReg: string | undefined;
   currentMonthTag: string | undefined;
   currentRule: string | undefined;
@@ -23,6 +25,7 @@ export interface FormatsState {
 }
 
 export interface FormatsActions {
+  setCurrentGame: (game: string | undefined) => void;
   setCurrentReg: (reg: string | undefined) => void;
   setCurrentMonthTag: (monthTag: string | undefined) => void;
   setCurrentRule: (rule: string | undefined) => void;
@@ -31,16 +34,59 @@ export interface FormatsActions {
 }
 
 export interface UseFormatsDataReturn extends FormatsState, FormatsActions {
+  gameList: string[];
   regList: string[];
   monthTagList: string[];
   ruleList: string[];
   cutlineList: string[];
 }
 
+const getGameList = (formats?: ShowdownFormats): string[] => {
+  if (!formats) {
+    return [];
+  }
+  return Array.from(new Set(formats.games));
+};
+
+const getRegListByGame = (
+  formats?: ShowdownFormats,
+  game?: string
+): string[] => {
+  if (!formats || !game) {
+    return [];
+  }
+  return formats.gameRegs.get(game) || [];
+};
+
+const getGameByReg = (
+  formats?: ShowdownFormats,
+  reg?: string
+): string | undefined => {
+  if (!formats || !reg) {
+    return undefined;
+  }
+
+  for (const [game, regs] of formats.gameRegs) {
+    if (regs.includes(reg)) {
+      return game;
+    }
+  }
+
+  return undefined;
+};
+
+const getGenByGame = (
+  formats?: ShowdownFormats,
+  game?: string
+): number => {
+  return formats?.getGen(game) || defaultGen;
+};
+
 const useFormatsData = (): UseFormatsDataReturn => {
   const [state, setState] = useState<FormatsState>({
     showdownFormats: undefined,
     currentGen: defaultGen,
+    currentGame: undefined,
     currentReg: undefined,
     currentMonthTag: undefined,
     currentRule: undefined,
@@ -49,7 +95,8 @@ const useFormatsData = (): UseFormatsDataReturn => {
     error: undefined,
   });
 
-  const regList = state.showdownFormats?.regs || [];
+  const gameList = getGameList(state.showdownFormats);
+  const regList = getRegListByGame(state.showdownFormats, state.currentGame);
   const monthTagList =
     state.showdownFormats?.getYyyyMMList(state.currentReg || undefined) || [];
   const ruleList =
@@ -63,11 +110,17 @@ const useFormatsData = (): UseFormatsDataReturn => {
       if (reg && !state.showdownFormats.regs.includes(reg)) return;
 
       setState((prev) => {
-        const newState = { ...prev, currentReg: reg };
-        if (reg) {
-          newState.currentGen =
-            state.showdownFormats?.getGen(reg) || defaultGen;
-        }
+        const currentGame = reg
+          ? getGameByReg(prev.showdownFormats, reg)
+          : prev.currentGame;
+        const currentGen = getGenByGame(prev.showdownFormats, currentGame);
+        ShowdownDataService.setCurrentGameEnv(currentGame, currentGen);
+        const newState = {
+          ...prev,
+          currentGame,
+          currentReg: reg,
+          currentGen,
+        };
         const newMonthTagList =
           prev.showdownFormats?.getYyyyMMList(reg || undefined) || [];
         if (
@@ -96,6 +149,27 @@ const useFormatsData = (): UseFormatsDataReturn => {
       });
     },
     [state.currentReg, state.showdownFormats]
+  );
+
+  const setCurrentGame = useCallback(
+    (game: string | undefined) => {
+      if (game === state.currentGame) return;
+      if (!state.showdownFormats) return;
+      if (game && !getGameList(state.showdownFormats).includes(game)) return;
+
+      const nextReg = getRegListByGame(state.showdownFormats, game)[0];
+      ShowdownDataService.setCurrentGameEnv(
+        game,
+        getGenByGame(state.showdownFormats, game),
+      );
+
+      setState((prev) => ({
+        ...prev,
+        currentGame: game,
+      }));
+      setCurrentReg(nextReg);
+    },
+    [setCurrentReg, state.currentGame, state.showdownFormats]
   );
 
   const setCurrentMonthTag = useCallback(
@@ -145,7 +219,6 @@ const useFormatsData = (): UseFormatsDataReturn => {
 
     try {
       const formats = await showdownStatsService.getFormats();
-
       setState((prev) => {
         const newState = {
           ...prev,
@@ -154,23 +227,38 @@ const useFormatsData = (): UseFormatsDataReturn => {
           error: undefined,
         };
 
-        if (formats && !prev.currentReg) {
-          newState.currentReg =
-            formats.regs.length > 0 ? formats.regs[0] : undefined;
+        if (formats) {
+          const availableGames = getGameList(formats);
+          const currentGame =
+            prev.currentGame && availableGames.includes(prev.currentGame)
+              ? prev.currentGame
+              : getGameByReg(formats, prev.currentReg) || availableGames[0];
+          const availableRegs = getRegListByGame(formats, currentGame);
+          const currentReg =
+            prev.currentReg && availableRegs.includes(prev.currentReg)
+              ? prev.currentReg
+              : availableRegs[0];
+          const currentGen = getGenByGame(formats, currentGame);
+          ShowdownDataService.setCurrentGameEnv(currentGame, currentGen);
+          const monthTags = formats.getYyyyMMList(currentReg);
+          const rules = formats.getRuleList(currentReg);
+          const cutlines = formats.cutlineList;
 
-          if (newState.currentReg) {
-            const monthTags = formats.getYyyyMMList(newState.currentReg);
-            newState.currentMonthTag =
-              monthTags && monthTags.length > 0 ? monthTags[0] : undefined;
-
-            const rules = formats.getRuleList(newState.currentReg);
-            newState.currentRule =
-              rules && rules.length > 0 ? rules[0] : undefined;
-
-            const cutlines = formats.cutlineList;
-            newState.currentCutline =
-              cutlines && cutlines.length > 0 ? cutlines[0] : undefined;
-          }
+          newState.currentGame = currentGame;
+          newState.currentReg = currentReg;
+          newState.currentGen = currentGen;
+          newState.currentMonthTag =
+            prev.currentMonthTag && monthTags?.includes(prev.currentMonthTag)
+              ? prev.currentMonthTag
+              : monthTags?.[0];
+          newState.currentRule =
+            prev.currentRule && rules?.includes(prev.currentRule)
+              ? prev.currentRule
+              : rules?.[0];
+          newState.currentCutline =
+            prev.currentCutline && cutlines.includes(prev.currentCutline)
+              ? prev.currentCutline
+              : cutlines[0];
         }
 
         return newState;
@@ -190,10 +278,12 @@ const useFormatsData = (): UseFormatsDataReturn => {
 
   return {
     ...state,
+    gameList,
     regList,
     monthTagList,
     ruleList,
     cutlineList,
+    setCurrentGame,
     setCurrentReg,
     setCurrentMonthTag,
     setCurrentRule,

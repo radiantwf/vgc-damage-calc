@@ -41,7 +41,8 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
     pokemonSpecies,
     setPokemonName,
   } = usePokemonState(side === "attacker");
-  const { currentGen } = useFormats();
+  const { currentGen, currentGame } = useFormats();
+  const isChampionsGame = currentGame === "Champions";
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [slots, setSlots] = useState<(TeamSlot | undefined)[]>([undefined]);
@@ -75,7 +76,9 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const ensureSaveCurrentIfDirty = async (): Promise<
     SaveEditResponse | "none"
   > => {
-    const currentText = calcPokemon?.exportToPasteText();
+    const currentText = calcPokemon?.exportToPasteText({
+      useChampionsEVs: isChampionsGame,
+    });
     const savedText = slots[selectedIndex]?.pasteText;
     if (currentText && currentText !== savedText) {
       const action = await confirm<SaveEditResponse>({
@@ -131,7 +134,9 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
     enqueueExclusive(async () => {
       const prevIndex = selectedIndex;
       const prevSaved = slots[prevIndex]?.pasteText;
-      const currentText = calcPokemon?.exportToPasteText();
+      const currentText = calcPokemon?.exportToPasteText({
+        useChampionsEVs: isChampionsGame,
+      });
       if (currentText && currentText !== prevSaved) {
         const decision = await ensureSaveCurrentIfDirty();
         if (decision === "edit") {
@@ -161,7 +166,9 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
     enqueueExclusive(async () => {
       const prevIndex = selectedIndex;
       const prevSaved = slots[prevIndex]?.pasteText;
-      const currentText = calcPokemon?.exportToPasteText();
+      const currentText = calcPokemon?.exportToPasteText({
+        useChampionsEVs: isChampionsGame,
+      });
       if (!currentText && !prevSaved) return;
       if (currentText && currentText !== prevSaved) {
         const decision = await ensureSaveCurrentIfDirty();
@@ -215,7 +222,9 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const exportTeamToClipboard = async (): Promise<boolean> => {
     const prevIndex = selectedIndex;
     const prevSaved = slots[prevIndex]?.pasteText;
-    const currentText = calcPokemon?.exportToPasteText();
+    const currentText = calcPokemon?.exportToPasteText({
+      useChampionsEVs: isChampionsGame,
+    });
     let decision: SaveEditResponse | "none" = "none";
     if (currentText && currentText !== prevSaved) {
       decision = await ensureSaveCurrentIfDirty();
@@ -270,7 +279,9 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const importTeamFromClipboard = async (): Promise<boolean> => {
     const prevIndex = selectedIndex;
     const prevSaved = slots[prevIndex]?.pasteText;
-    const currentText = calcPokemon?.exportToPasteText();
+    const currentText = calcPokemon?.exportToPasteText({
+      useChampionsEVs: isChampionsGame,
+    });
     if (currentText && currentText !== prevSaved) {
       const decision = await ensureSaveCurrentIfDirty();
       if (decision === "edit") {
@@ -284,7 +295,9 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
     if (!text) return false;
     return await runExclusive(async () => {
       try {
-        const pokemons = Pokemon.importFromPasteText(currentGen, text);
+        const pokemons = Pokemon.importFromPasteText(currentGen, text, {
+          useChampionsEVs: isChampionsGame,
+        });
         if (!pokemons || pokemons.length === 0) return false;
 
         setSlots((prev) => {
@@ -297,7 +310,9 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
             if (!pokemons[i]) continue;
             const pokemon = pokemons[i];
             tmp[i] = {
-              pasteText: pokemon.exportToPasteText(),
+              pasteText: pokemon.exportToPasteText({
+                useChampionsEVs: isChampionsGame,
+              }),
               imgURL: ShowdownDataService.getPokemonImgUrl(
                 pokemon.species.name
               ),

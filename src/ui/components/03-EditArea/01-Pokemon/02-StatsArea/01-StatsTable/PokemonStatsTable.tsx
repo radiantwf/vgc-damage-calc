@@ -20,10 +20,39 @@ import { computeStat } from "../../../../../../utils/stats.utils";
 import { useTranslation } from "react-i18next";
 import { AppPinyin } from "../../../../../../utils/app.pinyin";
 import { useLanguage } from "../../../../../../contexts/LanguageContext";
+import { useFormats } from "../../../../../../contexts/FormatsContext";
+
+const CHAMPIONS_EV_TOTAL = 66;
+const CHAMPIONS_EV_MAX = 32;
+const CHAMPIONS_EV_STEP = 1;
+const STANDARD_EV_TOTAL = 508;
+const STANDARD_EV_MAX = 252;
+const STANDARD_EV_STEP = 4;
+
+const championsDisplayEvToActualEv = (displayEv: number): number => {
+  const normalized = Math.max(0, Math.floor(displayEv));
+  if (normalized === 0) {
+    return 0;
+  }
+  return normalized * 8 - 4;
+};
+
+const championsActualEvToDisplayEv = (actualEv: number): number => {
+  const normalized = Math.max(0, Math.floor(actualEv));
+  if (normalized === 0) {
+    return 0;
+  }
+  if (normalized <= 4) {
+    return 1;
+  }
+  return Math.min(CHAMPIONS_EV_MAX, Math.floor((normalized + 4) / 8));
+};
 
 const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
   const { t, i18n } = useTranslation();
   const { language } = useLanguage();
+  const { currentGame } = useFormats();
+  const isChampionsGame = currentGame === "Champions";
   // 获取Pokemon状态
   const {
     pokemonSpecies,
@@ -63,6 +92,9 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
 
   // 定义属性顺序
   const statOrder: StatID[] = ["hp", "atk", "def", "spa", "spd", "spe"];
+  const evTotalLimit = isChampionsGame ? CHAMPIONS_EV_TOTAL : STANDARD_EV_TOTAL;
+  const evPerStatMax = isChampionsGame ? CHAMPIONS_EV_MAX : STANDARD_EV_MAX;
+  const evStep = isChampionsGame ? CHAMPIONS_EV_STEP : STANDARD_EV_STEP;
   const tabBase = isAttacker ? 320000 : 330000;
   const statsTabStartIndex = tabBase + 100;
   const natureTabIndex = statsTabStartIndex;
@@ -91,10 +123,65 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
   }, [pokemonSpecies]);
 
   // 计算努力值剩余点数
+  const actualEvToDisplayEv = useCallback(
+    (actualEv: number): number => {
+      if (!isChampionsGame) {
+        return actualEv;
+      }
+      return championsActualEvToDisplayEv(actualEv);
+    },
+    [isChampionsGame],
+  );
+
+  const displayEvToActualEv = useCallback(
+    (displayEv: number): number => {
+      if (!isChampionsGame) {
+        return displayEv;
+      }
+      return championsDisplayEvToActualEv(displayEv);
+    },
+    [isChampionsGame],
+  );
+
+  const totalDisplayedEvs = useMemo(() => {
+    return statOrder.reduce((sum, statId) => {
+      return sum + actualEvToDisplayEv(evs[statId] ?? 0);
+    }, 0);
+  }, [actualEvToDisplayEv, evs, statOrder]);
+
   const remainingEvs = useMemo(() => {
-    const totalEvs = Object.values(evs).reduce((sum, ev) => sum + ev, 0);
-    return 508 - totalEvs;
-  }, [evs]);
+    return evTotalLimit - totalDisplayedEvs;
+  }, [evTotalLimit, totalDisplayedEvs]);
+
+  const getAllowedMaxDisplayEvForStat = useCallback((_statId: StatID): number => {
+    return evPerStatMax;
+  }, [evPerStatMax]);
+
+  const getDisplayMaxEvForStat = useCallback(
+    (_statId: StatID): number => {
+      return evPerStatMax;
+    },
+    [evPerStatMax],
+  );
+
+  const clampDisplayEvForStat = useCallback(
+    (statId: StatID, value: number): number => {
+      const normalizedValue = Math.max(0, Math.floor(value));
+      return Math.min(normalizedValue, getAllowedMaxDisplayEvForStat(statId));
+    },
+    [getAllowedMaxDisplayEvForStat],
+  );
+
+  const updateStatDisplayEv = useCallback(
+    (statId: StatID, value: number) => {
+      const clampedDisplayEv = clampDisplayEvForStat(statId, value);
+      setEvs({
+        ...evs,
+        [statId]: displayEvToActualEv(clampedDisplayEv),
+      });
+    },
+    [clampDisplayEvForStat, displayEvToActualEv, evs, setEvs],
+  );
 
   const totalBaseStatsOriginal = useMemo(() => {
     return Object.values(baseStats).reduce((sum, stat) => sum + stat, 0);
@@ -426,7 +513,9 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
   }, [nature]);
 
   return (
-    <div className="ps_ta-table">
+    <div
+      className={`ps_ta-table ${isChampionsGame ? "ps_ta-table-hide-iv" : ""}`}
+    >
       <div className="ps_ta-table-title">
         <div className="ps_ta-title-tag"></div>
         <div />
@@ -453,6 +542,8 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
       </div>
       {statOrder.map((statId, idx) => {
         const ev = evs[statId] ?? 0;
+        const displayEv = actualEvToDisplayEv(ev);
+        const displayEvMax = getDisplayMaxEvForStat(statId);
         const isPlus = statId !== "hp" && nature.plus === statId;
         const isMinus = statId !== "hp" && nature.minus === statId;
         const signFromNature =
@@ -464,9 +555,9 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
             ? manualSign || (suppressNatureSigns ? "" : signFromNature)
             : "";
         const evDisplay =
-          ev === 0 && signForDisplay
+          displayEv === 0 && signForDisplay
             ? signForDisplay
-            : `${ev}${signForDisplay}`;
+            : `${displayEv}${signForDisplay}`;
         const colorClass = isPlus
           ? "ps_ta-color-plus"
           : isMinus
@@ -600,18 +691,13 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
             <div className="ps_ta-row-ev-slider">
               <Slider
                 min={0}
-                max={252}
-                step={4}
-                value={evs[statId]}
+                max={displayEvMax}
+                step={evStep}
+                value={displayEv}
                 onChange={(value) => {
-                  // Slider 仅处理数值变化，不处理 +/- 性格符号编辑
                   const numValue =
                     typeof value === "number" ? value : Number(value) || 0;
-                  const clamped = Math.min(Math.max(numValue, 0), 252);
-                  setEvs({
-                    ...evs,
-                    [statId]: clamped,
-                  });
+                  updateStatDisplayEv(statId, numValue);
                 }}
                 tabIndex={sliderTabStart + idx}
               />
@@ -620,8 +706,11 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
               <EVInput
                 value={evDisplay}
                 min={0}
-                max={252}
-                step={4}
+                max={displayEvMax}
+                step={evStep}
+                normalizeNumericValue={(value) =>
+                  clampDisplayEvForStat(statId, value)
+                }
                 allowPlusMinus={statId !== "hp"}
                 onIncrement={() => {
                   arrowEVChangeRef.current[statId] = true;
@@ -638,7 +727,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                   const currentStat = computeStat({
                     base,
                     iv,
-                    ev: startEV,
+                    ev: displayEvToActualEv(startEV),
                     level,
                     statId: statId,
                     nature: statId !== "hp" ? nature : undefined,
@@ -649,7 +738,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                       const nextStat = computeStat({
                         base,
                         iv,
-                        ev,
+                        ev: displayEvToActualEv(ev),
                         level,
                         statId: statId,
                         nature: statId !== "hp" ? nature : undefined,
@@ -664,7 +753,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                       const nextStat = computeStat({
                         base,
                         iv,
-                        ev,
+                        ev: displayEvToActualEv(ev),
                         level,
                         statId: statId,
                         nature: statId !== "hp" ? nature : undefined,
@@ -682,7 +771,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                       const statAtEv = computeStat({
                         base,
                         iv,
-                        ev,
+                        ev: displayEvToActualEv(ev),
                         level,
                         statId: statId,
                         nature: statId !== "hp" ? nature : undefined,
@@ -704,11 +793,7 @@ const PokemonStatsTable: React.FC<EditAreaProps> = ({ isAttacker }) => {
                   const parsed =
                     numParsed === "" ? NaN : parseInt(numParsed, 10);
                   const numValue = !isNaN(parsed) ? parsed : 0;
-                  const clamped = Math.min(Math.max(numValue, 0), 252);
-                  setEvs({
-                    ...evs,
-                    [statId]: clamped,
-                  });
+                  updateStatDisplayEv(statId, numValue);
                   const isArrowChange =
                     arrowEVChangeRef.current[statId] === true;
                   if (isArrowChange) {

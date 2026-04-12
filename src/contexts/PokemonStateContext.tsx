@@ -184,7 +184,8 @@ const DefenderStateContext = createContext<PokemonStateContextType | undefined>(
 
 // 创建通用的状态逻辑Hook
 const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
-  const { currentGen } = useFormats();
+  const { currentGen, currentGame } = useFormats();
+  const isChampionsGame = currentGame === "Champions";
 
   // 获取 metaBuildsUsageList 从 PokemonMovesetsContext
   const { metaBuildsUsageList, setDisableAutoSelect } = usePokemonMovesets(
@@ -612,7 +613,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   const exportPokemonToClipboard = useCallback(async (): Promise<boolean> => {
     const p = calcPokemon;
     if (!p) return false;
-    const text = p.exportToPasteText();
+    const text = p.exportToPasteText({ useChampionsEVs: isChampionsGame });
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text);
@@ -622,13 +623,15 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     } catch {
       return false;
     }
-  }, [calcPokemon]);
+  }, [calcPokemon, isChampionsGame]);
 
   const importPokemonFromPasteText = useCallback(
     async (text: string) => {
       try {
         if (!text) return false;
-        const list = Pokemon.importFromPasteText(currentGen, text);
+        const list = Pokemon.importFromPasteText(currentGen, text, {
+          useChampionsEVs: isChampionsGame,
+        });
         const p = list[0];
         if (!p) return false;
         const species = ShowdownDataService.getPokemonBaseInfo(p.species.name);
@@ -702,7 +705,14 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         return false;
       }
     },
-    [currentGen, calcPokemon, pokemonId, setDisableAutoSelect, setPokemonName]
+    [
+      currentGen,
+      calcPokemon,
+      isChampionsGame,
+      pokemonId,
+      setDisableAutoSelect,
+      setPokemonName,
+    ]
   );
 
   const importPokemonFromClipboard = useCallback(async (): Promise<boolean> => {

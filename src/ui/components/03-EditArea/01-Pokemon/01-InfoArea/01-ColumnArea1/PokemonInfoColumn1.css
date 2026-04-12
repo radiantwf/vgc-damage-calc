@@ -96,6 +96,11 @@
   width: 42px;
 }
 
+.pi_col1-pokemon-unavailable {
+  color: var(--text-disabled) !important;
+  opacity: 0.6;
+}
+
 /* hover状态下的使用率颜色 */
 .sdd-dropdown-item:hover .pi_col1-pokemon-dropdown-usage {
   color: var(--accent-primary);
@@ -106,6 +111,12 @@
 .sdd-dropdown-item.sdd-selected .pi_col1-pokemon-dropdown-usage {
   color: var(--accent-primary);
   opacity: 0.7;
+}
+
+.sdd-dropdown-item:hover .pi_col1-pokemon-unavailable,
+.sdd-dropdown-item.sdd-selected .pi_col1-pokemon-unavailable {
+  color: var(--text-disabled) !important;
+  opacity: 0.6 !important;
 }
 
 /* 宝可梦下拉菜单容器样式 */

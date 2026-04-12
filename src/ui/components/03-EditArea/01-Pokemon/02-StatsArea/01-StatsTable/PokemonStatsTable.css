@@ -6,6 +6,19 @@
   width: 550px;
 }
 
+.ps_ta-table.ps_ta-table-hide-iv .ps_ta-table-title {
+  grid-template-columns: 30px 16.25px 30px 16.25px 0 16.25px 170px 26.25px 240px;
+}
+
+.ps_ta-table.ps_ta-table-hide-iv .ps_ta-row {
+  grid-template-columns: 30px 16.25px 20px 10px 0 20px 150px 8px 48px 20px 30px 12px 45px 12px 30px 15px 25px 15px 40px;
+}
+
+.ps_ta-table.ps_ta-table-hide-iv .ps_ta-title-iv,
+.ps_ta-table.ps_ta-table-hide-iv .ps_ta-row-iv {
+  display: none;
+}
+
 .ps_ta-table-title {
   display: grid;
   width: 100%;

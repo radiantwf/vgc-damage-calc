@@ -63,7 +63,8 @@ const DefenderMovesetsContext = createContext<
 // 通用的Movesets逻辑Hook（与 PokemonStateContext 使用相同的侧标识）
 const usePokemonMovesetsLogic = (pokemonId?: string) => {
   const { pokemonUsageList } = usePokemonUsage();
-  const [disableAutoSelect, setDisableAutoSelect] = useState(false);
+  const [disableAutoSelect, setDisableAutoSelectState] = useState(false);
+  const disableAutoSelectRef = useRef(false);
 
   const [itemsUsageList, setItemsUsageList] = useState<
     MovesetsUsage[] | undefined
@@ -113,6 +114,11 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
     undefined
   );
 
+  const setDisableAutoSelect = useCallback((disable: boolean) => {
+    disableAutoSelectRef.current = disable;
+    setDisableAutoSelectState(disable);
+  }, []);
+
   useEffect(() => {
     const handler = (ev: Event) => {
       const e = ev as CustomEvent<{
@@ -155,11 +161,21 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
     setChaosSpread2Data([]);
   }, []);
 
+  const resetUsageListUpdatedFlags = useCallback(() => {
+    setItemsUsageListUpdated(false);
+    setMovesUsageListUpdated(false);
+    setTeratypesUsageListUpdated(false);
+    setAbilitiesUsageListUpdated(false);
+    setMetaBuildsUsageListUpdated(false);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
-    const _disableAutoSelect = disableAutoSelect;
+    const _disableAutoSelect = disableAutoSelectRef.current;
     if (_disableAutoSelect) {
+      disableAutoSelectRef.current = false;
       setDisableAutoSelect(false);
+      resetUsageListUpdatedFlags();
     }
     if (!rootFormeSpecies) {
       lastMovesetsParamsRef.current = "";
@@ -167,9 +183,15 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
       return;
     }
     // 生成参数标识符，用于检测是否为重复调用
-    const paramsKey = `${currentReg}-${currentRule}-${currentMonthTag}-${currentCutline}-${
+    const paramsKey = `${currentReg || ""}-${currentRule || ""}-${currentMonthTag || ""}-${currentCutline || ""}-${
       rootFormeSpecies!.value.name
     }`;
+    const hasSelectionParams = Boolean(
+      currentReg &&
+        currentRule &&
+        currentMonthTag &&
+        currentCutline
+    );
 
     // 如果参数相同，跳过调用
     if (lastMovesetsParamsRef.current === paramsKey) {
@@ -178,14 +200,7 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
 
     lastMovesetsParamsRef.current = paramsKey;
     const run = async () => {
-      if (
-        !currentReg ||
-        !currentRule ||
-        !currentMonthTag ||
-        !currentCutline ||
-        !pokemonUsageList ||
-        pokemonUsageList.length === 0
-      ) {
+      if (hasSelectionParams && (!pokemonUsageList || pokemonUsageList.length === 0)) {
         setEmptyMovesets();
         if (!_disableAutoSelect) {
           setItemsUsageListUpdated(true);
@@ -198,6 +213,7 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
       }
 
       if (
+        hasSelectionParams &&
         !pokemonUsageList.find(
           (usage) => usage.pokemon === rootFormeSpecies.value.name
         )
@@ -209,6 +225,8 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
       const pokemon = rootFormeSpecies.value.name;
 
       try {
+        setLoading(true);
+        setError(null);
         const statsService = new ShowdownStatsService();
 
         // 并行获取所有类型的数据
@@ -221,49 +239,49 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
           chaosSpread2,
         ] = await Promise.all([
           statsService.getMovesetsData(
-            currentReg,
-            currentRule,
-            currentMonthTag,
-            currentCutline,
+            currentReg || "",
+            currentRule || "",
+            currentMonthTag || "",
+            currentCutline || "",
             pokemon,
             MovesetType.Item
           ),
           statsService.getMovesetsData(
-            currentReg,
-            currentRule,
-            currentMonthTag,
-            currentCutline,
+            currentReg || "",
+            currentRule || "",
+            currentMonthTag || "",
+            currentCutline || "",
             pokemon,
             MovesetType.Move
           ),
           statsService.getMovesetsData(
-            currentReg,
-            currentRule,
-            currentMonthTag,
-            currentCutline,
+            currentReg || "",
+            currentRule || "",
+            currentMonthTag || "",
+            currentCutline || "",
             pokemon,
             MovesetType.TeraType
           ),
           statsService.getMovesetsData(
-            currentReg,
-            currentRule,
-            currentMonthTag,
-            currentCutline,
+            currentReg || "",
+            currentRule || "",
+            currentMonthTag || "",
+            currentCutline || "",
             pokemon,
             MovesetType.Ability
           ),
           statsService.getChaosSpreads1Data(
-            currentReg,
-            currentRule,
-            currentMonthTag,
-            currentCutline,
+            currentReg || "",
+            currentRule || "",
+            currentMonthTag || "",
+            currentCutline || "",
             pokemon
           ),
           statsService.getChaosSpreads2Data(
-            currentReg,
-            currentRule,
-            currentMonthTag,
-            currentCutline,
+            currentReg || "",
+            currentRule || "",
+            currentMonthTag || "",
+            currentCutline || "",
             pokemon
           ),
         ]);
@@ -322,7 +340,11 @@ const usePokemonMovesetsLogic = (pokemonId?: string) => {
     currentRule,
     currentMonthTag,
     currentCutline,
+    pokemonUsageList,
     rootFormeSpecies,
+    resetUsageListUpdatedFlags,
+    setEmptyMovesets,
+    setDisableAutoSelect,
   ]);
 
   const chaosSpread2 = useMemo(() => {

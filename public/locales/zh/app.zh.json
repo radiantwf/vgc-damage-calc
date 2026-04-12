@@ -2,6 +2,7 @@
   "languageChineseName": "简体中文",
   "languageEnglishName": "English",
   "languageJapaneseName": "日本語",
+  "game": "游戏",
   "reg": "赛制",
   "month": "月份",
   "rule": "规则",
@@ -20,6 +21,10 @@
   "theme": "主题",
   "reportBug": "报告问题",
   "githubRepo": "GitHub仓库",
+  "formatGame": {
+    "SV": "朱／紫",
+    "Champions": "冠军"
+  },
   "pokemon": {
     "name": "宝可梦",
     "selectPokemon": "选择宝可梦",

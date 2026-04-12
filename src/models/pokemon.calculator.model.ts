@@ -31,6 +31,31 @@ const statsPasteMap: Record<StatID, string> = {
   spe: "Spe",
 };
 
+interface PasteTextOptions {
+  useChampionsEVs?: boolean;
+}
+
+const CHAMPIONS_EV_TOTAL = 66;
+
+const championsDisplayEvToActualEv = (displayEv: number): number => {
+  const normalized = Math.max(0, Math.floor(displayEv));
+  if (normalized === 0) {
+    return 0;
+  }
+  return normalized * 8 - 4;
+};
+
+const championsActualEvToDisplayEv = (actualEv: number): number => {
+  const normalized = Math.max(0, Math.floor(actualEv));
+  if (normalized === 0) {
+    return 0;
+  }
+  if (normalized <= 4) {
+    return 1;
+  }
+  return Math.floor((normalized + 4) / 8);
+};
+
 export class Pokemon extends CalculatorPokemon {
   nameProp?: string | undefined;
   settingTeraType?: TypeName | undefined;
@@ -51,8 +76,9 @@ export class Pokemon extends CalculatorPokemon {
     return new Move(this.gen, "(No Move)", options);
   }
 
-  public exportToPasteText(): string {
+  public exportToPasteText(options?: PasteTextOptions): string {
     let finalText = "";
+    const useChampionsEVs = options?.useChampionsEVs === true;
 
     // 宝可梦名称和道具
     finalText = this.name + (this.item ? " @ " + this.item : "") + "\n";
@@ -75,7 +101,10 @@ export class Pokemon extends CalculatorPokemon {
       const evsArray: string[] = [];
 
       for (const stat in this.evs) {
-        const ev = this.evs[stat as StatID] || 0;
+        const rawEv = this.evs[stat as StatID] || 0;
+        const ev = useChampionsEVs
+          ? championsActualEvToDisplayEv(rawEv)
+          : rawEv;
         if (ev > 0) {
           evsArray.push(ev + " " + statsPasteMap[stat as StatID]);
         }
@@ -122,7 +151,11 @@ export class Pokemon extends CalculatorPokemon {
     return finalText.trim();
   }
 
-  static importFromPasteText(gen: number, pasteText: string): Pokemon[] {
+  static importFromPasteText(
+    gen: number,
+    pasteText: string,
+    options?: PasteTextOptions
+  ): Pokemon[] {
     const rows = pasteText.split("\n");
     const pokemonList: Pokemon[] = [];
 
@@ -150,7 +183,7 @@ export class Pokemon extends CalculatorPokemon {
       if (parsed?.gender) currentPoke.gender = parsed.gender as GenderName;
       currentPoke.nameProp = row;
 
-      Pokemon.parseStats(currentPoke, rows, i + 1);
+      Pokemon.parseStats(currentPoke, rows, i + 1, options);
       Pokemon.parseMoves(currentPoke, rows, i);
       pokemonList.push(currentPoke);
     }
@@ -236,10 +269,12 @@ export class Pokemon extends CalculatorPokemon {
   private static parseStats(
     currentPoke: Pokemon,
     rows: string[],
-    offset: number
+    offset: number,
+    options?: PasteTextOptions
   ): void {
     currentPoke.nature = "Serious";
     currentPoke.level = 50;
+    const useChampionsEVs = options?.useChampionsEVs === true;
 
     for (let x = offset; x < offset + 9 && x < rows.length; x++) {
       const currentRow = rows[x] ? rows[x].split(/[/:]/) : [];
@@ -267,6 +302,16 @@ export class Pokemon extends CalculatorPokemon {
                 evs[stat] = parseInt(currentEV[0]);
               } catch (error) {
                 console.log(error);
+              }
+            }
+          }
+          if (useChampionsEVs) {
+            const importedTotal = Object.values(evs).reduce((sum, value) => {
+              return sum + value;
+            }, 0);
+            if (importedTotal <= CHAMPIONS_EV_TOTAL) {
+              for (const stat of Object.keys(evs) as StatID[]) {
+                evs[stat] = championsDisplayEvToActualEv(evs[stat] || 0);
               }
             }
           }

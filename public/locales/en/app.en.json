@@ -2,6 +2,7 @@
   "languageChineseName": "简体中文",
   "languageEnglishName": "English",
   "languageJapaneseName": "日本語",
+  "game": "Game",
   "reg": "Format",
   "month": "Month",
   "rule": "Rule",
@@ -20,6 +21,10 @@
   "theme": "Theme",
   "reportBug": "Report Bug",
   "githubRepo": "GitHub Repository",
+  "formatGame": {
+    "SV": "Scarlet / Violet",
+    "Champions": "Champions"
+  },
   "pokemon": {
     "name": "Pokémon",
     "selectPokemon": "Select Pokémon",
