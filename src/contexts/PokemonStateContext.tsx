@@ -170,6 +170,7 @@ interface PokemonStateContextType {
   exportPokemonToClipboard: () => Promise<boolean>;
   importPokemonFromPasteText: (text: string) => Promise<boolean>;
   importPokemonFromClipboard: () => Promise<boolean>;
+  setDisableAutoSelect: (disable: boolean) => void;
 }
 
 // 攻击者Context
@@ -635,9 +636,6 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         const p = list[0];
         if (!p) return false;
         const species = ShowdownDataService.getPokemonBaseInfo(p.species.name);
-        if (calcPokemon?.species?.name !== species?.name) {
-          setDisableAutoSelect(true);
-        }
         const expectedRoot = ShowdownDataService.getRootSpecies(species);
         const sideTag =
           pokemonId === "pokemon-attacker"
@@ -722,11 +720,12 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
           ? await navigator.clipboard.readText()
           : "";
       if (!text) return false;
+      setDisableAutoSelect(true);
       return await importPokemonFromPasteText(text);
     } catch {
       return false;
     }
-  }, [importPokemonFromPasteText]);
+  }, [importPokemonFromPasteText, setDisableAutoSelect]);
 
   // 根据当前侧的设置构造 Move（考虑多段命中与暴击）
   const getMove = useCallback(
@@ -945,6 +944,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     exportPokemonToClipboard,
     importPokemonFromPasteText,
     importPokemonFromClipboard,
+    setDisableAutoSelect,
   };
 };
 

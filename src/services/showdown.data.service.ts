@@ -131,9 +131,8 @@ export class ShowdownDataService {
           Gen9PreDlcItems,
           Gen9Dlc1Items,
         );
-        ShowdownDataService.rawLearnsetsCache = ShowdownDataService.mergeTables(
-          BaseLearnsets,
-        );
+        ShowdownDataService.rawLearnsetsCache =
+          ShowdownDataService.mergeTables(BaseLearnsets);
         ShowdownDataService.rawMovesCache = ShowdownDataService.mergeTables(
           BaseShowdownMoves,
           Gen9PreDlcMoves,
@@ -552,7 +551,9 @@ export class ShowdownDataService {
   }
 
   static get DisplaySpeciesList(): SpeciesDataTable {
-    const permittedPokemons = new Set(ShowdownDataService.getPermittedPokemons());
+    const permittedPokemons = new Set(
+      ShowdownDataService.getPermittedPokemons(),
+    );
     return Object.fromEntries(
       Object.entries(ShowdownDataService.RawPokedex)
         .filter(
@@ -621,11 +622,13 @@ export class ShowdownDataService {
               typeof learnsetValue[0] === "string"
                 ? learnsetValue[0]
                 : undefined;
-            return !!firstSource &&
+            return (
+              !!firstSource &&
               firstSource.startsWith(currentGenString) &&
               (firstSource.length === currentGenString.length ||
                 firstSource.charCodeAt(currentGenString.length) < 0x30 ||
-                firstSource.charCodeAt(currentGenString.length) > 0x39);
+                firstSource.charCodeAt(currentGenString.length) > 0x39)
+            );
           },
         );
         if (hasCurrentGenLearnset) {
@@ -643,17 +646,8 @@ export class ShowdownDataService {
   static getPokemonLearnsets(species?: SpeciesData): string[] | undefined {
     species = ShowdownDataService.getRootSpecies(species);
     if (species) {
-      const gen = species!.gen || AppConstants.Gen;
+      const gen = this.getCurrentGen();
       let key = species!.name.toLowerCase().replace(/[^a-z0-9]/g, "");
-      if (
-        new Set([
-          "ogerponhearthflame",
-          "ogerponwellspring",
-          "ogerponcornerstone",
-        ]).has(key)
-      )
-        key = "ogerpon";
-
       const rawLearnsets = ShowdownDataService.RawLearnsets;
       const learnsets =
         rawLearnsets[key as keyof typeof rawLearnsets]?.learnset;
@@ -668,6 +662,27 @@ export class ShowdownDataService {
             )
             .map(([key, _]) => key)
         : [];
+      if (species?.changesFrom) {
+        const changesFromKey = species
+          .changesFrom.toLowerCase()
+          .replace(/[^a-z0-9]/g, "");
+        const changesFromLearnsets =
+          ShowdownDataService.RawLearnsets[
+            changesFromKey as keyof typeof ShowdownDataService.RawLearnsets
+          ]?.learnset;
+        if (changesFromLearnsets) {
+          const changesFromGenLearnSets = Object.entries(changesFromLearnsets)
+            .filter(
+              ([_, value]) =>
+                value[0].startsWith(gen.toString()) &&
+                (value[0].length === gen.toString().length ||
+                  value[0].charCodeAt(gen.toString().length) < 0x30 ||
+                  value[0].charCodeAt(gen.toString().length) > 0x39),
+            )
+            .map(([key, _]) => key);
+          genLearnSets.push(...changesFromGenLearnSets);
+        }
+      }
       let proKey = species.prevo;
       while (proKey) {
         proKey = proKey.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -688,6 +703,27 @@ export class ShowdownDataService {
             )
             .map(([key, _]) => key);
           genLearnSets.push(...proGenLearnSets);
+        }
+        if (pro?.changesFrom) {
+          const changesFromKey = pro
+            .changesFrom.toLowerCase()
+            .replace(/[^a-z0-9]/g, "");
+          const changesFromLearnsets =
+            ShowdownDataService.RawLearnsets[
+              changesFromKey as keyof typeof ShowdownDataService.RawLearnsets
+            ]?.learnset;
+          if (changesFromLearnsets) {
+            const changesFromGenLearnSets = Object.entries(changesFromLearnsets)
+              .filter(
+                ([_, value]) =>
+                  value[0].startsWith(gen.toString()) &&
+                  (value[0].length === gen.toString().length ||
+                    value[0].charCodeAt(gen.toString().length) < 0x30 ||
+                    value[0].charCodeAt(gen.toString().length) > 0x39),
+              )
+              .map(([key, _]) => key);
+            genLearnSets.push(...changesFromGenLearnSets);
+          }
         }
         proKey = pro.prevo;
       }

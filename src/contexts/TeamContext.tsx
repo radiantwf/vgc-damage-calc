@@ -40,6 +40,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
     importPokemonFromPasteText,
     pokemonSpecies,
     setPokemonName,
+    setDisableAutoSelect,
   } = usePokemonState(side === "attacker");
   const { currentGen, currentGame } = useFormats();
   const isChampionsGame = currentGame === "Champions";
@@ -48,6 +49,8 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const [slots, setSlots] = useState<(TeamSlot | undefined)[]>([undefined]);
 
   const opQueueRef = useRef<Promise<void>>(Promise.resolve());
+
+  const lastImportedPasteTextRef = useRef<string | undefined>(undefined);
 
   async function runExclusive<T>(fn: () => Promise<T> | T): Promise<T> {
     const prev = opQueueRef.current;
@@ -102,6 +105,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
         ],
       });
       if (action === "save") {
+        lastImportedPasteTextRef.current = currentText;
         setSlots((prev) => {
           const next = [...prev];
           next[selectedIndex] = {
@@ -122,12 +126,20 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
       return;
     }
     const pasteText = slots[selectedIndex]?.pasteText;
+    
+    // 避免在保存当前配置时重复导入
+    if (pasteText === lastImportedPasteTextRef.current) {
+      return;
+    }
+    lastImportedPasteTextRef.current = pasteText;
+
     if (pasteText) {
+      setDisableAutoSelect(true);
       importPokemonFromPasteText(pasteText);
     } else {
       setPokemonName(undefined);
     }
-  }, [selectedIndex, slots]);
+  }, [selectedIndex, slots, setDisableAutoSelect, importPokemonFromPasteText, setPokemonName]);
 
   const selectSlot = (index: number) => {
     if (selectedIndex === index) return;
@@ -235,6 +247,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
         await runExclusive(async () => {
           const t = slots[prevIndex]?.pasteText;
           if (t && t.length > 0) {
+            setDisableAutoSelect(true);
             importPokemonFromPasteText(t);
           } else {
             setPokemonName(undefined);
