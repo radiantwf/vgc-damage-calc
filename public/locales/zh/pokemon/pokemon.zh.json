@@ -725,7 +725,7 @@
     "sigilyph": "象征鸟",
     "yamask": "哭哭面具",
     "yamask-galar": "哭哭面具-伽勒尔的样子",
-    "cofagrigus": "死神棺",
+    "cofagrigus": "迭失棺",
     "tirtouga": "原盖海龟",
     "carracosta": "肋骨海龟",
     "archen": "始祖小鸟",
@@ -982,7 +982,7 @@
     "komala": "树枕尾熊",
     "turtonator": "爆焰龟兽",
     "togedemaru": "托戈德玛尔",
-    "mimikyu": "谜拟Q",
+    "mimikyu": "谜拟丘",
     "bruxish": "磨牙彩皮鱼",
     "drampa": "老翁龙",
     "drampa-mega": "超级老翁龙",
@@ -1095,7 +1095,7 @@
     "sirfetchd": "葱游兵",
     "mr.rime": "踏冰人偶",
     "mrrime": "踏冰人偶",
-    "runerigus": "死神板",
+    "runerigus": "迭失板",
     "milcery": "小仙奶",
     "alcremie": "霜奶仙",
     "alcremie-gmax": "霜奶仙-超极巨化",
@@ -1303,5 +1303,8 @@
     "tatsugiri-mega": "超级米立龙",
     "tatsugiri-curly-mega": "超级米立龙-上弓姿势",
     "tatsugiri-droopy-mega": "超级米立龙-下垂姿势",
-    "tatsugiri-stretchy-mega": "超级米立龙-平挺姿势"
+    "tatsugiri-stretchy-mega": "超级米立龙-平挺姿势",
+    "gourgeist-large": "南瓜怪人-大",
+    "gourgeist-super": "南瓜怪人-特大",
+    "gourgeist-small": "南瓜怪人-小"
 }

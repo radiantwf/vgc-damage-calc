@@ -132,7 +132,7 @@ export class ShowdownStatsService {
 
     // 获取宝可梦的完整名称而不是tag
     const { ShowdownDataService } = await import("./showdown.data.service");
-    const pokemonData = ShowdownDataService.getPokemonBaseInfo(pokemon);
+    const pokemonData = ShowdownDataService.getPokemonSpecies(pokemon);
     const pokemonName = pokemonData?.name || pokemon;
     const encodedPokemon = encodeURIComponent(pokemonName);
 
@@ -209,7 +209,7 @@ export class ShowdownStatsService {
 
     // 获取宝可梦的完整名称而不是tag
     const { ShowdownDataService } = await import("./showdown.data.service");
-    const pokemonData = ShowdownDataService.getPokemonBaseInfo(pokemon);
+    const pokemonData = ShowdownDataService.getPokemonSpecies(pokemon);
     const pokemonName = pokemonData?.name || pokemon;
     const encodedPokemon = encodeURIComponent(pokemonName);
 
@@ -263,7 +263,7 @@ export class ShowdownStatsService {
 
     // 获取宝可梦的完整名称而不是tag
     const { ShowdownDataService } = await import("./showdown.data.service");
-    const pokemonData = ShowdownDataService.getPokemonBaseInfo(pokemon);
+    const pokemonData = ShowdownDataService.getPokemonSpecies(pokemon);
     const pokemonName = pokemonData?.name || pokemon;
     const encodedPokemon = encodeURIComponent(pokemonName);
 

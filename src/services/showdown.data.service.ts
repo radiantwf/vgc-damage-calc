@@ -290,7 +290,7 @@ export class ShowdownDataService {
    * @param pokemonName 宝可梦名称
    * @returns 宝可梦基础信息对象，如果未找到则返回undefined
    */
-  static getPokemonBaseInfo(pokemonName?: string): SpeciesData | undefined {
+  static getPokemonSpecies(pokemonName?: string): SpeciesData | undefined {
     if (!pokemonName || pokemonName === "") {
       return undefined;
     }
@@ -330,10 +330,18 @@ export class ShowdownDataService {
     }
     if (root.name === "Meowstic-F") {
       const meosticFMega =
-        ShowdownDataService.getPokemonBaseInfo("Meowstic-F-Mega");
+        ShowdownDataService.getPokemonSpecies("Meowstic-F-Mega");
       if (meosticFMega) {
         speciesData[meosticFMega.name] = meosticFMega;
       }
+    } else if (root.name === "Floette-Eternal") {
+      const floetteMega = ShowdownDataService.getPokemonSpecies("Floette-Mega");
+      if (floetteMega) {
+        speciesData[floetteMega.name] = floetteMega;
+      }
+    } else if (root.name === "Floette") {
+      delete speciesData["Floette-Eternal"];
+      delete speciesData["Floette-Mega"];
     } else if (root.name.startsWith("Ogerpon")) {
       speciesData = {};
       let base = root.name;
@@ -341,14 +349,14 @@ export class ShowdownDataService {
         base = root.name.slice(0, -5);
       }
       if (base === "Ogerpon" || base === "Ogerpon-Teal") {
-        let poke = ShowdownDataService.getPokemonBaseInfo("Ogerpon");
+        let poke = ShowdownDataService.getPokemonSpecies("Ogerpon");
         if (poke) speciesData[poke.name] = poke;
-        poke = ShowdownDataService.getPokemonBaseInfo("Ogerpon-Teal-Tera");
+        poke = ShowdownDataService.getPokemonSpecies("Ogerpon-Teal-Tera");
         if (poke) speciesData[poke.name] = poke;
       } else {
-        let poke = ShowdownDataService.getPokemonBaseInfo(base);
+        let poke = ShowdownDataService.getPokemonSpecies(base);
         if (poke) speciesData[poke.name] = poke;
-        poke = ShowdownDataService.getPokemonBaseInfo(`${base}-Tera`);
+        poke = ShowdownDataService.getPokemonSpecies(`${base}-Tera`);
         if (poke) speciesData[poke.name] = poke;
       }
     }
@@ -356,7 +364,7 @@ export class ShowdownDataService {
 
     const temp = Object.entries(speciesData).map(([key, _]) => key);
     temp.forEach((key) => {
-      const gmaxSpecies = ShowdownDataService.getPokemonBaseInfo(key + "-Gmax");
+      const gmaxSpecies = ShowdownDataService.getPokemonSpecies(key + "-Gmax");
       if (gmaxSpecies) {
         speciesData[gmaxSpecies.name] = gmaxSpecies;
       }
@@ -381,38 +389,43 @@ export class ShowdownDataService {
         break;
       }
       let species;
-      if (
+      if (rootSpecies.name === "Floette-Eternal") {
+        return rootSpecies;
+      } else if (rootSpecies.name === "Floette-Mega") {
+        species = ShowdownDataService.getPokemonSpecies("Floette-Eternal");
+        return species;
+      } else if (
         rootSpecies.name.endsWith("-M-Mega") ||
         rootSpecies.name.endsWith("-Mega-X") ||
         rootSpecies.name.endsWith("-Mega-Y") ||
         rootSpecies.name.endsWith("-Mega-Z")
       ) {
-        species = ShowdownDataService.getPokemonBaseInfo(
+        species = ShowdownDataService.getPokemonSpecies(
           rootSpecies.name.slice(0, -7),
         );
       } else if (rootSpecies.name.endsWith("-Curly-Mega")) {
-        species = ShowdownDataService.getPokemonBaseInfo(
+        species = ShowdownDataService.getPokemonSpecies(
           rootSpecies.name.slice(0, -11),
         );
       } else if (
         rootSpecies.name.endsWith("-Gmax") ||
         rootSpecies.name.endsWith("-Mega")
       ) {
-        species = ShowdownDataService.getPokemonBaseInfo(
+        species = ShowdownDataService.getPokemonSpecies(
           rootSpecies.name.slice(0, -5),
         );
       } else if (rootSpecies.name.startsWith("Ogerpon")) {
         if (rootSpecies.name.endsWith("-Teal-Tera")) {
-          species = ShowdownDataService.getPokemonBaseInfo(
+          species = ShowdownDataService.getPokemonSpecies(
             rootSpecies.name.slice(0, -10),
           );
         } else if (rootSpecies.name.endsWith("-Tera")) {
-          species = ShowdownDataService.getPokemonBaseInfo(
+          species = ShowdownDataService.getPokemonSpecies(
             rootSpecies.name.slice(0, -5),
           );
         }
       } else {
-        species = ShowdownDataService.getPokemonBaseInfo(
+        species = ShowdownDataService.getPokemonSpecies(
           rootSpecies.baseSpecies,
         );
       }
@@ -550,6 +563,17 @@ export class ShowdownDataService {
     );
   }
 
+  static getBaseSpeciesName(species?: SpeciesData): string | undefined {
+        var baseSpeciesName =
+          species?.baseSpecies;
+        if (species?.name === "Floette-Mega") {
+          baseSpeciesName = "Floette-Eternal";
+        }else if (species?.name === "Floette-Eternal"){
+          baseSpeciesName = undefined;
+        }
+    return baseSpeciesName;
+  }
+
   static get DisplaySpeciesList(): SpeciesDataTable {
     const permittedPokemons = new Set(
       ShowdownDataService.getPermittedPokemons(),
@@ -593,12 +617,16 @@ export class ShowdownDataService {
           const aMatched =
             permittedPokemons.has(aKey) ||
             permittedPokemons.has(
-              ShowdownDataService.normalizeDexId(aValue.baseSpecies),
+              ShowdownDataService.normalizeDexId(
+                ShowdownDataService.getBaseSpeciesName(aValue),
+              ),
             );
           const bMatched =
             permittedPokemons.has(bKey) ||
             permittedPokemons.has(
-              ShowdownDataService.normalizeDexId(bValue.baseSpecies),
+              ShowdownDataService.normalizeDexId(
+                ShowdownDataService.getBaseSpeciesName(bValue),
+              ),
             );
           if (aMatched === bMatched) {
             return 0;
@@ -663,8 +691,8 @@ export class ShowdownDataService {
             .map(([key, _]) => key)
         : [];
       if (species?.changesFrom) {
-        const changesFromKey = species
-          .changesFrom.toLowerCase()
+        const changesFromKey = species.changesFrom
+          .toLowerCase()
           .replace(/[^a-z0-9]/g, "");
         const changesFromLearnsets =
           ShowdownDataService.RawLearnsets[
@@ -705,8 +733,8 @@ export class ShowdownDataService {
           genLearnSets.push(...proGenLearnSets);
         }
         if (pro?.changesFrom) {
-          const changesFromKey = pro
-            .changesFrom.toLowerCase()
+          const changesFromKey = pro.changesFrom
+            .toLowerCase()
             .replace(/[^a-z0-9]/g, "");
           const changesFromLearnsets =
             ShowdownDataService.RawLearnsets[

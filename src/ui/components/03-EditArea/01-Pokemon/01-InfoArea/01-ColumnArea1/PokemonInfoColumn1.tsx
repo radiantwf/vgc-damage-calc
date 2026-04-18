@@ -46,7 +46,7 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
         const translatedName = translatePokemon(pokemonName) || "";
 
         const usageData = pokemonUsageList.find(
-          (usage) => usage.pokemon === pokemonName
+          (usage) => usage.pokemon === pokemonName,
         );
         const usagePercentage = usageData?.usage || 0;
 
@@ -99,13 +99,15 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
           </div>
         );
       },
-    [translatePokemon, pokemonUsageList]
+    [translatePokemon, pokemonUsageList],
   );
 
   // 获取宝可梦列表并根据使用率排序
   const pokemonDropdownItems: DropdownItem[] = useMemo(() => {
     const speciesData = ShowdownDataService.DisplaySpeciesList;
-    const permittedPokemonIds = new Set(ShowdownDataService.getPermittedPokemons());
+    const permittedPokemonIds = new Set(
+      ShowdownDataService.getPermittedPokemons(),
+    );
     const normalizePokemonId = (value?: string): string =>
       (value ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -127,29 +129,28 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
     return sortedPokemonList.map((pokemonKey) => {
       const pokemonData = speciesData[pokemonKey as keyof typeof speciesData];
       const pokemonName = pokemonData?.name || pokemonKey;
+      const baseSpeciesName = ShowdownDataService.getBaseSpeciesName(
+        pokemonData as SpeciesData,
+      );
       const isAvailable =
         permittedPokemonIds.has(pokemonKey) ||
-        permittedPokemonIds.has(
-          normalizePokemonId(
-            (pokemonData as SpeciesData | undefined)?.baseSpecies || pokemonName
-          )
-        );
+        permittedPokemonIds.has(normalizePokemonId(baseSpeciesName));
       const pokemonTypes = (pokemonData as SpeciesData).types || "";
       const pokemonTypeString = `${pokemonTypes.join(" ")}|${pokemonTypes
         .reverse()
         .join(" ")}`;
       const translatePokemonTypes = pokemonTypes.map((type: string) =>
-        translateType(type)
+        translateType(type),
       );
       const translatePokemonTypesShort = pokemonTypes.map((type: string) =>
-        translateTypeShort(type)
+        translateTypeShort(type),
       );
       const translatePokemonTypesString = `${translatePokemonTypes.join(
-        ""
+        "",
       )}|${translatePokemonTypes
         .reverse()
         .join("")}|${translatePokemonTypesShort.join(
-        ""
+        "",
       )}|${translatePokemonTypesShort.reverse().join("")}`;
       const translatedName = translatePokemon(pokemonName) || "";
       const searchKey = `${pokemonName}|${translatedName}${
@@ -196,7 +197,9 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
       return [];
     }
 
-    const speciesData = ShowdownDataService.getSubSpeciesDataTable(rootFormeSpecies.value);
+    const speciesData = ShowdownDataService.getSubSpeciesDataTable(
+      rootFormeSpecies.value,
+    );
     if (!speciesData) {
       return [];
     }
@@ -221,17 +224,17 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
         .reverse()
         .join(" ")}`;
       const translatePokemonTypes = pokemonTypes.map((type: string) =>
-        translateType(type)
+        translateType(type),
       );
       const translatePokemonTypesShort = pokemonTypes.map((type: string) =>
-        translateTypeShort(type)
+        translateTypeShort(type),
       );
       const translatePokemonTypesString = `${translatePokemonTypes.join(
-        ""
+        "",
       )}|${translatePokemonTypes
         .reverse()
         .join("")}|${translatePokemonTypesShort.join(
-        ""
+        "",
       )}|${translatePokemonTypesShort.reverse().join("")}`;
       const translatedName = translatePokemon(pokemonName) || "";
       const searchKey = `${pokemonName}|${translatedName}${
@@ -267,7 +270,7 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
           alt={translatePokemon(pokemonSpecies?.value.name || "")}
           src={ShowdownDataService.getPokemonImgUrl(
             pokemonSpecies?.value.name,
-            false
+            false,
           )}
           onError={(e) => {
             const img = e.target as HTMLImageElement;

@@ -635,7 +635,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         });
         const p = list[0];
         if (!p) return false;
-        const species = ShowdownDataService.getPokemonBaseInfo(p.species.name);
+        const species = ShowdownDataService.getPokemonSpecies(p.species.name);
         const expectedRoot = ShowdownDataService.getRootSpecies(species);
         const sideTag =
           pokemonId === "pokemon-attacker"
