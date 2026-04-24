@@ -175,12 +175,12 @@ interface PokemonStateContextType {
 
 // 攻击者Context
 const AttackerStateContext = createContext<PokemonStateContextType | undefined>(
-  undefined
+  undefined,
 );
 
 // 防御者Context
 const DefenderStateContext = createContext<PokemonStateContextType | undefined>(
-  undefined
+  undefined,
 );
 
 // 创建通用的状态逻辑Hook
@@ -193,13 +193,13 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     pokemonId === "pokemon-attacker"
       ? true
       : pokemonId === "pokemon-defender"
-      ? false
-      : undefined
+        ? false
+        : undefined,
   );
 
   // calcPokemon状态
   const [calcPokemon, setCalcPokemon] = useState<Pokemon | undefined>(
-    undefined
+    undefined,
   );
 
   // 宝可梦基本信息
@@ -225,22 +225,25 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   }, []);
 
   // setPokemonForme函数：将unknown转换为SpeciesData
-  const setPokemonForme = useCallback((value: unknown) => {
-    const forme = value as SpeciesData | undefined;
-    setPokemonSpecies(forme ? { value: forme } : undefined);
-    if (!forme) {
-      setRootFormeSpecies(undefined);
-      return;
-    }
-    const root = ShowdownDataService.getRootSpecies(forme);
-    if (!root) {
-      setRootFormeSpecies(undefined);
-      return;
-    }
-    if (root.name !== rootFormeSpecies?.value.name) {
-      setRootFormeSpecies({ value: root });
-    }
-  }, [rootFormeSpecies]);
+  const setPokemonForme = useCallback(
+    (value: unknown) => {
+      const forme = value as SpeciesData | undefined;
+      setPokemonSpecies(forme ? { value: forme } : undefined);
+      if (!forme) {
+        setRootFormeSpecies(undefined);
+        return;
+      }
+      const root = ShowdownDataService.getRootSpecies(forme);
+      if (!root) {
+        setRootFormeSpecies(undefined);
+        return;
+      }
+      if (root.name !== rootFormeSpecies?.value.name) {
+        setRootFormeSpecies({ value: root });
+      }
+    },
+    [rootFormeSpecies],
+  );
 
   useEffect(() => {
     clearPokemonState();
@@ -255,7 +258,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
           species: pokemonSpecies,
           root: rootFormeSpecies,
         },
-      })
+      }),
     );
     window.dispatchEvent(
       new CustomEvent("pokemonRootCleared", {
@@ -263,13 +266,13 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
           side: sideTag,
           root: rootFormeSpecies,
         },
-      })
+      }),
     );
   }, [rootFormeSpecies]);
 
   // 特性
   const [ability, setAbilityState] = useState<AbilityData | undefined>(
-    undefined
+    undefined,
   );
   const setAbility = useCallback((value: unknown) => {
     setAbilityState(value as AbilityData | undefined);
@@ -323,16 +326,16 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
 
   // 招式命中次数（用于多段攻击），默认 undefined 不覆盖第三方库的命中次数
   const [move1Hits, setMove1HitsState] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const [move2Hits, setMove2HitsState] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const [move3Hits, setMove3HitsState] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const [move4Hits, setMove4HitsState] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const setMove1Hits = useCallback((hits: number | undefined) => {
     setMove1HitsState(hits);
@@ -381,7 +384,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
             spa: 0,
             spd: 0,
             spe: 0,
-          } as StatsTable)
+          } as StatsTable),
       );
       setIvs({
         hp: 31,
@@ -468,7 +471,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
 
   // 宝可梦基本信息
   const [currentHP, setCurrentHPState] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const setCurrentHP = useCallback((value: number | undefined) => {
     if (currentHP && currentHP >= maxHP) {
@@ -530,7 +533,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
       const gen = Generations.get(currentGen as GenerationNum);
       const baseStats: StatsTable<number> = {} as StatsTable<number>;
       for (const stat of Object.keys(
-        modifiedBaseStats
+        modifiedBaseStats,
       ) as (keyof StatsTable)[]) {
         if (modifiedBaseStats[stat] >= 0) {
           baseStats[stat] = modifiedBaseStats[stat];
@@ -551,7 +554,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
       newBoosts.spd += intimidatedBoosts.spd;
       newBoosts.spe += intimidatedBoosts.spe;
       for (const stat of Object.keys(
-        newBoosts
+        newBoosts,
       ) as (keyof StatsExceptHPTable)[]) {
         if (newBoosts[stat] < -6) {
           newBoosts[stat] = -6;
@@ -560,7 +563,14 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
           newBoosts[stat] = 6;
         }
       }
-      const newCalcPokemon = new Pokemon(gen, pokemonSpecies.value.name, {
+      let pokemonName = pokemonSpecies.value.name;
+      if (pokemonName === "Aegislash") {
+        pokemonName = "Aegislash-Blade";
+        baseStats["atk"] = baseStats["def"];
+        baseStats["spa"] = baseStats["spd"];
+      }
+
+      const newCalcPokemon = new Pokemon(gen, pokemonName, {
         level: level,
         ability: ability?.name,
         item: item && item.name !== "(No Item)" ? item?.name : undefined,
@@ -650,7 +660,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
             settled = true;
             window.removeEventListener(
               "pokemonRootCleared",
-              handler as EventListener
+              handler as EventListener,
             );
             resolve();
           };
@@ -672,7 +682,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
           };
           window.addEventListener(
             "pokemonRootCleared",
-            handler as EventListener
+            handler as EventListener,
           );
           window.setTimeout(finish, 1000);
         });
@@ -680,7 +690,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         await waitClearPromise;
         setLevel(50);
         setNatureState(
-          ShowdownDataService.getNatureByString(p.nature || "serious")
+          ShowdownDataService.getNatureByString(p.nature || "serious"),
         );
         if (!p.ability) {
           p.ability = ShowdownDataService.NoAbility.name as AbilityName;
@@ -710,7 +720,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
       pokemonId,
       setDisableAutoSelect,
       setPokemonName,
-    ]
+    ],
   );
 
   const importPokemonFromClipboard = useCallback(async (): Promise<boolean> => {
@@ -782,7 +792,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
       move3z,
       move4z,
       criticalHit,
-    ]
+    ],
   );
 
   // 监听所有属性变化并更新calcPokemon
@@ -983,7 +993,7 @@ export const useAttackerState = (): PokemonStateContextType => {
   const context = useContext(AttackerStateContext);
   if (context === undefined) {
     throw new Error(
-      "useAttackerState must be used within an AttackerStateProvider"
+      "useAttackerState must be used within an AttackerStateProvider",
     );
   }
   return context;
@@ -994,7 +1004,7 @@ export const useDefenderState = (): PokemonStateContextType => {
   const context = useContext(DefenderStateContext);
   if (context === undefined) {
     throw new Error(
-      "useDefenderState must be used within a DefenderStateProvider"
+      "useDefenderState must be used within a DefenderStateProvider",
     );
   }
   return context;
@@ -1002,7 +1012,7 @@ export const useDefenderState = (): PokemonStateContextType => {
 
 // 兼容性Hook - 根据isAttacker参数返回对应的状态
 export const usePokemonState = (
-  isAttacker?: boolean
+  isAttacker?: boolean,
 ): PokemonStateContextType => {
   const attackerContext = useContext(AttackerStateContext);
   const defenderContext = useContext(DefenderStateContext);
@@ -1010,14 +1020,14 @@ export const usePokemonState = (
   if (isAttacker === true) {
     if (attackerContext === undefined) {
       throw new Error(
-        "usePokemonState with isAttacker=true must be used within an AttackerStateProvider"
+        "usePokemonState with isAttacker=true must be used within an AttackerStateProvider",
       );
     }
     return attackerContext;
   } else if (isAttacker === false) {
     if (defenderContext === undefined) {
       throw new Error(
-        "usePokemonState with isAttacker=false must be used within a DefenderStateProvider"
+        "usePokemonState with isAttacker=false must be used within a DefenderStateProvider",
       );
     }
     return defenderContext;
@@ -1029,7 +1039,7 @@ export const usePokemonState = (
       return defenderContext;
     } else {
       throw new Error(
-        "usePokemonState must be used within an AttackerStateProvider or DefenderStateProvider"
+        "usePokemonState must be used within an AttackerStateProvider or DefenderStateProvider",
       );
     }
   }

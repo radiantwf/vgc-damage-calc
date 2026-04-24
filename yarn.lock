@@ -7479,26 +7479,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:^3.0.5":
-  version: 3.0.5
-  resolution: "i18next-http-backend@npm:3.0.5"
+"i18next-http-backend@npm:^3.0.6":
+  version: 3.0.6
+  resolution: "i18next-http-backend@npm:3.0.6"
   dependencies:
     cross-fetch: "npm:4.1.0"
-  checksum: 10c0/ca26555be3487eb34c0b2dc879ba8ddbca426fd3fbd2568cb15cd1a8e2c641b8196cb8420fabb09762d1752d612895e54847f5e7db630a75a82301e7e829a90e
+  checksum: 10c0/b799c4c49943cca5f215d8a7b563785e194e9061724213d5942c049855ed00a340a2478a305dd66cac59cf5fc32c90cbfe3d62c7063a59ad4401948196d430a5
   languageName: node
   linkType: hard
 
-"i18next@npm:^26.0.6":
-  version: 26.0.6
-  resolution: "i18next@npm:26.0.6"
-  dependencies:
-    "@babel/runtime": "npm:^7.29.2"
+"i18next@npm:^26.0.8":
+  version: 26.0.8
+  resolution: "i18next@npm:26.0.8"
   peerDependencies:
     typescript: ^5 || ^6
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/3a2d81352393657fabf9903990e6cc3232ff4935ea131ecf6326d80aaf8394f7cb1099a00cad705ecc5b083ffcba80f45e6e77dfa2ca16c64ce1ef4c9de2d9c9
+  checksum: 10c0/48bcb3f8731a17ab586d7371a6d4d155cd8eeaec1a237466d21ffe7b32a6e98432481171a53b0583b397b4ac65c3342b8a64d01cd672b6a1686028329d0c0d8e
   languageName: node
   linkType: hard
 
@@ -11474,21 +11472,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^7.14.1":
-  version: 7.14.1
-  resolution: "react-router-dom@npm:7.14.1"
+"react-router-dom@npm:^7.14.2":
+  version: 7.14.2
+  resolution: "react-router-dom@npm:7.14.2"
   dependencies:
-    react-router: "npm:7.14.1"
+    react-router: "npm:7.14.2"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
-  checksum: 10c0/aa454069e43263c812424a92fc9c099083034e438f9747efc45558885ec48b3dba46ab55bf84b164feac08c24a65e6ac91a3f8a137fd5e79077c95b8c14ca50a
+  checksum: 10c0/94b294e7e47247d52358415a4b76e629680485b81bbaa649138b04277580276370f0b380b84bb1ffda21c330ed8c5cb36fb77ba5e173dcaaf06b5bfc44d9ac4e
   languageName: node
   linkType: hard
 
-"react-router@npm:7.14.1":
-  version: 7.14.1
-  resolution: "react-router@npm:7.14.1"
+"react-router@npm:7.14.2":
+  version: 7.14.2
+  resolution: "react-router@npm:7.14.2"
   dependencies:
     cookie: "npm:^1.0.1"
     set-cookie-parser: "npm:^2.6.0"
@@ -11498,7 +11496,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10c0/57b86accdc50b917509e4b21f821dd432807e3f62b5e978d0d5174fc7da3798ce57ce896cbf70a8ba8f6f3d53515a07021e759829908239b4eee34c804695120
+  checksum: 10c0/83dc99158ff4c6513f2df358ca0e9920ba836672e491824ff9cf8d2218049db2859fafce147834f5c990cfe516cfdeefb5ffc3f49f917c0b30c2b22697ed96b7
   languageName: node
   linkType: hard
 
@@ -13654,16 +13652,16 @@ __metadata:
     "@types/react": "npm:^19.2.14"
     "@types/react-dom": "npm:^19.2.3"
     "@types/react-router-dom": "npm:^5.3.3"
-    i18next: "npm:^26.0.6"
+    i18next: "npm:^26.0.8"
     i18next-browser-languagedetector: "npm:^8.2.1"
-    i18next-http-backend: "npm:^3.0.5"
+    i18next-http-backend: "npm:^3.0.6"
     pinyin-pro: "npm:^3.28.1"
     react: "npm:^19.2.5"
     react-confirm: "npm:^0.5.0"
     react-dom: "npm:^19.2.5"
     react-i18next: "npm:^17.0.4"
     react-icons: "npm:^5.6.0"
-    react-router-dom: "npm:^7.14.1"
+    react-router-dom: "npm:^7.14.2"
     react-scripts: "npm:^5.0.1"
     typescript: "npm:^6.0.3"
   languageName: unknown

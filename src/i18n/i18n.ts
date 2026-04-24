@@ -109,6 +109,7 @@ i18n
     // 命名空间配置
     ns: ['app', 'calc/damage_result'],
     defaultNS: 'app',
+    fallbackNS: ['app', 'calc/damage_result'],
 
     // 键分隔符（支持嵌套键）
     keySeparator: '.',
@@ -116,26 +117,5 @@ i18n
     // 禁用命名空间分隔符
     nsSeparator: false,
   });
-
-const mergeIntoDefault = (lng: Language) => {
-  const defaultNS = 'app';
-  const order: ReadonlyArray<string> = ['app', 'calc/damage_result'];
-  order.forEach(ns => {
-    if (i18n.hasResourceBundle(lng, ns)) {
-      const bundle = i18n.getResourceBundle(lng, ns) as Record<string, unknown>;
-      i18n.addResourceBundle(lng, defaultNS, bundle, true, true);
-    }
-  });
-};
-
-i18n.loadNamespaces(['app', 'calc/damage_result']).then(() => {
-  mergeIntoDefault(i18n.language as Language);
-});
-
-i18n.on('languageChanged', (lng) => {
-  i18n.loadNamespaces(['app', 'calc/damage_result']).then(() => {
-    mergeIntoDefault(lng as Language);
-  });
-});
 
 export default i18n;
