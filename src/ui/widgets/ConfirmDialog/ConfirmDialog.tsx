@@ -25,7 +25,6 @@ function ConfirmDialog<Response>(
   return (
     <div
       className={`cf-dialog-overlay ${show ? "cf-show" : "cf-hide"}`}
-      aria-hidden={!show}
     >
       <div className="cf-dialog" role="dialog" aria-modal="true">
         <div className="cf-dialog-message">{t(messageKey)}</div>

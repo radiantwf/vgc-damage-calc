@@ -5,6 +5,7 @@ import SearchableDropdown, {
 } from "../../../../../widgets/SearchableDropdown/SearchableDropdown";
 import { usePokemonState } from "../../../../../../contexts/PokemonStateContext";
 import { usePokemonMovesets } from "../../../../../../contexts/PokemonMovesetsContext";
+import { useTeamState } from "../../../../../../contexts/TeamContext";
 import { useMemo, useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePokemonTranslation } from "../../../../../../contexts/usePokemonTranslation";
@@ -12,11 +13,16 @@ import { MetaBuildsUsage } from "../../../../../../models/showndown.model";
 import { computeStat } from "../../../../../../utils/stats.utils";
 import { t } from "i18next";
 import { FiCopy, FiClipboard } from "react-icons/fi";
+import { confirmable, ContextAwareConfirmation } from "react-confirm";
+import ConfirmDialog, {
+  type ConfirmPayload,
+} from "../../../../../widgets/ConfirmDialog/ConfirmDialog";
 
 const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
   const tabBase = isAttacker ? 320000 : 330000;
   // 获取Pokemon状态
   const {
+    displayPokemon,
     pokemonSpecies,
     evs,
     meta,
@@ -25,8 +31,12 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
     exportPokemonToClipboard,
     importPokemonFromClipboard,
   } = usePokemonState(isAttacker);
+  const { slots, selectedIndex } = useTeamState(isAttacker);
 
   const [toastText, setToastText] = useState<string | null>(null);
+  const confirm = ContextAwareConfirmation.createConfirmation(
+    confirmable(ConfirmDialog)
+  ) as <R>(payload: ConfirmPayload<R>) => Promise<R>;
 
   const handleCopy = useCallback(async () => {
     const ok = await exportPokemonToClipboard();
@@ -34,9 +44,31 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
   }, [exportPokemonToClipboard]);
 
   const handleImport = useCallback(async () => {
+    const currentText = displayPokemon?.exportToPasteText();
+    const savedText = slots[selectedIndex]?.pasteText;
+    if (currentText && currentText !== savedText) {
+      const shouldDiscard = await confirm<boolean>({
+        messageKey: "pokemon.confirmImportDiscard.message",
+        buttons: [
+          {
+            labelKey: "pokemon.confirmImportDiscard.discard",
+            value: true,
+            tone: "danger",
+          },
+          {
+            labelKey: "pokemon.confirmImportDiscard.cancel",
+            value: false,
+            tone: "default",
+          },
+        ],
+      });
+      if (!shouldDiscard) {
+        return;
+      }
+    }
     const ok = await importPokemonFromClipboard();
     if (ok) setToastText(t("pokemon.importSuccess"));
-  }, [importPokemonFromClipboard]);
+  }, [confirm, displayPokemon, importPokemonFromClipboard, selectedIndex, slots]);
 
   useEffect(() => {
     if (!toastText) return;

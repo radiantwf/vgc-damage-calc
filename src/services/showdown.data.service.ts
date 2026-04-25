@@ -48,7 +48,8 @@ import {
   Field,
 } from "../vendors/smogon/damage-calc-dist/index";
 import type { Damage } from "../vendors/smogon/damage-calc-dist/result";
-import { Pokemon, Result } from "../models/pokemon.calculator.model";
+import { Pokemon } from "../models/pokemon.calculator.model";
+import { Result } from "../models/result.calculator.model";
 
 // 工具函数
 export class ShowdownDataService {

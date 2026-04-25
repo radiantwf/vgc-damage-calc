@@ -45,6 +45,7 @@ export type BoostedStatOption =
 
 interface PokemonStateContextType {
   // 宝可梦实例
+  displayPokemon: Pokemon | undefined;
   calcPokemon: Pokemon | undefined;
 
   // 宝可梦基本信息
@@ -197,7 +198,11 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         : undefined,
   );
 
-  // calcPokemon状态
+  // Pokemon状态
+  const [displayPokemon, setDisplayPokemon] = useState<Pokemon | undefined>(
+    undefined,
+  );
+
   const [calcPokemon, setCalcPokemon] = useState<Pokemon | undefined>(
     undefined,
   );
@@ -525,6 +530,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   const updateCalcPokemon = useCallback(() => {
     if (!pokemonSpecies) {
       setCalcPokemon(undefined);
+      setDisplayPokemon(undefined);
       return;
     }
 
@@ -564,13 +570,8 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         }
       }
       let pokemonName = pokemonSpecies.value.name;
-      if (pokemonName === "Aegislash") {
-        pokemonName = "Aegislash-Blade";
-        baseStats["atk"] = baseStats["def"];
-        baseStats["spa"] = baseStats["spd"];
-      }
 
-      const newCalcPokemon = new Pokemon(gen, pokemonName, {
+      const displayPokemon = new Pokemon(gen, pokemonName, {
         level: level,
         ability: ability?.name,
         item: item && item.name !== "(No Item)" ? item?.name : undefined,
@@ -591,10 +592,42 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         moves: [move1?.name, move2?.name, move3?.name, move4?.name] as string[],
         overrides: { baseStats: baseStats },
       });
-      newCalcPokemon.settingTeraType = teraType;
-      setCalcPokemon(newCalcPokemon);
+
+      displayPokemon.settingTeraType = teraType;
+
+      if (pokemonName === "Aegislash") {
+        pokemonName = "Aegislash-Blade";
+        baseStats["atk"] = baseStats["def"];
+        baseStats["spa"] = baseStats["spd"];
+      }
+      const calcPokemon = new Pokemon(gen, pokemonName, {
+        level: level,
+        ability: ability?.name,
+        item: item && item.name !== "(No Item)" ? item?.name : undefined,
+        nature: nature?.name,
+        teraType: isTera ? teraType : undefined,
+        curHP: currentHP,
+        evs: evs,
+        ivs: ivs,
+        isDynamaxed: isDynamaxed,
+        status: status || undefined,
+        boosts: newBoosts,
+        boostedStat:
+          boostedStat !== "inactive" &&
+          (ability?.name === "Protosynthesis" ||
+            ability?.name === "Quark Drive")
+            ? boostedStat
+            : undefined,
+        moves: [move1?.name, move2?.name, move3?.name, move4?.name] as string[],
+        overrides: { baseStats: baseStats },
+      });
+      calcPokemon.settingTeraType = teraType;
+
+      setDisplayPokemon(displayPokemon);
+      setCalcPokemon(calcPokemon);
     } catch (error) {
       console.error("Error creating Pokemon:", error);
+      setDisplayPokemon(undefined);
       setCalcPokemon(undefined);
     }
   }, [
@@ -622,7 +655,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   ]);
 
   const exportPokemonToClipboard = useCallback(async (): Promise<boolean> => {
-    const p = calcPokemon;
+    const p = displayPokemon;
     if (!p) return false;
     const text = p.exportToPasteText({ useChampionsEVs: isChampionsGame });
     try {
@@ -634,7 +667,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     } catch {
       return false;
     }
-  }, [calcPokemon, isChampionsGame]);
+  }, [displayPokemon, isChampionsGame]);
 
   const importPokemonFromPasteText = useCallback(
     async (text: string) => {
@@ -715,7 +748,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     },
     [
       currentGen,
-      calcPokemon,
+      displayPokemon,
       isChampionsGame,
       pokemonId,
       setDisableAutoSelect,
@@ -740,22 +773,22 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   // 根据当前侧的设置构造 Move（考虑多段命中与暴击）
   const getMove = useCallback(
     (originalIndex: number): Move | undefined => {
-      if (!calcPokemon) return undefined;
+      if (!displayPokemon) return undefined;
       const hitsArray = [move1Hits, move2Hits, move3Hits, move4Hits];
       const bpArray = [move1BP, move2BP, move3BP, move4BP];
       const zArray = [move1z, move2z, move3z, move4z];
       const hits = hitsArray[originalIndex];
       const bp = bpArray[originalIndex];
       const z = zArray[originalIndex];
-      const m = calcPokemon.getMove(originalIndex);
+      const m = displayPokemon.getMove(originalIndex);
       if (!m) {
         return undefined;
       }
       if (item && item.name !== "(No Item)") {
         m.item = item?.name as ItemName;
       }
-      m.species = calcPokemon.species.name as SpeciesName;
-      m.ability = calcPokemon.ability;
+      m.species = displayPokemon.species.name as SpeciesName;
+      m.ability = displayPokemon.ability;
       if (hits) {
         m.hits = hits;
       }
@@ -778,7 +811,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
       return m;
     },
     [
-      calcPokemon,
+      displayPokemon,
       move1Hits,
       move2Hits,
       move3Hits,
@@ -873,6 +906,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   }, []);
 
   return {
+    displayPokemon,
     calcPokemon,
     pokemonSpecies,
     rootFormeSpecies,

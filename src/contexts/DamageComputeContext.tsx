@@ -11,11 +11,11 @@ import React, {
 import { useAttackerState, useDefenderState } from "./PokemonStateContext";
 import { useField, useFieldSide } from "./FieldContext";
 // 使用本地扩展的 Result（包含文本方法）
+import { Pokemon } from "../models/pokemon.calculator.model";
 import {
   Result,
   computeSideMoveResults,
-  Pokemon,
-} from "../models/pokemon.calculator.model";
+} from "../models/result.calculator.model";
 // ShowdownDataService 已由模型层使用，这里无需直接依赖
 
 // 直接以扩展 Result 作为展示数据来源（数组索引与原始招式索引一致）
@@ -35,7 +35,7 @@ interface DamageComputeContextType {
   // 根据侧+原始索引获取全局索引（供UI将每侧按钮的key映射为全局index）
   getGlobalIndexForSideOriginal: (
     isAttackerSide: boolean,
-    originalIndex: number
+    originalIndex: number,
   ) => number | undefined;
 
   // 每侧 4 个招式的计算结果数组（用于列表与详情展示）
@@ -124,6 +124,9 @@ export const DamageComputeProvider: React.FC<DamageComputeProviderProps> = ({
       const defPokemon = isAttackerSide
         ? defender.calcPokemon
         : attacker.calcPokemon;
+      const defPokemonSpecies = isAttackerSide
+        ? defender.pokemonSpecies
+        : attacker.pokemonSpecies;
       const field = getField();
       field.attackerSide = isAttackerSide
         ? attackerSideCtx.getSide()
@@ -131,32 +134,42 @@ export const DamageComputeProvider: React.FC<DamageComputeProviderProps> = ({
       field.defenderSide = isAttackerSide
         ? defenderSideCtx.getSide()
         : attackerSideCtx.getSide();
-      return computeSideMoveResults(
+      let rets = computeSideMoveResults(
         atkPokemon as Pokemon | undefined,
         defPokemon as Pokemon | undefined,
         (idx) =>
           isAttackerSide ? attacker.getMove(idx) : defender.getMove(idx),
-        field
+        field,
       );
+      if (rets && defPokemonSpecies?.value.name === "Aegislash") {
+        for (const ret of rets) {
+          if (ret) {
+            ret.overrideDefenderPokemonName = "Aegislash";
+          }
+        }
+      }
+      return rets;
     },
     [
       attacker.calcPokemon,
       defender.calcPokemon,
+      attacker.pokemonSpecies,
+      defender.pokemonSpecies,
       attackerSideCtx,
       defenderSideCtx,
       getField,
       attacker.getMove,
       defender.getMove,
-    ]
+    ],
   );
 
   const attackerSideResults = useMemo(
     () => computeSideResults(true),
-    [computeSideResults]
+    [computeSideResults],
   );
   const defenderSideResults = useMemo(
     () => computeSideResults(false),
-    [computeSideResults]
+    [computeSideResults],
   );
 
   const isAttackerSelected = useMemo(() => {
@@ -196,11 +209,11 @@ export const DamageComputeProvider: React.FC<DamageComputeProviderProps> = ({
         ? "attacker"
         : "defender";
       const foundIdx = allMoves.findIndex(
-        (m) => m.side === side && m.originalIndex === originalIndex
+        (m) => m.side === side && m.originalIndex === originalIndex,
       );
       return foundIdx >= 0 ? foundIdx : undefined;
     },
-    [allMoves]
+    [allMoves],
   );
 
   const value: DamageComputeContextType = {
@@ -224,7 +237,7 @@ export const useDamageCompute = (): DamageComputeContextType => {
   const context = useContext(DamageComputeContext);
   if (!context) {
     throw new Error(
-      "useDamageCompute must be used within a DamageComputeProvider"
+      "useDamageCompute must be used within a DamageComputeProvider",
     );
   }
   return context;

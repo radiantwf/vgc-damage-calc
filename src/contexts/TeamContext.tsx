@@ -36,7 +36,7 @@ const DefenderTeamContext = createContext<TeamState | undefined>(undefined);
 
 const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const {
-    calcPokemon,
+    displayPokemon,
     importPokemonFromPasteText,
     pokemonSpecies,
     setPokemonName,
@@ -79,7 +79,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const ensureSaveCurrentIfDirty = async (): Promise<
     SaveEditResponse | "none"
   > => {
-    const currentText = calcPokemon?.exportToPasteText({
+    const currentText = displayPokemon?.exportToPasteText({
       useChampionsEVs: isChampionsGame,
     });
     const savedText = slots[selectedIndex]?.pasteText;
@@ -146,7 +146,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
     enqueueExclusive(async () => {
       const prevIndex = selectedIndex;
       const prevSaved = slots[prevIndex]?.pasteText;
-      const currentText = calcPokemon?.exportToPasteText({
+      const currentText = displayPokemon?.exportToPasteText({
         useChampionsEVs: isChampionsGame,
       });
       if (currentText && currentText !== prevSaved) {
@@ -178,7 +178,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
     enqueueExclusive(async () => {
       const prevIndex = selectedIndex;
       const prevSaved = slots[prevIndex]?.pasteText;
-      const currentText = calcPokemon?.exportToPasteText({
+      const currentText = displayPokemon?.exportToPasteText({
         useChampionsEVs: isChampionsGame,
       });
       if (!currentText && !prevSaved) return;
@@ -234,7 +234,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const exportTeamToClipboard = async (): Promise<boolean> => {
     const prevIndex = selectedIndex;
     const prevSaved = slots[prevIndex]?.pasteText;
-    const currentText = calcPokemon?.exportToPasteText({
+    const currentText = displayPokemon?.exportToPasteText({
       useChampionsEVs: isChampionsGame,
     });
     let decision: SaveEditResponse | "none" = "none";
@@ -292,12 +292,26 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const importTeamFromClipboard = async (): Promise<boolean> => {
     const prevIndex = selectedIndex;
     const prevSaved = slots[prevIndex]?.pasteText;
-    const currentText = calcPokemon?.exportToPasteText({
+    const currentText = displayPokemon?.exportToPasteText({
       useChampionsEVs: isChampionsGame,
     });
     if (currentText && currentText !== prevSaved) {
-      const decision = await ensureSaveCurrentIfDirty();
-      if (decision === "edit") {
+      const shouldDiscard = await confirm<boolean>({
+        messageKey: "pokemon.confirmImportDiscard.message",
+        buttons: [
+          {
+            labelKey: "pokemon.confirmImportDiscard.discard",
+            value: true,
+            tone: "danger",
+          },
+          {
+            labelKey: "pokemon.confirmImportDiscard.cancel",
+            value: false,
+            tone: "default",
+          },
+        ],
+      });
+      if (!shouldDiscard) {
         return false;
       }
     }
@@ -312,29 +326,16 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
           useChampionsEVs: isChampionsGame,
         });
         if (!pokemons || pokemons.length === 0) return false;
-
-        setSlots((prev) => {
-          const tmp = [];
-          for (let i = 0; i < prev.length; i++) {
-            if (!prev[i]) continue;
-            tmp[i] = prev[i];
-          }
-          for (let i = 0; i < pokemons.length && i < 6; i++) {
-            if (!pokemons[i]) continue;
-            const pokemon = pokemons[i];
-            tmp[i] = {
-              pasteText: pokemon.exportToPasteText({
-                useChampionsEVs: isChampionsGame,
-              }),
-              imgURL: ShowdownDataService.getPokemonImgUrl(
-                pokemon.species.name
-              ),
-            };
-            if (tmp.length >= 6) break;
-          }
-          const next = tmp.slice(-6);
-          return next;
-        });
+        const nextSlots: (TeamSlot | undefined)[] = pokemons
+          .slice(0, 6)
+          .map((pokemon) => ({
+            pasteText: pokemon.exportToPasteText({
+              useChampionsEVs: isChampionsGame,
+            }),
+            imgURL: ShowdownDataService.getPokemonImgUrl(pokemon.species.name),
+          }));
+        setSelectedIndex(Math.max(0, Math.min(prevIndex, nextSlots.length - 1)));
+        setSlots(nextSlots);
 
         return true;
       } catch {
