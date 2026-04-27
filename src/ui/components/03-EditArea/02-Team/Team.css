@@ -4,45 +4,6 @@
   flex-direction: column;
 }
 
-/* 工具栏已合并到 team-grid 同行显示 */
-
-.team-action-icon {
-  position: relative;
-  width: 32px;
-  height: 32px;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.team-action-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.team-action-icon:hover {
-  color: var(--text-accent);
-}
-
-.team-action-icon__badge {
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  left: inherit;
-  padding: 0;
-  height: 14px;
-  line-height: 14px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-primary);
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 2;
-}
-
-.team-action-icon:hover .team-action-icon__badge {
-  color: var(--text-primary);
-}
-
 .p-team-attacker {
   align-items: start;
   padding: 5px 30px 20px 20px;
@@ -56,7 +17,7 @@
 .team-grid {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   gap: 10px;
   background-color: transparent;
@@ -64,25 +25,137 @@
   border-radius: 0;
 }
 
+.team-slots-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.team-drop-gap {
+  position: relative;
+  width: 14px;
+  height: 108px;
+  flex: 0 0 14px;
+}
+
+.team-drop-gap::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 34px;
+  left: 50%;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--accent-primary);
+  transform: translateX(-50%) scaleY(0.3);
+  opacity: 0;
+  transition: opacity 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+.team-drop-gap--visible::before {
+  opacity: 0.18;
+}
+
+.team-drop-gap--active::before {
+  opacity: 1;
+  transform: translateX(-50%) scaleY(1);
+  box-shadow: 0 0 0 4px var(--accent-color-alpha);
+}
+
+.team-slot-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  transition: opacity 120ms ease;
+}
+
+.team-slot-card--selected {
+  z-index: 1;
+}
+
+.team-slot-card--dragging {
+  opacity: 0.5;
+}
+
 .team-actions-col {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 6px;
+  gap: 8px;
   margin-left: auto;
 }
 
+.team-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--widget-background-color);
+  color: var(--button-text-color);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease,
+    background-color 120ms ease, border-color 120ms ease;
+  box-shadow: 0 1px 2px var(--shadow-light);
+}
+
+.team-action-button:hover {
+  transform: translateY(-1px);
+  background: var(--widget-hover-background-color);
+  border-color: var(--border-hover);
+  box-shadow: 0 6px 12px var(--shadow-heavy);
+}
+
+.team-action-button:active {
+  transform: translateY(0);
+  background: var(--widget-selected-background-color);
+  border-color: var(--border-active);
+}
+
+.team-action-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.team-action-button svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.team-copy {
+  color: var(--text-primary);
+}
+
+.team-copy:hover {
+  color: var(--text-primary);
+}
+
+.team-import {
+  color: var(--accent-primary);
+}
+
+.team-import:hover {
+  color: var(--accent-primary);
+}
+
 .team-slot {
+  position: relative;
   display: grid;
-  flex-direction: row;
-  align-items: flex-start;
   justify-content: center;
   width: 72px;
   height: 72px;
-  background: var(--bg-secondary);
+  background: var(--widget-background-color);
   border: 1px solid var(--border-color);
-  box-shadow: 2px 3px 6px var(--shadow-light);
+  box-shadow: 0 1px 2px var(--shadow-light);
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease,
     border-color 120ms ease, background-color 120ms ease;
@@ -91,9 +164,12 @@
   overflow: hidden;
 }
 
-.team-slot:hover {
-  transform: scale(1.06);
-  box-shadow: 3px 6px 10px var(--shadow-medium);
+.team-slot-card:hover .team-slot,
+.team-slot:focus-visible {
+  transform: translateY(-2px) scale(1.06);
+  background-color: var(--widget-hover-background-color);
+  border-color: var(--border-hover);
+  box-shadow: 0 6px 12px var(--shadow-heavy);
 }
 
 .team-slot:active {
@@ -101,18 +177,23 @@
 }
 
 .team-slot--selected {
-  border-color: var(--accent-primary);
-  border-width: 3px;
-  box-shadow: 4px 8px 14px var(--shadow-medium);
-  transform: scale(1.06);
+  border-color: var(--border-active);
+  border-width: 2px;
+  box-shadow: 0 4px 10px var(--shadow-heavy);
+  transform: translateY(-2px) scale(1.06);
+  background-color: var(--widget-selected-background-color);
+}
+
+.team-slot-card--selected:hover .team-slot,
+.team-slot--selected:focus-visible {
+  background-color: var(--widget-selected-background-color);
+  border-color: var(--border-active);
+  box-shadow: 0 6px 12px var(--shadow-heavy);
 }
 
 .team-slot:focus-visible {
-  box-shadow: 3px 6px 12px var(--shadow-medium), 3px 6px 12px var(--accent-color-alpha);
-}
-
-.team-slot--selected:not(.team-slot--empty) {
-  background-color: var(--widget-selected-background-color);
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .team-slot--empty {
@@ -139,11 +220,40 @@
   object-fit: contain;
   border-radius: 6px;
   user-select: none;
-  transition: transform 120ms ease;
+  transition: transform 160ms ease, filter 160ms ease;
 }
 
+.team-slot-card:hover .team-slot__image,
 .team-slot--selected .team-slot__image {
-  transform: scale(1.06);
+  transform: translateY(-1px) scale(1.06);
+  filter: drop-shadow(0 4px 8px var(--shadow-light));
+}
+
+.team-slot-card--selected:hover .team-slot__image {
+  transform: translateY(-2px) scale(1.14);
+}
+
+.team-slot__item {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  background: transparent;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px var(--shadow-light));
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.team-slot-card:hover .team-slot__item,
+.team-slot--selected .team-slot__item {
+  transform: scale(1.08);
+  filter: drop-shadow(0 4px 8px var(--shadow-medium));
+}
+
+.team-slot-card--selected:hover .team-slot__item {
+  transform: scale(1.16);
 }
 
 .team-slot__placeholder {
@@ -151,7 +261,7 @@
   height: 72px;
   border: 1px dashed var(--border-color);
   border-radius: 6px;
-  background-color: var(--bg-tertiary);
+  background-color: var(--widget-background-color);
 }
 
 .team-slot__new-tag {
@@ -169,22 +279,39 @@
   color: var(--text-muted);
 }
 
-.team-slot__delete {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  width: 24px;
-  height: 24px;
-  text-align: center;
-  border: 0;
+.team-slot__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--widget-background-color);
   color: var(--accent-danger);
   cursor: pointer;
-  z-index: 1;
+  opacity: 0.72;
+  transform: translateY(-2px);
+  transition: opacity 140ms ease, transform 140ms ease,
+    background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+  box-shadow: 0 1px 2px var(--shadow-light);
 }
 
-.team-slot__delete-icon {
-  width: 100%;
-  height: 100%;
+.team-slot-card:hover .team-slot__remove,
+.team-slot-card--selected .team-slot__remove {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.team-slot__remove:hover {
+  background: var(--widget-hover-background-color);
+  border-color: var(--accent-danger);
+  box-shadow: 0 6px 12px var(--shadow-heavy);
+}
+
+.team-slot__remove-icon {
+  width: 16px;
+  height: 16px;
 }
 
 .team-add {
@@ -196,8 +323,11 @@
   border: 1px dashed var(--border-color);
   border-radius: 6px;
   color: var(--text-color);
+  background: var(--widget-background-color);
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  transition: transform 120ms ease, box-shadow 120ms ease,
+    background-color 120ms ease, border-color 120ms ease;
+  box-shadow: 0 1px 2px var(--shadow-light);
 }
 
 .team-add-icon {
@@ -207,8 +337,10 @@
 }
 
 .team-add:hover {
-  transform: scale(1.06);
-  box-shadow: 0 4px 8px var(--shadow-medium);
+  transform: translateY(-1px) scale(1.04);
+  background-color: var(--widget-hover-background-color);
+  border-color: var(--border-hover);
+  box-shadow: 0 6px 12px var(--shadow-heavy);
 }
 
 .team-actions-toast {

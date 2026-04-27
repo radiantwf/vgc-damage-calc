@@ -12,7 +12,7 @@ import { usePokemonTranslation } from "../../../../../../contexts/usePokemonTran
 import { MetaBuildsUsage } from "../../../../../../models/showndown.model";
 import { computeStat } from "../../../../../../utils/stats.utils";
 import { t } from "i18next";
-import { FiCopy, FiClipboard } from "react-icons/fi";
+import { FiArrowLeft, FiCopy } from "react-icons/fi";
 import { confirmable, ContextAwareConfirmation } from "react-confirm";
 import ConfirmDialog, {
   type ConfirmPayload,
@@ -24,7 +24,6 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
   const {
     displayPokemon,
     pokemonSpecies,
-    evs,
     meta,
     setMeta,
     nature,
@@ -280,7 +279,12 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
     } else {
       setMeta(undefined);
     }
-  }, [metaBuildsUsageList]);
+  }, [
+    metaBuildsUsageList,
+    metaBuildsUsageListUpdated,
+    setMeta,
+    setMetaBuildsUsageListUpdated,
+  ]);
 
   // 计算：当存在已选性格，且 meta 未选中时，若 meta 列表存在该性格的标题项，则滚动到该性格处
   const scrollTargetValue = useMemo(() => {
@@ -326,26 +330,26 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
         tabIndex={tabBase + 200}
       />
       <div className="ps_meta-actions-toolbar">
-        <span
-          className="ps_meta-action-icon ps_meta-copy"
+        <button
+          type="button"
+          className="ps_meta-action-button ps_meta-import"
+          title={t("pokemon.importFromClipboard")}
+          aria-label={t("pokemon.importFromClipboard")}
+          onClick={handleImport}
+          tabIndex={tabBase + 202}
+        >
+          <FiArrowLeft />
+        </button>
+        <button
+          type="button"
+          className="ps_meta-action-button ps_meta-copy"
           title={t("pokemon.copyToClipboard")}
           aria-label={t("pokemon.copyToClipboard")}
-          role="button"
           onClick={handleCopy}
           tabIndex={tabBase + 201}
         >
           <FiCopy />
-        </span>
-        <span
-          className="ps_meta-action-icon ps_meta-import"
-          title={t("pokemon.importFromClipboard")}
-          aria-label={t("pokemon.importFromClipboard")}
-          role="button"
-          onClick={handleImport}
-          tabIndex={tabBase + 202}
-        >
-          <FiClipboard />
-        </span>
+        </button>
       </div>
       {toastText &&
         createPortal(

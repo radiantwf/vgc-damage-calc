@@ -23,6 +23,26 @@ export const DisplayDamage: React.FC<DisplayDamageProps> = ({ className }) => {
     ? t("damageResult.expandArrowUp")
     : t("damageResult.expandArrowDown");
 
+  const handleAmountsClick = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (!hasSegments) {
+        return;
+      }
+      const selection = window.getSelection();
+      const hasActiveSelection =
+        !!selection &&
+        !selection.isCollapsed &&
+        selection.rangeCount > 0 &&
+        event.currentTarget.contains(selection.anchorNode) &&
+        event.currentTarget.contains(selection.focusNode);
+      if (hasActiveSelection) {
+        return;
+      }
+      setShowSegments((previousValue) => !previousValue);
+    },
+    [hasSegments]
+  );
+
   return (
     <div className={`display-damage ${className || ""}`}>
       {selectedResult && selectedResult.getFullDescText() && (
@@ -44,9 +64,7 @@ export const DisplayDamage: React.FC<DisplayDamageProps> = ({ className }) => {
               ? "display-damage__amounts--left"
               : "display-damage__amounts--right"
           }`}
-          onClick={() => {
-            if (hasSegments) setShowSegments((p) => !p);
-          }}
+          onClick={handleAmountsClick}
         >
           {isAttackerSelected && hasSegments ? (
             <span className="display-damage__amounts-arrow">

@@ -172,29 +172,65 @@
 }
 .ps_meta-actions-toolbar {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: flex-end;
-  width: 60px;
-  gap: 6px;
+  gap: 8px;
 }
 
-.ps_meta-action-icon {
+.ps_meta-action-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 25px;
-  height: 25px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--widget-background-color);
+  color: var(--button-text-color);
   cursor: pointer;
-  color: var(--text-secondary);
+  transition: transform 120ms ease, box-shadow 120ms ease,
+    background-color 120ms ease, border-color 120ms ease;
+  box-shadow: 0 1px 2px var(--shadow-light);
 }
 
-.ps_meta-action-icon:hover {
-  color: var(--text-accent);
+.ps_meta-action-button:hover {
+  transform: translateY(-1px);
+  background: var(--widget-hover-background-color);
+  border-color: var(--border-hover);
+  box-shadow: 0 6px 12px var(--shadow-heavy);
 }
 
-.ps_meta-action-icon svg {
-  width: 25px;
-  height: 25px;
+.ps_meta-action-button:active {
+  background: var(--widget-selected-background-color);
+  border-color: var(--border-active);
+}
+
+.ps_meta-action-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.ps_meta-action-button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.ps_meta-copy {
+  color: var(--text-primary);
+}
+
+.ps_meta-copy:hover {
+  color: var(--text-primary);
+}
+
+.ps_meta-import {
+  color: var(--accent-primary);
+}
+
+.ps_meta-import:hover {
+  color: var(--accent-primary);
 }
 
 .ps_meta-actions-toast {
