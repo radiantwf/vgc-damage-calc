@@ -2,6 +2,7 @@
   "damageResult": {
     "recovered": "吸血",
     "recoildamage": "反伤",
+    "crashdamage": "冲撞伤害",
     "struggledamage": "挣扎反伤",
     "burned": "烧伤",
     "tera": "太晶",

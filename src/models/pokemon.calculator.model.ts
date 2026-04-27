@@ -189,8 +189,6 @@ export class Pokemon extends CalculatorPokemon {
    */
   private static checkExceptions(pokeName: string): string {
     switch (pokeName) {
-      case "Aegislash":
-        return "Aegislash-Blade";
       case "Basculin-Blue-Striped":
         return "Basculin";
       case "Gastrodon-East":

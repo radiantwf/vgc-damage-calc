@@ -2,6 +2,7 @@
   "damageResult": {
     "recovered": "recovered",
     "recoildamage": "recoil damage",
+    "crashdamage": "crash damage",
     "struggledamage": "struggle damage",
     "burned": "burned",
     "tera": "Tera",

@@ -28,6 +28,7 @@ export class Result extends CalculatorResult {
     }
     const damageText = (this.moveDesc() || "")
       .replace("recoil damage", t("damageResult.recoildamage"))
+      .replace("crash damage", t("damageResult.crashdamage"))
       .replace("struggle damage", t("damageResult.struggledamage"))
       .replace("recovered", t("damageResult.recovered"));
     return damageText;

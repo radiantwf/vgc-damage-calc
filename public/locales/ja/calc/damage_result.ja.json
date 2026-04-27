@@ -66,6 +66,7 @@
     "segmentRange": "{{min}}-{{max}} ({{minPct}}-{{maxPct}}%)",
     "recovered": "回復",
     "recoildamage": "反動ダメージ",
+    "crashdamage": "衝突ダメージ",
     "struggledamage": "わるあがき反動ダメージ",
     "burned": "やけど",
     "tera": "テラ",
