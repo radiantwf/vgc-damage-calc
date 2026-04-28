@@ -55,6 +55,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
 
   const opQueueRef = useRef<Promise<void>>(Promise.resolve());
   const slotIdRef = useRef<number>(0);
+  const isApplyingSelectedSlotRef = useRef<boolean>(false);
 
   const lastImportedPasteTextRef = useRef<string | undefined>(undefined);
   const selectedIndexRef = useRef<number>(selectedIndex);
@@ -219,26 +220,48 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   }, [selectedIndex, slots]);
 
   useEffect(() => {
+    let isCancelled = false;
     if (selectedIndex >= slots.length) {
+      isApplyingSelectedSlotRef.current = false;
       return;
     }
     const pasteText = slots[selectedIndex]?.pasteText;
-    
-    // 避免在保存当前配置时重复导入
-    if (pasteText === lastImportedPasteTextRef.current) {
-      return;
-    }
-    lastImportedPasteTextRef.current = pasteText;
 
-    if (pasteText) {
-      setDisableAutoSelect(true);
-      importPokemonFromPasteText(pasteText);
-    } else {
-      setPokemonName(undefined);
-    }
+    const applySelectedSlot = async (): Promise<void> => {
+      isApplyingSelectedSlotRef.current = true;
+
+      // 避免在保存当前配置时重复导入
+      if (pasteText === lastImportedPasteTextRef.current) {
+        if (!isCancelled) {
+          isApplyingSelectedSlotRef.current = false;
+        }
+        return;
+      }
+      lastImportedPasteTextRef.current = pasteText;
+
+      if (pasteText) {
+        setDisableAutoSelect(true);
+        await importPokemonFromPasteText(pasteText);
+      } else {
+        setPokemonName(undefined);
+      }
+
+      if (!isCancelled) {
+        isApplyingSelectedSlotRef.current = false;
+      }
+    };
+
+    void applySelectedSlot();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [selectedIndex, slots, setDisableAutoSelect, importPokemonFromPasteText, setPokemonName]);
 
   useEffect(() => {
+    if (isApplyingSelectedSlotRef.current) {
+      return;
+    }
     const currentIndex = selectedIndexRef.current;
     if (currentIndex < 0) {
       return;
@@ -268,6 +291,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
   const selectSlot = (index: number) => {
     if (selectedIndex === index) return;
     enqueueExclusive(async () => {
+      isApplyingSelectedSlotRef.current = true;
       const prevIndex = selectedIndex;
       const prevSaved = slots[prevIndex]?.pasteText;
       const currentText = displayPokemon?.exportToPasteText({
@@ -276,6 +300,7 @@ const useTeamLogic = (side: "attacker" | "defender"): TeamState => {
       if (currentText && currentText !== prevSaved) {
         const decision = await ensureSaveCurrentIfDirty();
         if (decision === "edit") {
+          isApplyingSelectedSlotRef.current = false;
           return;
         }
         if (decision === "discard") {

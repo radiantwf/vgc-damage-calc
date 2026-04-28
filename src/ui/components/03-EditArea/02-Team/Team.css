@@ -162,6 +162,9 @@
   padding: 0;
   box-sizing: border-box;
   overflow: hidden;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .team-slot-card:hover .team-slot,
@@ -212,6 +215,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 .team-slot__image {
@@ -220,6 +224,10 @@
   object-fit: contain;
   border-radius: 6px;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  pointer-events: none;
   transition: transform 160ms ease, filter 160ms ease;
 }
 
@@ -242,6 +250,8 @@
   object-fit: contain;
   background: transparent;
   pointer-events: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
   filter: drop-shadow(0 2px 4px var(--shadow-light));
   transition: transform 160ms ease, filter 160ms ease;
 }
