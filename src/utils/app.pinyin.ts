@@ -84,6 +84,7 @@ export class AppPinyin {
         .replace(/长毛/g, "常毛")
         .replace(/藏玛/g, "脏玛")
         .replace(/双弹/g, "双蛋")
+        .replace(/真气弹/g, "真气蛋")
         .replace(/Ｄ/g, "D")
         .replace(/・/g, "");
 

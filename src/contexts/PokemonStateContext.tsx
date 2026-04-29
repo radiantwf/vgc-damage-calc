@@ -787,13 +787,23 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
       if (item && item.name !== "(No Item)") {
         m.item = item?.name as ItemName;
       }
+      let overrides: Partial<any> = {
+        ...((ShowdownDataService.getPokemonMoveInfo(
+          m.name
+        ) as Partial<Move> | undefined) ?? {}),
+      };
+
       m.species = displayPokemon.species.name as SpeciesName;
       m.ability = displayPokemon.ability;
       if (hits) {
         m.hits = hits;
       }
       if (bp) {
-        m.overrides = { basePower: bp };
+        if (!overrides) {
+          overrides = { basePower: bp };
+        } else {
+          overrides.basePower = bp;
+        }
         m.bp = bp;
       }
       if (z) {
@@ -808,6 +818,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
       if (criticalHit) {
         m.isCrit = true;
       }
+      m.overrides = overrides;
       return m;
     },
     [

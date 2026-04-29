@@ -243,7 +243,7 @@ export class ShowdownDataService {
     if (!pokemon || pokemon === "") {
       return undefined;
     }
-    const cleanName = pokemon.toLowerCase().replace(/[^a-z0-9-'']/g, "");
+    const cleanName = pokemon.toLowerCase().replace(/[^a-z0-9-]/g, "");
     const path = isThumbs ? "thumbs" : "imgs";
     return `${AppConstants.ImageHost}/pokemon/${path}/${cleanName}.png`;
   }
@@ -252,7 +252,7 @@ export class ShowdownDataService {
     if (!item || item === "") {
       return undefined;
     }
-    const cleanName = item.toLowerCase().replace(/[^a-z0-9-'']/g, "");
+    const cleanName = item.toLowerCase().replace(/[^a-z0-9]/g, "");
     return `${AppConstants.ImageHost}/item/${cleanName}.png`;
   }
 
@@ -260,7 +260,7 @@ export class ShowdownDataService {
     if (!tera_type || tera_type === "") {
       return undefined;
     }
-    const cleanName = tera_type.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    const cleanName = tera_type.toLowerCase().replace(/[^a-z0-9]/g, "");
     return `${AppConstants.ImageHost}/type/terastal/${cleanName}.png`;
   }
 
