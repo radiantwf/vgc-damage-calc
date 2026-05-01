@@ -6,6 +6,7 @@ import { usePokemonTranslation } from "../../../../../../contexts/usePokemonTran
 import SearchableDropdown, {
   DropdownItem,
 } from "../../../../../widgets/SearchableDropdown/SearchableDropdown";
+import SmartImage from "../../../../../widgets/SmartImage/SmartImage";
 import { ShowdownDataService } from "../../../../../../services/showdown.data.service";
 import { usePokemonMovesets } from "../../../../../../contexts/PokemonMovesetsContext";
 import { usePokemonState } from "../../../../../../contexts/PokemonStateContext";
@@ -45,14 +46,10 @@ const PokemonInfoColumn3: React.FC<EditAreaProps> = ({ isAttacker }) => {
 
       return (
         <div className="pi_col3-item-display-content">
-          <img
+          <SmartImage
             src={spriteUrl}
             alt={translatedItem}
             className="pi_col3-item-display-dropdown-avatar"
-            onError={(e) => {
-              const img = e.target as HTMLImageElement;
-              img.style.visibility = "hidden";
-            }}
           />
           <span className="pi_col3-item-display-name">{translatedItem}</span>
         </div>
@@ -70,14 +67,10 @@ const PokemonInfoColumn3: React.FC<EditAreaProps> = ({ isAttacker }) => {
 
       return (
         <div className="pi_col3-teratype-display-content">
-          <img
+          <SmartImage
             src={ShowdownDataService.getTeraTypeImgUrl(item.key)}
             className="pi_col3-teratype-display-dropdown-avatar"
             alt=""
-            onError={(e) => {
-              const img = e.target as HTMLImageElement;
-              img.style.visibility = "hidden";
-            }}
           />
           <span className="pi_col3-teratype-display-content-name">
             {translatedType}
@@ -100,15 +93,11 @@ const PokemonInfoColumn3: React.FC<EditAreaProps> = ({ isAttacker }) => {
 
         return (
           <div className="pi_col3-item-dropdown-item">
-            <img
+            <SmartImage
               className="pi_col3-item-dropdown-avatar"
               src={ShowdownDataService.getItemImgUrl(item.key)}
               alt={itemName}
               loading="lazy"
-              onError={(e) => {
-                const img = e.target as HTMLImageElement;
-                img.style.visibility = "hidden";
-              }}
             />
             <span className="pi_col3-item-dropdown-name">{itemName}</span>
             {usagePercentage > 0 && (

@@ -6,6 +6,7 @@ import SearchableDropdown, {
 import { usePokemonState } from "../../../../../../contexts/PokemonStateContext";
 import { usePokemonMovesets } from "../../../../../../contexts/PokemonMovesetsContext";
 import { useTeamState } from "../../../../../../contexts/TeamContext";
+import { useFormats } from "../../../../../../contexts/FormatsContext";
 import { useMemo, useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePokemonTranslation } from "../../../../../../contexts/usePokemonTranslation";
@@ -18,8 +19,21 @@ import ConfirmDialog, {
   type ConfirmPayload,
 } from "../../../../../widgets/ConfirmDialog/ConfirmDialog";
 
+const getMetaEvs = (
+  meta: MetaBuildsUsage | undefined,
+  isChampionsGame: boolean
+): MetaBuildsUsage["evs"] | MetaBuildsUsage["evs2"] =>
+  isChampionsGame ? meta?.evs2 ?? meta?.evs : meta?.evs ?? meta?.evs2;
+
+const shouldUseChampionsSpreadFormula = (
+  meta: MetaBuildsUsage | undefined,
+  isChampionsGame: boolean
+): boolean => isChampionsGame && !!meta?.evs2;
+
 const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
   const tabBase = isAttacker ? 320000 : 330000;
+  const { currentGame } = useFormats();
+  const isChampionsGame = currentGame === "Champions";
   // 获取Pokemon状态
   const {
     displayPokemon,
@@ -90,7 +104,8 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
     () =>
       ({ item }) => {
         const meta = item.value as MetaBuildsUsage;
-        if (!meta || !meta.evs) {
+        const metaEvs = getMetaEvs(meta, isChampionsGame);
+        if (!meta || !metaEvs) {
           throw new Error("MetaBuildsUsage is undefined or evs is undefined");
         }
         const natureText = translateNature(meta.nature.name);
@@ -104,7 +119,7 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
               </span>
               <span className="ps_meta-display-spread-evs-text">
                 {statOrder.map((statId, idx) => {
-                  const val = meta.evs![statId] ?? 0;
+                  const val = metaEvs[statId] ?? 0;
                   const isPlus = statId !== "hp" && meta.nature.plus === statId;
                   const isMinus =
                     statId !== "hp" && meta.nature.minus === statId;
@@ -130,17 +145,22 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
           </div>
         );
       },
-    [translateNature]
+    [isChampionsGame, translateNature]
   );
 
   const MetaBuildsDropdownItem: React.FC<{ item: DropdownItem }> = useMemo(
     () =>
       ({ item }) => {
         const meta = item.value as MetaBuildsUsage;
+        const metaEvs = getMetaEvs(meta, isChampionsGame);
+        const useChampionsSpreadFormula = shouldUseChampionsSpreadFormula(
+          meta,
+          isChampionsGame
+        );
         if (!meta) {
           throw new Error("MetaBuildsUsage is undefined");
         }
-        if (!meta.evs) {
+        if (!metaEvs) {
           const natureText = translateNature(meta.nature.name);
           return (
             <div className="ps_meta-dropdown-item-nature">
@@ -170,7 +190,7 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
                 </span>
                 <span className="ps_meta-dropdown-spread-evs-text">
                   {statOrder.map((statId, idx) => {
-                    const val = meta.evs![statId] ?? 0;
+                    const val = metaEvs[statId] ?? 0;
                     const isPlus =
                       statId !== "hp" && meta.nature.plus === statId;
                     const isMinus =
@@ -198,7 +218,7 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
                 <span className="ps_meta-dropdown-spread-stats-text">
                   {statOrder.map((statId, idx) => {
                     const base = baseStats[statId] || 0;
-                    const ev = meta.evs![statId] || 0;
+                    const ev = metaEvs[statId] || 0;
                     const main = computeStat({
                       base,
                       iv: 31,
@@ -206,6 +226,7 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
                       level: 50,
                       statId: statId as any,
                       nature: meta.nature,
+                      useChampionsSpreadFormula,
                     });
                     const isMinus =
                       statId !== "hp" && meta.nature.minus === statId;
@@ -220,6 +241,7 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
                           level: 50,
                           statId: statId as any,
                           nature: meta.nature,
+                          useChampionsSpreadFormula,
                         })
                       : undefined;
                     const cls = isPlus
@@ -246,7 +268,7 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
           </div>
         );
       },
-    [pokemonSpecies, translateNature]
+    [isChampionsGame, pokemonSpecies, translateNature]
   );
 
   // 创建性格下拉选项数据
@@ -263,11 +285,16 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
         value: meta,
         displayContentFC: MetaBuildDisplayContext,
         dropdownItemFC: MetaBuildsDropdownItem,
-        disabled: !meta.evs,
+        disabled: !getMetaEvs(meta, isChampionsGame),
       });
     }
     return items;
-  }, [MetaBuildDisplayContext, MetaBuildsDropdownItem, metaBuildsUsageList]);
+  }, [
+    MetaBuildDisplayContext,
+    MetaBuildsDropdownItem,
+    isChampionsGame,
+    metaBuildsUsageList,
+  ]);
 
   useEffect(() => {
     if (!metaBuildsUsageListUpdated) {
@@ -296,11 +323,12 @@ const PokemonMetaBuilds: React.FC<EditAreaProps> = ({ isAttacker }) => {
     ) {
       return metaBuildsUsageList.find(
         (m) =>
-          !m.evs && m.nature?.name?.toLowerCase() === nature.name?.toLowerCase()
+          !getMetaEvs(m, isChampionsGame) &&
+          m.nature?.name?.toLowerCase() === nature.name?.toLowerCase()
       );
     }
     return undefined;
-  }, [meta, nature, metaBuildsUsageList]);
+  }, [isChampionsGame, meta, nature, metaBuildsUsageList]);
 
   const handleMetaChange = useCallback(
     (selectedValue: unknown) => {

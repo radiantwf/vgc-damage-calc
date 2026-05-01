@@ -15,6 +15,7 @@ import { confirmable, ContextAwareConfirmation } from "react-confirm";
 import ConfirmDialog, {
   type ConfirmPayload,
 } from "../../../widgets/ConfirmDialog/ConfirmDialog";
+import SmartImage from "../../../widgets/SmartImage/SmartImage";
 
 const TEAM_TOUCH_DRAG_DELAY_MS = 220;
 const TEAM_TOUCH_CANCEL_MOVE_PX = 10;
@@ -633,7 +634,7 @@ const Team: React.FC<EditAreaProps> = ({ isAttacker }) => {
                     >
                       <div className="team-tab">
                         {img ? (
-                          <img
+                          <SmartImage
                             className="team-slot__image"
                             src={img}
                             alt={""}
@@ -649,7 +650,7 @@ const Team: React.FC<EditAreaProps> = ({ isAttacker }) => {
                           </>
                         )}
                         {itemImg && (
-                          <img
+                          <SmartImage
                             className="team-slot__item"
                             src={itemImg}
                             alt=""

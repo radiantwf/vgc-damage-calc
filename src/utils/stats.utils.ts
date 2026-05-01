@@ -9,6 +9,7 @@ export interface ComputeStatParams {
   statId: StatID;
   nature?: NatureData;
   effect?: number;
+  useChampionsSpreadFormula?: boolean;
 }
 
 /**
@@ -19,7 +20,26 @@ export interface ComputeStatParams {
  *   - 属性增减修正(Boost)：>0: (2 + boost) / 2, <=0: 2 / (2 - boost)，再取floor
  */
 export function computeStat(params: ComputeStatParams): number {
-  const { base, iv, ev, level, statId, nature, effect } = params;
+  const { base, iv, ev, level, statId, nature, effect, useChampionsSpreadFormula } =
+    params;
+
+  if (useChampionsSpreadFormula) {
+    const normalizedEv = Math.max(0, Math.min(32, Math.floor(ev)));
+    if (statId === "hp") {
+      return base + normalizedEv + 75;
+    }
+    let multiplier = 1;
+    if (nature) {
+      if (nature.plus === statId) {
+        multiplier = 1.1;
+      } else if (nature.minus === statId) {
+        multiplier = 0.9;
+      }
+    } else if (effect) {
+      multiplier = effect;
+    }
+    return Math.floor((base + normalizedEv + 20) * multiplier);
+  }
 
   if (statId === "hp") {
     return Math.floor(

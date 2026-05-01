@@ -74,8 +74,6 @@ export class ShowdownFormats {
       gens.set(key, Number(splits[1]));
     }
 
-
-
     const cutlines = [...(json.cutlines as string[])];
     cutlines.sort((a, b) => b.localeCompare(a)); // 降序排列
 
@@ -162,40 +160,65 @@ export interface MovesetsUsage {
   usage: number;
 }
 
+function hasNumericValue(value: unknown): value is number {
+  return typeof value === "number" && !Number.isNaN(value);
+}
+
+function parseOptionalNumber(value: unknown): number | undefined {
+  if (value === null || value === undefined || value === "") {
+    return undefined;
+  }
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+function buildStatsTableFromEvs(evs: number[]): StatsTable<number> {
+  const ret = {} as StatsTable<number>;
+  for (let i = 0; i < evs.length; i++) {
+    switch (i) {
+      case 0:
+        ret.hp = evs[i];
+        break;
+      case 1:
+        ret.atk = evs[i];
+        break;
+      case 2:
+        ret.def = evs[i];
+        break;
+      case 3:
+        ret.spa = evs[i];
+        break;
+      case 4:
+        ret.spd = evs[i];
+        break;
+      case 5:
+        ret.spe = evs[i];
+        break;
+    }
+  }
+  return ret;
+}
+
 // Chaos EVs分布数据
 export class ChaosEVsSpread1 {
-  readonly evs: StatsTable<number>;
+  readonly evs?: StatsTable<number>;
+  readonly evs2?: StatsTable<number>;
   readonly percentage: number;
 
-  constructor(data: { evs: number[]; percentage: number }) {
-    this.evs = {} as StatsTable<number>;
-    for (let i = 0; i < data.evs.length; i++) {
-      switch (i) {
-        case 0:
-          this.evs.hp = data.evs[i];
-          break;
-        case 1:
-          this.evs.atk = data.evs[i];
-          break;
-        case 2:
-          this.evs.def = data.evs[i];
-          break;
-        case 3:
-          this.evs.spa = data.evs[i];
-          break;
-        case 4:
-          this.evs.spd = data.evs[i];
-          break;
-        case 5:
-          this.evs.spe = data.evs[i];
-          break;
-      }
+  constructor(data: { evs?: number[]; evs2?: number[]; percentage: number }) {
+    if (data.evs?.length) {
+      this.evs = buildStatsTableFromEvs(data.evs);
     }
+    if (data.evs2?.length) {
+      this.evs2 = buildStatsTableFromEvs(data.evs2);
+    }
+
     this.percentage = data.percentage;
   }
 
   get key(): string {
-    return `${this.evs.hp}/${this.evs.atk}/${this.evs.def}/${this.evs.spa}/${this.evs.spd}/${this.evs.spe}`;
+    const evs = this.evs2 ?? this.evs ?? ({} as StatsTable<number>);
+    return `${evs.hp}/${evs.atk}/${evs.def}/${evs.spa}/${evs.spd}/${evs.spe}`;
   }
 }
 
@@ -223,7 +246,14 @@ export class ChaosNatureSpread1 {
     const evsSpreads = detail.map(
       (e) =>
         new ChaosEVsSpread1({
-          evs: (e.evs as string).split("/").map((ev) => parseInt(ev) || 0),
+          evs:
+            typeof e.evs === "string"
+              ? e.evs.split("/").map((ev) => parseInt(ev, 10) || 0)
+              : undefined,
+          evs2:
+            typeof e.evs2 === "string"
+              ? e.evs2.split("/").map((ev) => parseInt(ev, 10) || 0)
+              : undefined,
           percentage: Number(e.percentage),
         }),
     );
@@ -240,18 +270,21 @@ export class ChaosNatureSpread1 {
 export class ChaosSpread2 {
   readonly stat?: StatID;
   readonly effect: number;
-  readonly ev: number;
+  readonly ev?: number;
+  readonly ev2?: number;
   readonly percentage: number;
 
   constructor(data: {
     stat?: StatID;
     effect: number;
-    ev: number;
+    ev?: number;
+    ev2?: number;
     percentage: number;
   }) {
     this.stat = data.stat;
     this.effect = data.effect;
-    this.ev = data.ev;
+    this.ev = hasNumericValue(data.ev) ? data.ev : undefined;
+    this.ev2 = hasNumericValue(data.ev2) ? data.ev2 : undefined;
     this.percentage = data.percentage;
   }
 
@@ -259,7 +292,8 @@ export class ChaosSpread2 {
     return new ChaosSpread2({
       stat: (json.stat as string).toLowerCase() as StatID,
       effect: Number(json.effect),
-      ev: Number(json.ev),
+      ev: parseOptionalNumber(json.ev),
+      ev2: parseOptionalNumber(json.ev2),
       percentage: Number(json.percentage),
     });
   }
@@ -269,15 +303,18 @@ export class ChaosSpread2 {
 export class MetaBuildsUsage {
   readonly nature: NatureData;
   readonly evs?: StatsTable<number>;
+  readonly evs2?: StatsTable<number>;
   readonly percentage: number;
 
   constructor(data: {
     nature: NatureData;
     evs?: StatsTable<number>;
+    evs2?: StatsTable<number>;
     percentage: number;
   }) {
     this.nature = data.nature;
     this.evs = data.evs;
+    this.evs2 = data.evs2;
     this.percentage = data.percentage;
   }
 
@@ -300,6 +337,7 @@ export class MetaBuildsUsage {
           new MetaBuildsUsage({
             nature: natureItem.nature,
             evs: evsItem.evs,
+            evs2: evsItem.evs2,
             percentage: evsItem.percentage,
           }),
         );

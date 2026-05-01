@@ -7,7 +7,10 @@ import React, {
   ReactNode,
   useMemo,
 } from "react";
-import { usePokemonMovesets } from "./PokemonMovesetsContext";
+import {
+  AutoSelectDisableOptions,
+  usePokemonMovesets,
+} from "./PokemonMovesetsContext";
 import { AbilityData } from "../vendors/smogon/pokemon-showdown/sim/dex-abilities";
 import { ItemData } from "../vendors/smogon/pokemon-showdown/sim/dex-items";
 import { MoveData } from "../vendors/smogon/pokemon-showdown/sim/dex-moves";
@@ -27,6 +30,7 @@ import {
   StatusName,
   SpeciesName,
   GenerationNum,
+  StatID,
 } from "../vendors/smogon/damage-calc-dist/data/interface";
 import { isEvsEqual, MetaBuildsUsage } from "../models/showndown.model";
 import { Natures } from "../vendors/smogon/pokemon-showdown/data/natures";
@@ -171,7 +175,7 @@ interface PokemonStateContextType {
   exportPokemonToClipboard: () => Promise<boolean>;
   importPokemonFromPasteText: (text: string) => Promise<boolean>;
   importPokemonFromClipboard: () => Promise<boolean>;
-  setDisableAutoSelect: (disable: boolean) => void;
+  setDisableAutoSelect: (disable: boolean | AutoSelectDisableOptions) => void;
 }
 
 // 攻击者Context
@@ -188,6 +192,63 @@ const DefenderStateContext = createContext<PokemonStateContextType | undefined>(
 const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   const { currentGen, currentGame } = useFormats();
   const isChampionsGame = currentGame === "Champions";
+
+  const championsDisplayEvToActualEv = useCallback((displayEv: number): number => {
+    const normalized = Math.max(0, Math.floor(displayEv));
+    if (normalized === 0) {
+      return 0;
+    }
+    return normalized * 8 - 4;
+  }, []);
+
+  const championsActualEvToDisplayEv = useCallback((actualEv: number): number => {
+    const normalized = Math.max(0, Math.floor(actualEv));
+    if (normalized === 0) {
+      return 0;
+    }
+    if (normalized <= 4) {
+      return 1;
+    }
+    return Math.floor((normalized + 4) / 8);
+  }, []);
+
+  const createEmptyEvs = useCallback(
+    (): StatsTable =>
+      ({
+        hp: 0,
+        atk: 0,
+        def: 0,
+        spa: 0,
+        spd: 0,
+        spe: 0,
+      } as StatsTable),
+    []
+  );
+
+  const championsDisplayTableToActual = useCallback(
+    (displayEvs?: StatsTable<number>): StatsTable => {
+      const next = createEmptyEvs();
+      if (!displayEvs) {
+        return next;
+      }
+      (Object.keys(next) as StatID[]).forEach((statId) => {
+        next[statId] = championsDisplayEvToActualEv(displayEvs[statId] ?? 0);
+      });
+      return next;
+    },
+    [championsDisplayEvToActualEv, createEmptyEvs]
+  );
+
+  const currentActualTableToChampionsDisplay = useCallback(
+    (actualEvs: StatsTable): StatsTable => {
+      const next = createEmptyEvs();
+      (Object.keys(next) as StatID[]).forEach((statId) => {
+        next[statId] = championsActualEvToDisplayEv(actualEvs[statId] ?? 0);
+      });
+      return next;
+    },
+    [championsActualEvToDisplayEv, createEmptyEvs]
+  );
 
   // 获取 metaBuildsUsageList 从 PokemonMovesetsContext
   const { metaBuildsUsageList, setDisableAutoSelect } = usePokemonMovesets(
@@ -251,7 +312,6 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
   );
 
   useEffect(() => {
-    clearPokemonState();
     const sideTag =
       pokemonId === "pokemon-attacker"
         ? "pokemon-attacker"
@@ -265,15 +325,7 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
         },
       }),
     );
-    window.dispatchEvent(
-      new CustomEvent("pokemonRootCleared", {
-        detail: {
-          side: sideTag,
-          root: rootFormeSpecies,
-        },
-      }),
-    );
-  }, [rootFormeSpecies]);
+  }, [pokemonId, pokemonSpecies, rootFormeSpecies]);
 
   // 特性
   const [ability, setAbilityState] = useState<AbilityData | undefined>(
@@ -376,31 +428,28 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
 
   // 构筑
   const [meta, setMetaState] = useState<MetaBuildsUsage | undefined>(undefined);
-  const setMeta = useCallback((meta: MetaBuildsUsage | undefined) => {
-    setMetaState(meta);
-    if (meta) {
-      setNatureState(meta?.nature || "serious");
-      setEvs(
-        meta?.evs ||
-          ({
-            hp: 0,
-            atk: 0,
-            def: 0,
-            spa: 0,
-            spd: 0,
-            spe: 0,
-          } as StatsTable),
-      );
-      setIvs({
-        hp: 31,
-        atk: 31,
-        def: 31,
-        spa: 31,
-        spd: 31,
-        spe: 31,
-      } as StatsTable);
-    }
-  }, []);
+  const setMeta = useCallback(
+    (meta: MetaBuildsUsage | undefined) => {
+      setMetaState(meta);
+      if (meta) {
+        setNatureState(meta?.nature || "serious");
+        const targetEvs =
+          isChampionsGame && meta.evs2
+            ? championsDisplayTableToActual(meta.evs2)
+            : meta.evs || createEmptyEvs();
+        setEvs(targetEvs);
+        setIvs({
+          hp: 31,
+          atk: 31,
+          def: 31,
+          spa: 31,
+          spd: 31,
+          spe: 31,
+        } as StatsTable);
+      }
+    },
+    [championsDisplayTableToActual, createEmptyEvs, isChampionsGame]
+  );
 
   // 性格
   const [nature, setNatureState] = useState<NatureData>(Natures["serious"]);
@@ -439,15 +488,21 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
 
   useEffect(() => {
     for (const meta of metaBuildsUsageList || []) {
-      if (meta.evs && meta.nature === nature) {
-        if (isEvsEqual(meta.evs, evs)) {
+      const comparableEvs =
+        isChampionsGame && meta.evs2
+          ? currentActualTableToChampionsDisplay(evs)
+          : evs;
+      const targetMetaEvs =
+        isChampionsGame && meta.evs2 ? meta.evs2 : meta.evs;
+      if (targetMetaEvs && meta.nature === nature) {
+        if (isEvsEqual(targetMetaEvs, comparableEvs)) {
           setMetaState(meta);
           return;
         }
       }
     }
     setMetaState(undefined);
-  }, [nature, evs, metaBuildsUsageList]);
+  }, [currentActualTableToChampionsDisplay, evs, isChampionsGame, metaBuildsUsageList, nature]);
 
   // 属性增减（boost）
   const [boosts, setBoosts] = useState<StatsExceptHPTable>({
@@ -915,6 +970,22 @@ const usePokemonStateLogic = (pokemonId: string): PokemonStateContextType => {
     //   spe: 0,
     // } as StatsExceptHPTable);
   }, []);
+
+  useEffect(() => {
+    clearPokemonState();
+    const sideTag =
+      pokemonId === "pokemon-attacker"
+        ? "pokemon-attacker"
+        : "pokemon-defender";
+    window.dispatchEvent(
+      new CustomEvent("pokemonRootCleared", {
+        detail: {
+          side: sideTag,
+          root: rootFormeSpecies,
+        },
+      }),
+    );
+  }, [clearPokemonState, pokemonId, rootFormeSpecies]);
 
   return {
     displayPokemon,

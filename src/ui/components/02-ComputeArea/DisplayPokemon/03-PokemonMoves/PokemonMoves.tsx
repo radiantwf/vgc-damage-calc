@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getTypeColor } from "../../../../../utils/type.colors";
 import ToggleButton from "../../../../../ui/widgets/ToggleButton/ToggleButton";
 import { ShowdownDataService } from "../../../../../services/showdown.data.service";
+import SmartImage from "../../../../widgets/SmartImage/SmartImage";
 import { usePokemonTranslation } from "../../../../../contexts/usePokemonTranslation";
 // 伤害计算已由 DamageComputeContext 提供汇总，组件不再直接计算
 
@@ -248,13 +249,10 @@ export const PokemonMoves: React.FC<PokemonMovesProps> = ({
 
           const zEl = (
             <div key={`z-${index}`} className="pokemon-moves__z-container">
-              <img
+              <SmartImage
                 src={ShowdownDataService.getZMoveImgUrl()}
                 alt={t("pokemon.rule.zBadge")}
                 className={zCls}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.visibility = "hidden";
-                }}
                 onClick={() => {
                   const setter = setZFns[move.originalIndex];
                   setter(!isZ);

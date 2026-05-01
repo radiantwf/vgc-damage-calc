@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState, useCallback } from "react";
+import React, { useMemo, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import "./PokemonInfoColumn1.css";
 import EditAreaProps from "../../../Props/EditAreaProps";
@@ -6,9 +6,9 @@ import { usePokemonTranslation } from "../../../../../../contexts/usePokemonTran
 import SearchableDropdown, {
   DropdownItem,
 } from "../../../../../widgets/SearchableDropdown/SearchableDropdown";
-import showdownDataService, {
-  ShowdownDataService,
-} from "../../../../../../services/showdown.data.service";
+import SmartImage from "../../../../../widgets/SmartImage/SmartImage";
+import { ShowdownDataService } from "../../../../../../services/showdown.data.service";
+import { AutoSelectDisableOptions } from "../../../../../../contexts/PokemonMovesetsContext";
 import { usePokemonState } from "../../../../../../contexts/PokemonStateContext";
 import { AppPinyin } from "../../../../../../utils/app.pinyin";
 import { useLanguage } from "../../../../../../contexts/LanguageContext";
@@ -31,8 +31,49 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
   const { language } = useLanguage();
 
   // 使用新的Pokemon状态管理
-  const { rootFormeSpecies, pokemonSpecies, setPokemonName, setPokemonForme } =
-    usePokemonState(isAttacker);
+  const {
+    rootFormeSpecies,
+    pokemonSpecies,
+    setPokemonName,
+    setPokemonForme,
+    setDisableAutoSelect,
+  } = usePokemonState(isAttacker);
+
+  const isMegaForme = useCallback((species?: SpeciesData): boolean => {
+    return /-Mega(?:-[XYZ])?$/i.test(species?.name || "");
+  }, []);
+
+  const getAutoSelectDisableOptionsOnFormeSwitch = useCallback(
+    (nextForme?: SpeciesData): AutoSelectDisableOptions | undefined => {
+      const currentForme = pokemonSpecies?.value;
+      if (!currentForme || !nextForme || currentForme.name === nextForme.name) {
+        return undefined;
+      }
+
+      const currentIsMega = isMegaForme(currentForme);
+      const nextIsMega = isMegaForme(nextForme);
+
+      if (currentIsMega && !nextIsMega) {
+        return {
+          items: true,
+          moves: true,
+          teratypes: true,
+          metaBuilds: true,
+        };
+      }
+
+      if (currentIsMega && nextIsMega) {
+        return {
+          moves: true,
+          teratypes: true,
+          metaBuilds: true,
+        };
+      }
+
+      return undefined;
+    },
+    [isMegaForme, pokemonSpecies],
+  );
 
   // 自定义宝可梦下拉项组件
   const PokemonDropdownItem: React.FC<{ item: DropdownItem }> = useMemo(
@@ -56,15 +97,11 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
 
         return (
           <div className="pi_col1-pokemon-dropdown-item">
-            <img
+            <SmartImage
               className="pi_col1-pokemon-dropdown-avatar"
               src={ShowdownDataService.getPokemonImgUrl(pokemonName, true)}
               alt={translatedName}
               loading="lazy"
-              onError={(e) => {
-                const img = e.target as HTMLImageElement;
-                img.style.visibility = "hidden";
-              }}
             />
             <div className="pi_col1-pokemon-dropdown-content">
               <span
@@ -265,18 +302,14 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
   return (
     <div className="pi_col1-column">
       <div className="pi_col1-avatar-area">
-        <img
+        <SmartImage
           className="pi_col1-avatar"
           alt={translatePokemon(pokemonSpecies?.value.name || "")}
           src={ShowdownDataService.getPokemonImgUrl(
             pokemonSpecies?.value.name,
             false,
           )}
-          onError={(e) => {
-            const img = e.target as HTMLImageElement;
-            img.style.visibility = "hidden";
-          }}
-        ></img>
+        />
       </div>
       <div className="pi_col1-pokemon-name-area">
         <div className="pi_col1-pokemon-name-label">{t("pokemon.name")}</div>
@@ -302,6 +335,12 @@ const PokemonInfoColumn1: React.FC<EditAreaProps> = ({ isAttacker }) => {
             items={pokemonFormeDropdownItems}
             value={pokemonSpecies?.value}
             onChange={(value) => {
+              const nextForme = value as SpeciesData | undefined;
+              const disableOptions =
+                getAutoSelectDisableOptionsOnFormeSwitch(nextForme);
+              if (disableOptions) {
+                setDisableAutoSelect(disableOptions);
+              }
               setPokemonForme(value);
             }}
             placeholder={t("pokemon.selectPokemonForme")}

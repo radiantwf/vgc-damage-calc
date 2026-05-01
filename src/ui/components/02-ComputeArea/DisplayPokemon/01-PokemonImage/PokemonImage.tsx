@@ -2,11 +2,11 @@ import React, { useMemo } from "react";
 import "./PokemonImage.css";
 import { usePokemonState } from "../../../../../contexts/PokemonStateContext";
 import { ShowdownDataService } from "../../../../../services/showdown.data.service";
+import SmartImage from "../../../../widgets/SmartImage/SmartImage";
 import {
   getTypeColor,
   getTypeTextColor,
 } from "../../../../../utils/type.colors";
-import { usePokemonTranslation } from "../../../../../contexts/usePokemonTranslation";
 
 interface PokemonImageProps {
   isAttacker: boolean;
@@ -39,23 +39,19 @@ export const PokemonImage: React.FC<PokemonImageProps> = ({
     <div className={`pokemon-image ${className || ""}`}>
       <div className="pokemon-image__sprite-container">
         {pokemonImageUrl && (
-          <img
+          <SmartImage
             src={pokemonImageUrl}
             alt=""
             className="pokemon-image__sprite"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
+            hideMode="display"
           />
         )}
         {itemImageUrl && (
-          <img
+          <SmartImage
             src={itemImageUrl}
             alt=""
             className="pokemon-image__item"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
+            hideMode="display"
           />
         )}
       </div>

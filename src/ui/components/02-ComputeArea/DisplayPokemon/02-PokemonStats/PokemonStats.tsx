@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import "./PokemonStats.css";
 import { useDamageCompute } from "../../../../../contexts/DamageComputeContext";
 import { ShowdownDataService } from "../../../../../services/showdown.data.service";
+import SmartImage from "../../../../widgets/SmartImage/SmartImage";
 import { useLanguage } from "../../../../../contexts/LanguageContext";
 import { NATURES } from "../../../../../vendors/smogon/damage-calc-dist/data/natures";
 import { StatID } from "../../../../../vendors/smogon/damage-calc-dist/data/interface";
@@ -65,7 +66,7 @@ export const PokemonStats: React.FC<PokemonStatsProps> = ({
         <div className="pokemon-stats__rules_container">
           <div className="pokemon-stats__tera_container">
             {teraType && (
-              <img
+              <SmartImage
                 src={ShowdownDataService.getTeraTypeImgUrl(teraType)}
                 alt={t("pokemon.rule.teraBadge")}
                 className={`pokemon-stats__tera ${
@@ -73,9 +74,6 @@ export const PokemonStats: React.FC<PokemonStatsProps> = ({
                     ? "pokemon-stats__tera--active"
                     : "pokemon-stats__tera--inactive"
                 }`}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.visibility = "hidden";
-                }}
                 onClick={() => {
                   setIsTera(!isTera);
                 }}
@@ -83,7 +81,7 @@ export const PokemonStats: React.FC<PokemonStatsProps> = ({
             )}
           </div>
           <div className="pokemon-stats__dynamax_container">
-            <img
+            <SmartImage
               src={ShowdownDataService.getDynamaxImgUrl()}
               alt={t("pokemon.rule.dynamaxBadge")}
               className={`pokemon-stats__dynamax ${
@@ -91,9 +89,6 @@ export const PokemonStats: React.FC<PokemonStatsProps> = ({
                   ? "pokemon-stats__dynamax--active"
                   : "pokemon-stats__dynamax--inactive"
               }`}
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.visibility = "hidden";
-              }}
               onClick={() => {
                 setIsDynamaxed(!isDynamaxed);
               }}
